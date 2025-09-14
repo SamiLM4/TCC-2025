@@ -1,162 +1,174 @@
-/* ================================
-   VARIÁVEIS DE CORES
-   ================================ */
-:root {
-  /* Fundo geral */
-  --color-bg-body: #F8FAFC;
-  --color-text-body: #075985;
-
-  /* Sidebar */
-  --color-sidebar-bg: #0C4A6E;
-  --color-sidebar-border: #0C4A6E;
-  --color-sidebar-title: #FFFFFF;
-  --color-sidebar-link: #38BDF8;
-  --color-sidebar-link-hover-bg: #0A3B58;
-  --color-sidebar-link-hover-text: #38BDF8;
-
-  /* Main */
-  --color-main-bg: #F8FAFC;
-  --color-main-title: #075985;
-  --color-main-text: #0EA5E9;
-
-  /* Relógio */
-  --color-clock: #075985;
-
-  /* Logout */
-  --color-logout-bg: #DC2626;
-  --color-logout-hover: #B91C1C;
-  --color-logout-text: #FFFFFF;
-}
-
-
-/* ================================
-   RESET
-   ================================ */
+/* Reset básico */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-/* ================================
-   BODY
-   ================================ */
-body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    height: 100vh;
-    background-color: var(--color-bg-body);
-    color: var(--color-text-body);
 }
 
-/* ================================
-   BARRA LATERAL
-   ================================ */
+/* Corpo da página */
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+/* Sidebar */
 .sidebar {
-    width: 250px;
-    background-color: var(--color-sidebar-bg);
-    border-right: 1px solid var(--color-sidebar-border);
-    padding: 30px 0;
-    position: fixed;
-    height: 100%;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    width: 220px;
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar h2 {
-    color: var(--color-sidebar-title);
+    margin-bottom: 20px;
+    font-size: 24px;
     text-align: center;
-    margin-bottom: 30px;
-    font-size: 22px;
-    font-weight: 700;
 }
 
 .sidebar ul {
     list-style: none;
-    padding: 0 20px;
+    flex-grow: 1;
 }
 
 .sidebar ul li {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .sidebar ul li a {
-    color: var(--color-sidebar-link);
     text-decoration: none;
+    color: #fff;
     display: block;
-    padding: 12px 16px;
-    font-size: 16px;
-    border-radius: 8px;
-    transition: 0.3s;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
 .sidebar ul li a:hover {
-    background-color: var(--color-sidebar-link-hover-bg);
-    color: var(--color-sidebar-link-hover-text);
-    font-weight: 500;
+    background-color: #34495e;
 }
 
-/* ================================
-   CONTEÚDO PRINCIPAL
-   ================================ */
-.main-content {
-    margin-left: 250px;
-    padding: 40px 60px;
-    flex-grow: 1;
-    background-color: var(--color-main-bg);
-}
-
-.main-content h1 {
-    font-size: 28px;
-    margin-bottom: 10px;
-    color: var(--color-main-title);
-}
-
-.main-content p {
-    font-size: 18px;
-    color: var(--color-main-text);
-    margin-bottom: 30px;
-}
-
-.clock {
-    font-size: 16px;
-    color: var(--color-clock);
-    margin-top: 20px;
-}
-
-/* ================================
-   BOTÃO LOGOUT
-   ================================ */
 .logout-button {
-    background-color: var(--color-logout-bg);
-    color: var(--color-logout-text);
-    border: none;
-    padding: 10px 20px;
-    font-size: 15px;
-    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    float: right;
-    margin-top: -50px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #e74c3c;
+    text-align: center;
+    transition: background-color 0.3s;
 }
 
 .logout-button:hover {
-    background-color: var(--color-logout-hover);
+    background-color: #c0392b;
 }
 
-/* ================================
-   RESPONSIVIDADE
-   ================================ */
-@media screen and (max-width: 768px) {
-    .sidebar {
-        position: static;
-        width: 100%;
-        height: auto;
-        border-right: none;
-        box-shadow: none;
-    }
+/* Conteúdo principal */
+.main-content {
+    flex-grow: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* centraliza todos os elementos filhos */
+}
 
-    .main-content {
-        margin-left: 0;
-        padding: 30px 20px;
-    }
+
+.main-content h1 {
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.main-content p {
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* Relógio */
+.clock {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #2980b9;
+}
+
+/* Filtro */
+.filtro-container {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    width: 80%; /* largura proporcional */
+    justify-content: center; /* centraliza os itens internos */
+}
+.filtro-container input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.filtro-container button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #2980b9;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.filtro-container button:hover {
+    background-color: #1c5980;
+}
+
+table {
+    width: 80%; /* ou outra largura que preferir */
+    margin: 0 auto; /* centraliza horizontalmente */
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+
+table thead {
+    background-color: #2980b9;
+    color: #fff;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table tbody tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* Paginação */
+#paginacao {
+    margin-top: 15px;
+    text-align: center;
+}
+
+#paginacao button {
+    padding: 8px 12px;
+    margin: 0 3px;
+    border: none;
+    background-color: #2980b9;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#paginacao button:hover {
+    background-color: #1c5980;
+}
+
+#paginacao button.active {
+    background-color: #1abc9c;
 }

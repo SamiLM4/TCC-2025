@@ -23,9 +23,31 @@
 
     <div class="main-content">
         <h1 id="boasVindas">Bem-vindo ao Painel</h1>
-        <p>Escolha uma opção no menu lateral para começar.</p>
+        <p>Escolha uma opção no menu lateral para começar</p>
+        <p>Pacientes sem diagnósticos.</p>
         <div class="clock" id="clock"></div>
+
+        <div class="filtro-container">
+            <input type="text" id="filtro" placeholder="Filtrar" />
+            <button onclick="filtrarPacientes()">Buscar</button>
+        </div>
+
+        <table id="tabelaPacientes">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>CPF</th>
+                    <th>Email</th>
+                    <th>❌ Pacientes sem Diagnóstico❌</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Conteúdo via JS -->
+            </tbody>
+        </table>
+        <div id="paginacao"></div>
     </div>
+
 
     <script>
         const token = localStorage.getItem("token");
@@ -52,8 +74,105 @@
                 minute: "2-digit"
             });
         }
+
+
+        function carregarPacientes(pagina = 1, filtro = "") {
+            paginaAtual = pagina;
+
+            let url;
+            if (filtro != null && filtro != "") {
+                //                console.log(filtro);
+                url = `http://localhost:8080/paciente/cpf/${encodeURIComponent(filtro)}`;
+            } else {
+                url = `http://localhost:8080/paciente/${pagina}/diagnostico`;
+            }
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const tabelaBody = document.querySelector("#tabelaPacientes tbody");
+                    const paginacao = document.getElementById("paginacao");
+
+                    tabelaBody.innerHTML = "";
+                    paginacao.innerHTML = "";
+
+                    const listaPacientes = data.pacientes || [];
+                    const totalPaginas = Math.ceil((data.total || 0) / 5); // ajuste o divisor conforme quantidade por página
+
+                    if (listaPacientes.length === 0) {
+                        tabelaBody.innerHTML = '<tr><td colspan="5">Nenhum paciente encontrado.</td></tr>';
+                        return;
+                    }
+
+                    listaPacientes.forEach(paciente => {
+                        const row = document.createElement("tr");
+
+                        row.innerHTML = `
+                        <td class="texto-tabela" data-label="Nome">${paciente.nome}</td>
+                        <td class="texto-tabela" data-label="CPF">${paciente.cpf}</td>
+                        <td class="texto-tabela" data-label="Email">${paciente.email}</td>
+                        <td clas= "texto-tabela" data-label="Sem Diagnóstico">❌Sem Diagnóstico❌</td>
+                        `;
+
+                        tabelaBody.appendChild(row);
+                    });
+
+                    // Controle dos botões de paginação (máximo 5 visíveis)
+                    const maxBotoesVisiveis = 5;
+                    let startPage = Math.max(1, paginaAtual - Math.floor(maxBotoesVisiveis / 2));
+                    let endPage = startPage + maxBotoesVisiveis - 1;
+
+                    if (endPage > totalPaginas) {
+                        endPage = totalPaginas;
+                        startPage = Math.max(1, endPage - maxBotoesVisiveis + 1);
+                    }
+
+                    // Botão página anterior
+                    if (paginaAtual > 1) {
+                        const botaoAnterior = document.createElement("button");
+                        botaoAnterior.textContent = "«";
+                        botaoAnterior.onclick = () => carregarPacientes(paginaAtual - 1);
+                        paginacao.appendChild(botaoAnterior);
+                    }
+
+                    // Botões de página numerados
+                    for (let i = startPage; i <= endPage; i++) {
+                        const botao = document.createElement("button");
+                        botao.textContent = i;
+                        botao.classList.toggle("active", i === paginaAtual);
+                        botao.disabled = (i === paginaAtual);
+                        botao.onclick = () => carregarPacientes(i);
+                        paginacao.appendChild(botao);
+                    }
+
+                    // Botão próxima página
+                    if (paginaAtual < totalPaginas) {
+                        const botaoProximo = document.createElement("button");
+                        botaoProximo.textContent = "»";
+                        botaoProximo.onclick = () => carregarPacientes(paginaAtual + 1);
+                        paginacao.appendChild(botaoProximo);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar pacientes:', error);
+                });
+        }
+
+
+
         setInterval(updateClock, 1000);
         updateClock();
+        carregarPacientes();
+
+        function filtrarPacientes() {
+            const valorFiltro = document.getElementById("filtro").value;
+            carregarPacientes(1, valorFiltro);
+        }
 
         let nome;
         if (localStorage.getItem("nome_login")) {

@@ -16,6 +16,9 @@ $roteador->get("/paciente/cpf/([^\/]+)", function ($valor) {
     require_once("controle/paciente/pacienteReadID.php");
 });
 
+$roteador->get("/paciente/(\d+)/diagnostico", function ($pag) {
+    require_once("controle/paciente/pacienteReadDiagnostico.php");
+});
 
 $roteador->post("/paciente", function () {
 

@@ -174,11 +174,81 @@ class Paciente
 
 
 
+    public function readDiagnosticos($pagina)
+    {
+        $itensPorPagina = 10;
+        $offset = ($pagina - 1) * $itensPorPagina;
+
+        $meuBanco = new Banco();
+        $conexao = $meuBanco->getConexao();
+
+        if ($conexao->connect_error) {
+            die("Falha na conexão: " . $conexao->connect_error);
+        }
+
+        $SQL = "
+                SELECT p.*
+                FROM paciente p
+                WHERE NOT EXISTS (
+                    SELECT *
+                    FROM ia_results ia
+                    WHERE ia.id_paciente = p.id
+                ) ORDER BY nome ASC LIMIT ? OFFSET ?;
+            ";
+        $stm = $conexao->prepare($SQL);
+        if ($stm) {
+            $stm->bind_param("ii", $itensPorPagina, $offset);
+        }
+
+        if ($stm->execute()) {
+            $resultado = $stm->get_result();
+            $stm->close();
+
+            if ($resultado->num_rows === 0) {
+                return null;
+            }
+
+            $vetorPaciente = [];
+
+            while ($tupla = $resultado->fetch_object()) {
+                $vetorPaciente[] = [
+                    "cpf" => $tupla->cpf,
+                    "nome" => $tupla->nome,
+                    "sexo" => $tupla->sexo,
+                    "endereco" => $tupla->endereco,
+                    "telefone" => $tupla->telefone,
+                    "email" => $tupla->email,
+                    "profissao" => $tupla->profissao,
+                    "estado_civil" => $tupla->estado_civil,
+                    "nome_cuidador" => $tupla->nome_cuidador,
+                    "telefone_cuidador" => $tupla->telefone_cuidador
+                ];
+            }
+
+            // Consulta para o total de registros
+            $totalSQL = "SELECT COUNT(*) as total FROM paciente";
+            $totalResult = $conexao->query($totalSQL);
+            $totalRow = $totalResult->fetch_assoc();
+            $total = $totalRow['total'];
+
+            return [
+                "status" => true,
+                "msg" => "Dados encontrados",
+                "pacientes" => $vetorPaciente,
+                "total" => (int) $total
+            ];
+        } else {
+            error_log("Erro na execução da consulta: " . $stm->error);
+            return false;
+        }
+    }
+
+
     // ler por CPF
     public function readCPF()
     {
         $meuBanco = new Banco();
-        $conexao = $meuBanco->getConexao(); 
+        $conexao = $meuBanco->getConexao();
 
         if ($conexao->connect_error) {
             die("Falha na conexão: " . $conexao->connect_error);
@@ -186,7 +256,7 @@ class Paciente
 
         $stm = $conexao->prepare("SELECT * FROM paciente WHERE cpf LIKE ?");
 
-        $busca = "%".$this->cpf."%";
+        $busca = "%" . $this->cpf . "%";
         $stm->bind_param("s", $busca);
 
         if ($stm->execute()) {
