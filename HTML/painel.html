@@ -39,6 +39,7 @@
                     <th>CPF</th>
                     <th>Email</th>
                     <th>❌ Pacientes sem Diagnóstico❌</th>
+                    <th>Ir para diagnóstico</th>
                 </tr>
             </thead>
             <tbody>
@@ -117,6 +118,7 @@
                         <td class="texto-tabela" data-label="CPF">${paciente.cpf}</td>
                         <td class="texto-tabela" data-label="Email">${paciente.email}</td>
                         <td clas= "texto-tabela" data-label="Sem Diagnóstico">❌Sem Diagnóstico❌</td>
+                        <td class="texto-tabela" data-label="Ir para diagnóstico"><button class="btn-diagnostico" onclick='irparadiagnostico("${paciente.cpf}")'>Ir para diagnóstico</button></td>
                         `;
 
                         tabelaBody.appendChild(row);
@@ -168,6 +170,11 @@
         setInterval(updateClock, 1000);
         updateClock();
         carregarPacientes();
+
+        function irparadiagnostico(cpf) {
+            localStorage.setItem("cpf_paciente", cpf);
+            window.location.href = "diagnostico.html";
+        }
 
         function filtrarPacientes() {
             const valorFiltro = document.getElementById("filtro").value;
