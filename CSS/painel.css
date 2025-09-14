@@ -1,0 +1,162 @@
+/* ================================
+   VARIÁVEIS DE CORES
+   ================================ */
+:root {
+  /* Fundo geral */
+  --color-bg-body: #F8FAFC;
+  --color-text-body: #075985;
+
+  /* Sidebar */
+  --color-sidebar-bg: #0C4A6E;
+  --color-sidebar-border: #0C4A6E;
+  --color-sidebar-title: #FFFFFF;
+  --color-sidebar-link: #38BDF8;
+  --color-sidebar-link-hover-bg: #0A3B58;
+  --color-sidebar-link-hover-text: #38BDF8;
+
+  /* Main */
+  --color-main-bg: #F8FAFC;
+  --color-main-title: #075985;
+  --color-main-text: #0EA5E9;
+
+  /* Relógio */
+  --color-clock: #075985;
+
+  /* Logout */
+  --color-logout-bg: #DC2626;
+  --color-logout-hover: #B91C1C;
+  --color-logout-text: #FFFFFF;
+}
+
+
+/* ================================
+   RESET
+   ================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================================
+   BODY
+   ================================ */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: var(--color-bg-body);
+    color: var(--color-text-body);
+}
+
+/* ================================
+   BARRA LATERAL
+   ================================ */
+.sidebar {
+    width: 250px;
+    background-color: var(--color-sidebar-bg);
+    border-right: 1px solid var(--color-sidebar-border);
+    padding: 30px 0;
+    position: fixed;
+    height: 100%;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar h2 {
+    color: var(--color-sidebar-title);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0 20px;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: var(--color-sidebar-link);
+    text-decoration: none;
+    display: block;
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: var(--color-sidebar-link-hover-bg);
+    color: var(--color-sidebar-link-hover-text);
+    font-weight: 500;
+}
+
+/* ================================
+   CONTEÚDO PRINCIPAL
+   ================================ */
+.main-content {
+    margin-left: 250px;
+    padding: 40px 60px;
+    flex-grow: 1;
+    background-color: var(--color-main-bg);
+}
+
+.main-content h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: var(--color-main-title);
+}
+
+.main-content p {
+    font-size: 18px;
+    color: var(--color-main-text);
+    margin-bottom: 30px;
+}
+
+.clock {
+    font-size: 16px;
+    color: var(--color-clock);
+    margin-top: 20px;
+}
+
+/* ================================
+   BOTÃO LOGOUT
+   ================================ */
+.logout-button {
+    background-color: var(--color-logout-bg);
+    color: var(--color-logout-text);
+    border: none;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    float: right;
+    margin-top: -50px;
+}
+
+.logout-button:hover {
+    background-color: var(--color-logout-hover);
+}
+
+/* ================================
+   RESPONSIVIDADE
+   ================================ */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        box-shadow: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 30px 20px;
+    }
+}

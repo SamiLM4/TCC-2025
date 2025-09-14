@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diagnóstico IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: #1f2937;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar button {
+            background-color: #374151;
+            border: none;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        .sidebar button:hover {
+            background-color: #4b5563;
+        }
+
+        .main {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .main h2 {
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+
+        .card {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .card p {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .card strong {
+            color: #111827;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 15px;
+        }
+
+        button.submit {
+            background-color: #10b981;
+            color: #fff;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button.submit:hover {
+            background-color: #059669;
+        }
+
+        button.delete {
+            background-color: #ef4444;
+            color: #fff;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button.delete:hover {
+            background-color: #dc2626;
+        }
+
+        img {
+            margin-top: 20px;
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 10px;
+            }
+
+            .main {
+                padding: 20px;
+            }
+        }
+
+        button:disabled {
+            background-color: #9ca3af !important;
+            /* cinza mais claro */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(31, 41, 55, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background-color: #111827;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <button id="voltarBtn">← Voltar</button>
+    </div>
+    <div class="main">
+        <h2>Diagnóstico por Inteligência Artificial</h2>
+
+        <div class="card" id="diagnosticoInfo">Carregando diagnóstico...</div>
+
+        <img id="imagemDiagnostico" alt="Imagem do diagnóstico" style="display:none;" />
+
+        <div class="card">
+            <h3>Enviar Nova Imagem</h3>
+            <form id="formUpload">
+                <input type="file" id="fileInput" name="imagem" accept="image/*" required /><br />
+                <button type="submit" id="uploadBtn" class="submit">Enviar Imagem</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Excluir Diagnóstico</h3>
+            <button id="btnDeletar" class="delete">Excluir Diagnóstico</button>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const cpf = urlParams.get('cpf');
+        const token = localStorage.getItem('token');
+
+        const headers = {
+            'Authorization': `Bearer ${token}`
+        };
+
+        const diagnosticoInfo = document.getElementById('diagnosticoInfo');
+        const imagemDiagnostico = document.getElementById('imagemDiagnostico');
+
+        document.getElementById('voltarBtn').onclick = () => {
+            window.location.href = `fichaPaciente.html?cpf=${cpf}`;
+        };
+        let diagnosticoExiste = false;
+        function carregarDiagnostico() {
+            // Buscar dados do diagnóstico
+            fetch(`http://localhost:8080/ia/${cpf}`, { headers })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        const dados = data.dados;
+                        diagnosticoExiste = true;
+                        diagnosticoInfo.innerHTML = `
+        <p><strong>CPF:</strong> ${dados.cpf}</p>
+        <p><strong>Nome:</strong> ${dados.nome}</p>
+        <p><strong>Diagnóstico:</strong> ${dados.diagnostico}</p>
+        <p><strong>Data:</strong> ${dados['data do diagnostico']}</p>
+      `;
+
+                        // Desativa o botão se diagnóstico existir e não tiver arquivo selecionado
+                        uploadBtn.disabled = true;
+                    } else {
+                        diagnosticoInfo.textContent = 'Diagnóstico não encontrado.';
+                    }
+                });
+
+        }
+
+        function carregarimagem() {
+            fetch(`http://localhost:8080/ia/img/${cpf}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Erro ao buscar a imagem");
+                    return response.blob();
+                })
+                .then(blob => {
+                    const urlImagem = URL.createObjectURL(blob);
+                    imagemDiagnostico.src = urlImagem;
+                    imagemDiagnostico.style.display = 'block'; // <- Mostra a imagem
+                })
+                .catch(error => {
+                    console.error("Erro ao carregar a imagem:", error);
+                });
+        }
+
+
+
+        // Upload de imagem
+        document.getElementById('formUpload').onsubmit = async function (e) {
+            e.preventDefault();
+            const formData = new FormData();
+            const fileInput = e.target.elements['imagem'];
+            formData.append('imagem', fileInput.files[0]);
+            formData.append('cpf', cpf);
+
+            document.getElementById("loadingScreen").style.display = "flex";
+
+            const response = await fetch(`http://localhost:8080/ia`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            document.getElementById("loadingScreen").style.display = "none";
+
+            const result = await response.json();
+            if (response.status === 200) window.location.reload()
+           
+        };
+
+
+        // Deletar diagnóstico
+        document.getElementById('btnDeletar').onclick = async () => {
+            if (!confirm("Tem certeza que deseja excluir este diagnóstico?")) return;
+
+            const res = await fetch(`http://localhost:8080/ia/${cpf}`, {
+                method: 'DELETE',
+                headers
+            });
+
+            const data = await res.json();
+            location.reload();
+        };
+
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        fileInput.addEventListener('change', () => {
+            if (diagnosticoExiste && fileInput.files.length === 0) {
+                uploadBtn.disabled = true;
+            } else {
+                uploadBtn.disabled = false;
+            }
+        });
+
+        window.onload = function () {
+            carregarDiagnostico();
+            carregarimagem();
+        };
+    </script>
+    <div id="loadingScreen" style="display: none;">
+        <div class="overlay">
+            <div class="loader">Enviando imagem...</div>
+        </div>
+    </div>
+</body>
+
+</html>

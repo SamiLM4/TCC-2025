@@ -1,0 +1,524 @@
+create database tests_tcc;
+use tests_tcc;
+
+	create table adm (
+		id int primary key auto_increment,
+		nome varchar(150) not null,
+		email varchar(150) not null,
+		senha varchar(150) not null
+	);
+
+	-- Inserindo ADM
+	INSERT INTO adm (nome, email, senha) 
+	VALUES ('adm1', 'adm1@gmail.com', md5('adm01'));
+
+	select * from adm;
+
+	CREATE TABLE medico (
+		id int PRIMARY KEY auto_increment, 
+		cpf VARCHAR(11) not null,
+		crm VARCHAR(11) not null,
+		email VARCHAR(100) not null,
+		senha VARCHAR(50) not null,
+		nome VARCHAR(100) NOT NULL
+	);
+
+	CREATE TABLE paciente (
+		id INT PRIMARY KEY auto_increment,
+		cpf varchar(11) not null,
+		nome varchar(100) not null,
+		sexo varchar(1),
+		endereco text,
+		telefone varchar(50) not null,
+		email varchar(255) not null,
+		profissao varchar(255),
+		estado_civil varchar(50),
+		nome_cuidador varchar(100),
+		telefone_cuidador varchar(50)    
+	);
+		
+	CREATE TABLE diagnostico (
+		id_table int primary key auto_increment,
+		id_paciente int,
+		data_diagnostico date,
+		tipo_em varchar(5),
+		surtos text,
+		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
+	);    
+
+	create table sintomas (
+		id_table int primary key auto_increment,
+		id_paciente int,
+		sintomas_iniciais text,
+		sintomas_atuais text,
+		fadiga bool,
+		problema_visao varchar(100),
+		problema_equilibrio bool,
+		problema_coordenacao bool,
+		espaticidade bool,
+		fraqueza_muscular bool,
+		problema_sensibilidade varchar(100),
+		problema_bexiga bool,
+		problema_intestino bool,
+		problema_cognitivo varchar(255),
+		problema_emocional VARCHAR(255),
+		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
+	);
+
+	create table historico_medico (
+		id_table int primary key auto_increment,
+		id_paciente int,
+		medicamento_em_uso text,
+		tratamentos_anteriores_em text,
+		alergias text,
+		historico_outras_doencas text,
+		historico_familiar text,
+		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
+	);
+			
+	create table historico_social (
+		id_table int primary key auto_increment,
+		id_paciente int,
+		tabagismo varchar(50),
+		alcool varchar(100),
+		atividade_fisica text,
+		suporte_social text,
+		impacto_profissional_social text,
+		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
+	);  
+
+	create table qualidade_vida_em (
+		id_table int primary key auto_increment,
+		id_paciente int,
+		edss float, 
+		questionario_msqol54 text,
+		outras_avaliacoes text,
+		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
+	);
+	  
+	create table exame_fisico (
+		id_table int primary key auto_increment,
+		id_paciente int,
+		exame_neurologico text,
+		forca_muscular text, 
+		reflexos text,
+		coordenacao text, 
+		sensibilidade text,
+		equilibrio text,
+		funcao_visual text,
+		outros_exames_fisicos text,
+		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
+	);
+
+	create table exames_complementares (
+		id_table int primary key auto_increment,
+		id_paciente int,
+		rm_cerebro_medula text,
+		potenciais_evocados_visuais text,
+		potenciais_evocados_somatossensoriais text,
+		potenciais_evocados_auditivos_de_tronco_encefálico text,
+		análise_do_líquido_cefalorraquidiano text,
+		outros_exames text,
+		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
+	);
+	  
+	create table plano_tratamento (
+		id_table int primary key auto_increment,
+		id_paciente int,
+		medicamentos_modificadores__doença text,
+		tratamnto_surtos text,
+		tratamento_sintomas text, 
+		reabilitacao text,
+		acompanhamento_psicologico text,
+		outras_terapias text,
+		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
+	);  
+	  
+	  create table ia_results (
+		id_table int primary key auto_increment,
+		id_paciente int,
+		nome varchar(150),
+		cpf varchar(20),
+		imagem longtext, 
+		diagnostico text,
+		data_diagnostico date,
+
+		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
+	);  
+	  
+	CREATE TABLE relacao_medico_paciente (
+    id_table INT PRIMARY KEY AUTO_INCREMENT,
+    id_medico INT NULL,
+    id_paciente INT NOT NULL,
+    UNIQUE (id_medico, id_paciente),
+    FOREIGN KEY (id_medico) REFERENCES medico(id) ON DELETE SET NULL,
+    FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE
+);
+	  
+#	CREATE TABLE relacao_medico_paciente (
+#		id_table int primary key auto_increment,
+#		id_medico INT,
+#		id_paciente INT,
+#	#    PRIMARY KEY (id_medico, id_paciente),
+#		FOREIGN KEY (id_medico) REFERENCES medico(id) ON DELETE CASCADE,
+#		FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE 
+#	);
+
+# INSERT #
+
+-- INSERTS ADM -- 
+
+INSERT INTO adm (nome, email, senha) VALUES ('adm2', 'adm2@gmail.com', md5('adm02'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm3', 'adm3@gmail.com', md5('adm03'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm4', 'adm4@gmail.com', md5('adm04'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm5', 'adm5@gmail.com', md5('adm05'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm6', 'adm6@gmail.com', md5('adm06'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm7', 'adm7@gmail.com', md5('adm07'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm8', 'adm8@gmail.com', md5('adm08'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm9', 'adm9@gmail.com', md5('adm09'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm10', 'adm10@gmail.com', md5('adm10'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm11', 'adm11@gmail.com', md5('adm11'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm12', 'adm12@gmail.com', md5('adm12'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm13', 'adm13@gmail.com', md5('adm13'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm14', 'adm14@gmail.com', md5('adm14'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm15', 'adm15@gmail.com', md5('adm15'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm16', 'adm16@gmail.com', md5('adm16'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm17', 'adm17@gmail.com', md5('adm17'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm18', 'adm18@gmail.com', md5('adm18'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm19', 'adm19@gmail.com', md5('adm19'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm20', 'adm20@gmail.com', md5('adm20'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm21', 'adm21@gmail.com', md5('adm21'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm22', 'adm22@gmail.com', md5('adm22'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm23', 'adm23@gmail.com', md5('adm23'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm24', 'adm24@gmail.com', md5('adm24'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm25', 'adm25@gmail.com', md5('adm25'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm26', 'adm26@gmail.com', md5('adm26'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm27', 'adm27@gmail.com', md5('adm27'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm28', 'adm28@gmail.com', md5('adm28'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm29', 'adm29@gmail.com', md5('adm29'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm30', 'adm30@gmail.com', md5('adm30'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm31', 'adm31@gmail.com', md5('adm31'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm32', 'adm32@gmail.com', md5('adm32'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm33', 'adm33@gmail.com', md5('adm33'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm34', 'adm34@gmail.com', md5('adm34'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm35', 'adm35@gmail.com', md5('adm35'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm36', 'adm36@gmail.com', md5('adm36'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm37', 'adm37@gmail.com', md5('adm37'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm38', 'adm38@gmail.com', md5('adm38'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm39', 'adm39@gmail.com', md5('adm39'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm40', 'adm40@gmail.com', md5('adm40'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm41', 'adm41@gmail.com', md5('adm41'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm42', 'adm42@gmail.com', md5('adm42'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm43', 'adm43@gmail.com', md5('adm43'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm44', 'adm44@gmail.com', md5('adm44'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm45', 'adm45@gmail.com', md5('adm45'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm46', 'adm46@gmail.com', md5('adm46'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm47', 'adm47@gmail.com', md5('adm47'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm48', 'adm48@gmail.com', md5('adm48'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm49', 'adm49@gmail.com', md5('adm49'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm50', 'adm50@gmail.com', md5('adm50'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm51', 'adm51@gmail.com', md5('adm51'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm52', 'adm52@gmail.com', md5('adm52'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm53', 'adm53@gmail.com', md5('adm53'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm54', 'adm54@gmail.com', md5('adm54'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm55', 'adm55@gmail.com', md5('adm55'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm56', 'adm56@gmail.com', md5('adm56'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm57', 'adm57@gmail.com', md5('adm57'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm58', 'adm58@gmail.com', md5('adm58'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm59', 'adm59@gmail.com', md5('adm59'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm60', 'adm60@gmail.com', md5('adm60'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm61', 'adm61@gmail.com', md5('adm61'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm62', 'adm62@gmail.com', md5('adm62'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm63', 'adm63@gmail.com', md5('adm63'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm64', 'adm64@gmail.com', md5('adm64'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm65', 'adm65@gmail.com', md5('adm65'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm66', 'adm66@gmail.com', md5('adm66'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm67', 'adm67@gmail.com', md5('adm67'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm68', 'adm68@gmail.com', md5('adm68'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm69', 'adm69@gmail.com', md5('adm69'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm70', 'adm70@gmail.com', md5('adm70'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm71', 'adm71@gmail.com', md5('adm71'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm72', 'adm72@gmail.com', md5('adm72'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm73', 'adm73@gmail.com', md5('adm73'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm74', 'adm74@gmail.com', md5('adm74'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm75', 'adm75@gmail.com', md5('adm75'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm76', 'adm76@gmail.com', md5('adm76'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm77', 'adm77@gmail.com', md5('adm77'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm78', 'adm78@gmail.com', md5('adm78'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm79', 'adm79@gmail.com', md5('adm79'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm80', 'adm80@gmail.com', md5('adm80'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm81', 'adm81@gmail.com', md5('adm81'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm82', 'adm82@gmail.com', md5('adm82'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm83', 'adm83@gmail.com', md5('adm83'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm84', 'adm84@gmail.com', md5('adm84'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm85', 'adm85@gmail.com', md5('adm85'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm86', 'adm86@gmail.com', md5('adm86'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm87', 'adm87@gmail.com', md5('adm87'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm88', 'adm88@gmail.com', md5('adm88'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm89', 'adm89@gmail.com', md5('adm89'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm90', 'adm90@gmail.com', md5('adm90'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm91', 'adm91@gmail.com', md5('adm91'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm92', 'adm92@gmail.com', md5('adm92'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm93', 'adm93@gmail.com', md5('adm93'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm94', 'adm94@gmail.com', md5('adm94'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm95', 'adm95@gmail.com', md5('adm95'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm96', 'adm96@gmail.com', md5('adm96'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm97', 'adm97@gmail.com', md5('adm97'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm98', 'adm98@gmail.com', md5('adm98'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm99', 'adm99@gmail.com', md5('adm99'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm100', 'adm100@gmail.com', md5('adm100'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm101', 'adm101@gmail.com', md5('adm101'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm102', 'adm102@gmail.com', md5('adm102'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm103', 'adm103@gmail.com', md5('adm103'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm104', 'adm104@gmail.com', md5('adm104'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm105', 'adm105@gmail.com', md5('adm105'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm106', 'adm106@gmail.com', md5('adm106'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm107', 'adm107@gmail.com', md5('adm107'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm108', 'adm108@gmail.com', md5('adm108'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm109', 'adm109@gmail.com', md5('adm109'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm110', 'adm110@gmail.com', md5('adm110'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm111', 'adm111@gmail.com', md5('adm111'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm112', 'adm112@gmail.com', md5('adm112'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm113', 'adm113@gmail.com', md5('adm113'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm114', 'adm114@gmail.com', md5('adm114'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm115', 'adm115@gmail.com', md5('adm115'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm116', 'adm116@gmail.com', md5('adm116'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm117', 'adm117@gmail.com', md5('adm117'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm118', 'adm118@gmail.com', md5('adm118'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm119', 'adm119@gmail.com', md5('adm119'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm120', 'adm120@gmail.com', md5('adm120'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm121', 'adm121@gmail.com', md5('adm121'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm122', 'adm122@gmail.com', md5('adm122'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm123', 'adm123@gmail.com', md5('adm123'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm124', 'adm124@gmail.com', md5('adm124'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm125', 'adm125@gmail.com', md5('adm125'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm126', 'adm126@gmail.com', md5('adm126'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm127', 'adm127@gmail.com', md5('adm127'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm128', 'adm128@gmail.com', md5('adm128'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm129', 'adm129@gmail.com', md5('adm129'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm130', 'adm130@gmail.com', md5('adm130'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm131', 'adm131@gmail.com', md5('adm131'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm132', 'adm132@gmail.com', md5('adm132'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm133', 'adm133@gmail.com', md5('adm133'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm134', 'adm134@gmail.com', md5('adm134'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm135', 'adm135@gmail.com', md5('adm135'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm136', 'adm136@gmail.com', md5('adm136'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm137', 'adm137@gmail.com', md5('adm137'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm138', 'adm138@gmail.com', md5('adm138'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm139', 'adm139@gmail.com', md5('adm139'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm140', 'adm140@gmail.com', md5('adm140'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm141', 'adm141@gmail.com', md5('adm141'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm142', 'adm142@gmail.com', md5('adm142'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm143', 'adm143@gmail.com', md5('adm143'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm144', 'adm144@gmail.com', md5('adm144'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm145', 'adm145@gmail.com', md5('adm145'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm146', 'adm146@gmail.com', md5('adm146'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm147', 'adm147@gmail.com', md5('adm147'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm148', 'adm148@gmail.com', md5('adm148'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm149', 'adm149@gmail.com', md5('adm149'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm150', 'adm150@gmail.com', md5('adm150'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm151', 'adm151@gmail.com', md5('adm151'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm152', 'adm152@gmail.com', md5('adm152'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm153', 'adm153@gmail.com', md5('adm153'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm154', 'adm154@gmail.com', md5('adm154'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm155', 'adm155@gmail.com', md5('adm155'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm156', 'adm156@gmail.com', md5('adm156'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm157', 'adm157@gmail.com', md5('adm157'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm158', 'adm158@gmail.com', md5('adm158'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm159', 'adm159@gmail.com', md5('adm159'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm160', 'adm160@gmail.com', md5('adm160'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm161', 'adm161@gmail.com', md5('adm161'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm162', 'adm162@gmail.com', md5('adm162'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm163', 'adm163@gmail.com', md5('adm163'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm164', 'adm164@gmail.com', md5('adm164'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm165', 'adm165@gmail.com', md5('adm165'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm166', 'adm166@gmail.com', md5('adm166'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm167', 'adm167@gmail.com', md5('adm167'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm168', 'adm168@gmail.com', md5('adm168'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm169', 'adm169@gmail.com', md5('adm169'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm170', 'adm170@gmail.com', md5('adm170'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm171', 'adm171@gmail.com', md5('adm171'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm172', 'adm172@gmail.com', md5('adm172'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm173', 'adm173@gmail.com', md5('adm173'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm174', 'adm174@gmail.com', md5('adm174'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm175', 'adm175@gmail.com', md5('adm175'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm176', 'adm176@gmail.com', md5('adm176'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm177', 'adm177@gmail.com', md5('adm177'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm178', 'adm178@gmail.com', md5('adm178'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm179', 'adm179@gmail.com', md5('adm179'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm180', 'adm180@gmail.com', md5('adm180'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm181', 'adm181@gmail.com', md5('adm181'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm182', 'adm182@gmail.com', md5('adm182'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm183', 'adm183@gmail.com', md5('adm183'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm184', 'adm184@gmail.com', md5('adm184'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm185', 'adm185@gmail.com', md5('adm185'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm186', 'adm186@gmail.com', md5('adm186'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm187', 'adm187@gmail.com', md5('adm187'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm188', 'adm188@gmail.com', md5('adm188'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm189', 'adm189@gmail.com', md5('adm189'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm190', 'adm190@gmail.com', md5('adm190'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm191', 'adm191@gmail.com', md5('adm191'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm192', 'adm192@gmail.com', md5('adm192'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm193', 'adm193@gmail.com', md5('adm193'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm194', 'adm194@gmail.com', md5('adm194'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm195', 'adm195@gmail.com', md5('adm195'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm196', 'adm196@gmail.com', md5('adm196'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm197', 'adm197@gmail.com', md5('adm197'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm198', 'adm198@gmail.com', md5('adm198'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm199', 'adm199@gmail.com', md5('adm199'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm200', 'adm200@gmail.com', md5('adm200'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm201', 'adm201@gmail.com', md5('adm201'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm202', 'adm202@gmail.com', md5('adm202'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm203', 'adm203@gmail.com', md5('adm203'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm204', 'adm204@gmail.com', md5('adm204'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm205', 'adm205@gmail.com', md5('adm205'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm206', 'adm206@gmail.com', md5('adm206'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm207', 'adm207@gmail.com', md5('adm207'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm208', 'adm208@gmail.com', md5('adm208'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm209', 'adm209@gmail.com', md5('adm209'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm210', 'adm210@gmail.com', md5('adm210'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm211', 'adm211@gmail.com', md5('adm211'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm212', 'adm212@gmail.com', md5('adm212'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm213', 'adm213@gmail.com', md5('adm213'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm214', 'adm214@gmail.com', md5('adm214'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm215', 'adm215@gmail.com', md5('adm215'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm216', 'adm216@gmail.com', md5('adm216'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm217', 'adm217@gmail.com', md5('adm217'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm218', 'adm218@gmail.com', md5('adm218'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm219', 'adm219@gmail.com', md5('adm219'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm220', 'adm220@gmail.com', md5('adm220'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm221', 'adm221@gmail.com', md5('adm221'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm222', 'adm222@gmail.com', md5('adm222'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm223', 'adm223@gmail.com', md5('adm223'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm224', 'adm224@gmail.com', md5('adm224'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm225', 'adm225@gmail.com', md5('adm225'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm226', 'adm226@gmail.com', md5('adm226'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm227', 'adm227@gmail.com', md5('adm227'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm228', 'adm228@gmail.com', md5('adm228'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm229', 'adm229@gmail.com', md5('adm229'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm230', 'adm230@gmail.com', md5('adm230'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm231', 'adm231@gmail.com', md5('adm231'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm232', 'adm232@gmail.com', md5('adm232'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm233', 'adm233@gmail.com', md5('adm233'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm234', 'adm234@gmail.com', md5('adm234'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm235', 'adm235@gmail.com', md5('adm235'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm236', 'adm236@gmail.com', md5('adm236'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm237', 'adm237@gmail.com', md5('adm237'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm238', 'adm238@gmail.com', md5('adm238'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm239', 'adm239@gmail.com', md5('adm239'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm240', 'adm240@gmail.com', md5('adm240'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm241', 'adm241@gmail.com', md5('adm241'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm242', 'adm242@gmail.com', md5('adm242'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm243', 'adm243@gmail.com', md5('adm243'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm244', 'adm244@gmail.com', md5('adm244'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm245', 'adm245@gmail.com', md5('adm245'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm246', 'adm246@gmail.com', md5('adm246'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm247', 'adm247@gmail.com', md5('adm247'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm248', 'adm248@gmail.com', md5('adm248'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm249', 'adm249@gmail.com', md5('adm249'));
+INSERT INTO adm (nome, email, senha) VALUES ('adm250', 'adm250@gmail.com', md5('adm250'));
+
+-- INSERT MÉDICOS --
+
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678901', 'CRM1001', 'med1@gmail.com', md5('senha01'), 'Médico 1');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678902', 'CRM1002', 'med2@gmail.com', md5('senha02'), 'Médico 2');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678903', 'CRM1003', 'med3@gmail.com', md5('senha03'), 'Médico 3');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678904', 'CRM1004', 'med4@gmail.com', md5('senha04'), 'Médico 4');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678905', 'CRM1005', 'med5@gmail.com', md5('senha05'), 'Médico 5');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678906', 'CRM1006', 'med6@gmail.com', md5('senha06'), 'Médico 6');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678907', 'CRM1007', 'med7@gmail.com', md5('senha07'), 'Médico 7');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678908', 'CRM1008', 'med8@gmail.com', md5('senha08'), 'Médico 8');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678909', 'CRM1009', 'med9@gmail.com', md5('senha09'), 'Médico 9');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678910', 'CRM1010', 'med10@gmail.com', md5('senha10'), 'Médico 10');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678911', 'CRM1011', 'med11@gmail.com', md5('senha11'), 'Médico 11');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678912', 'CRM1012', 'med12@gmail.com', md5('senha12'), 'Médico 12');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678913', 'CRM1013', 'med13@gmail.com', md5('senha13'), 'Médico 13');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678914', 'CRM1014', 'med14@gmail.com', md5('senha14'), 'Médico 14');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678915', 'CRM1015', 'med15@gmail.com', md5('senha15'), 'Médico 15');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678916', 'CRM1016', 'med16@gmail.com', md5('senha16'), 'Médico 16');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678917', 'CRM1017', 'med17@gmail.com', md5('senha17'), 'Médico 17');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678918', 'CRM1018', 'med18@gmail.com', md5('senha18'), 'Médico 18');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678919', 'CRM1019', 'med19@gmail.com', md5('senha19'), 'Médico 19');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678920', 'CRM1020', 'med20@gmail.com', md5('senha20'), 'Médico 20');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678921', 'CRM1021', 'med21@gmail.com', md5('senha21'), 'Médico 21');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678922', 'CRM1022', 'med22@gmail.com', md5('senha22'), 'Médico 22');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678923', 'CRM1023', 'med23@gmail.com', md5('senha23'), 'Médico 23');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678924', 'CRM1024', 'med24@gmail.com', md5('senha24'), 'Médico 24');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678925', 'CRM1025', 'med25@gmail.com', md5('senha25'), 'Médico 25');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678926', 'CRM1026', 'med26@gmail.com', md5('senha26'), 'Médico 26');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678927', 'CRM1027', 'med27@gmail.com', md5('senha27'), 'Médico 27');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678928', 'CRM1028', 'med28@gmail.com', md5('senha28'), 'Médico 28');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678929', 'CRM1029', 'med29@gmail.com', md5('senha29'), 'Médico 29');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678930', 'CRM1030', 'med30@gmail.com', md5('senha30'), 'Médico 30');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678931', 'CRM1031', 'med31@gmail.com', md5('senha31'), 'Médico 31');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678932', 'CRM1032', 'med32@gmail.com', md5('senha32'), 'Médico 32');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678933', 'CRM1033', 'med33@gmail.com', md5('senha33'), 'Médico 33');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678934', 'CRM1034', 'med34@gmail.com', md5('senha34'), 'Médico 34');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678935', 'CRM1035', 'med35@gmail.com', md5('senha35'), 'Médico 35');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678936', 'CRM1036', 'med36@gmail.com', md5('senha36'), 'Médico 36');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678937', 'CRM1037', 'med37@gmail.com', md5('senha37'), 'Médico 37');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678938', 'CRM1038', 'med38@gmail.com', md5('senha38'), 'Médico 38');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678939', 'CRM1039', 'med39@gmail.com', md5('senha39'), 'Médico 39');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678940', 'CRM1040', 'med40@gmail.com', md5('senha40'), 'Médico 40');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678941', 'CRM1041', 'med41@gmail.com', md5('senha41'), 'Médico 41');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678942', 'CRM1042', 'med42@gmail.com', md5('senha42'), 'Médico 42');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678943', 'CRM1043', 'med43@gmail.com', md5('senha43'), 'Médico 43');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678944', 'CRM1044', 'med44@gmail.com', md5('senha44'), 'Médico 44');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678945', 'CRM1045', 'med45@gmail.com', md5('senha45'), 'Médico 45');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678946', 'CRM1046', 'med46@gmail.com', md5('senha46'), 'Médico 46');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678947', 'CRM1047', 'med47@gmail.com', md5('senha47'), 'Médico 47');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678948', 'CRM1048', 'med48@gmail.com', md5('senha48'), 'Médico 48');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678949', 'CRM1049', 'med49@gmail.com', md5('senha49'), 'Médico 49');
+INSERT INTO medico (cpf, crm, email, senha, nome) VALUES ('12345678950', 'CRM1050', 'med50@gmail.com', md5('senha50'), 'Médico 50');
+
+-- INSERTS PACIENTES -- 
+
+INSERT INTO paciente (cpf, nome, sexo, endereco, telefone, email, profissao, estado_civil, nome_cuidador, telefone_cuidador) VALUES
+('12345678901', 'João da Silva', 'M', 'Rua A, 123', '11999999901', 'joao.silva@example.com', 'Engenheiro', 'Solteiro', 'Carlos Silva', '11999999902'),
+('23456789012', 'Maria Oliveira', 'F', 'Rua B, 456', '11999999903', 'maria.oliveira@example.com', 'Professora', 'Casada', 'Ana Oliveira', '11999999904'),
+('34567890123', 'Pedro Santos', 'M', 'Rua C, 789', '11999999905', 'pedro.santos@example.com', 'Médico', 'Solteiro', 'Lucas Santos', '11999999906'),
+('45678901234', 'Ana Souza', 'F', 'Av. Central, 101', '11999999907', 'ana.souza@example.com', 'Arquiteta', 'Divorciada', 'Bruna Souza', '11999999908'),
+('56789012345', 'Carlos Lima', 'M', 'Rua das Flores, 202', '11999999909', 'carlos.lima@example.com', 'Advogado', 'Casado', 'Paulo Lima', '11999999910'),
+('67890123456', 'Fernanda Costa', 'F', 'Rua Azul, 303', '11999999911', 'fernanda.costa@example.com', 'Enfermeira', 'Solteira', 'Juliana Costa', '11999999912'),
+('78901234567', 'Bruno Rocha', 'M', 'Av. Brasil, 404', '11999999913', 'bruno.rocha@example.com', 'Dentista', 'Casado', 'Rodrigo Rocha', '11999999914'),
+('89012345678', 'Luciana Martins', 'F', 'Rua Verde, 505', '11999999915', 'luciana.martins@example.com', 'Designer', 'Viúva', 'Camila Martins', '11999999916'),
+('90123456789', 'Eduardo Almeida', 'M', 'Travessa P, 606', '11999999917', 'eduardo.almeida@example.com', 'Analista', 'Solteiro', 'Renato Almeida', '11999999918'),
+('01234567890', 'Juliana Reis', 'F', 'Rua das Árvores, 707', '11999999919', 'juliana.reis@example.com', 'Psicóloga', 'Casada', 'Patrícia Reis', '11999999920'),
+('12312312312', 'Felipe Duarte', 'M', 'Rua Alfa, 808', '11999999921', 'felipe.duarte@example.com', 'Programador', 'Solteiro', 'Marcelo Duarte', '11999999922'),
+('23423423423', 'Renata Lopes', 'F', 'Rua Beta, 909', '11999999923', 'renata.lopes@example.com', 'Bióloga', 'Casada', 'Sandra Lopes', '11999999924'),
+('34534534534', 'Gustavo Ribeiro', 'M', 'Av. Norte, 111', '11999999925', 'gustavo.ribeiro@example.com', 'Contador', 'Solteiro', 'Otávio Ribeiro', '11999999926'),
+('45645645645', 'Aline Fernandes', 'F', 'Rua Sul, 222', '11999999927', 'aline.fernandes@example.com', 'Jornalista', 'Divorciada', 'Bianca Fernandes', '11999999928'),
+('56756756756', 'Tiago Moreira', 'M', 'Rua Oeste, 333', '11999999929', 'tiago.moreira@example.com', 'Economista', 'Casado', 'Guilherme Moreira', '11999999930'),
+('67867867867', 'Patrícia Nunes', 'F', 'Rua Leste, 444', '11999999931', 'patricia.nunes@example.com', 'Farmacêutica', 'Solteira', 'Elaine Nunes', '11999999932'),
+('78978978978', 'Rodrigo Carvalho', 'M', 'Av. Atlântica, 555', '11999999933', 'rodrigo.carvalho@example.com', 'Veterinário', 'Casado', 'Igor Carvalho', '11999999934'),
+('89089089089', 'Carla Pinto', 'F', 'Rua das Palmeiras, 666', '11999999935', 'carla.pinto@example.com', 'Fisioterapeuta', 'Viúva', 'Renan Pinto', '11999999936'),
+('90190190190', 'Marcos Teixeira', 'M', 'Rua do Sol, 777', '11999999937', 'marcos.teixeira@example.com', 'Técnico', 'Solteiro', 'Jonas Teixeira', '11999999938'),
+('01901901901', 'Letícia Gomes', 'F', 'Rua do Mar, 888', '11999999939', 'leticia.gomes@example.com', 'Publicitária', 'Casada', 'Lucia Gomes', '11999999940'),
+('10101010101', 'Fábio Vieira', 'M', 'Rua Pérola, 999', '11999999941', 'fabio.vieira@example.com', 'Engenheiro Civil', 'Casado', 'Daniel Vieira', '11999999942'),
+('20202020202', 'Amanda Castro', 'F', 'Rua Rubi, 1010', '11999999943', 'amanda.castro@example.com', 'Nutricionista', 'Solteira', 'Cláudia Castro', '11999999944'),
+('30303030303', 'Vinícius Melo', 'M', 'Rua Safira, 1111', '11999999945', 'vinicius.melo@example.com', 'Administrador', 'Casado', 'Anderson Melo', '11999999946'),
+('40404040404', 'Daniela Peixoto', 'F', 'Rua Topázio, 1212', '11999999947', 'daniela.peixoto@example.com', 'Geóloga', 'Divorciada', 'Tânia Peixoto', '11999999948'),
+('50505050505', 'Alexandre Cunha', 'M', 'Rua Esmeralda, 1313', '11999999949', 'alexandre.cunha@example.com', 'Cientista', 'Solteiro', 'Rafael Cunha', '11999999950'),
+('60606060606', 'Bruna Tavares', 'F', 'Rua Diamante, 1414', '11999999951', 'bruna.tavares@example.com', 'Pedagoga', 'Casada', 'Fabiana Tavares', '11999999952'),
+('70707070707', 'Diego Freitas', 'M', 'Rua Jade, 1515', '11999999953', 'diego.freitas@example.com', 'Designer Gráfico', 'Solteiro', 'César Freitas', '11999999954'),
+('80808080808', 'Tatiane Lemos', 'F', 'Rua Ônix, 1616', '11999999955', 'tatiane.lemos@example.com', 'Advogada', 'Viúva', 'Denise Lemos', '11999999956'),
+('90909090909', 'Ricardo Campos', 'M', 'Rua Turmalina, 1717', '11999999957', 'ricardo.campos@example.com', 'Professor', 'Casado', 'Leandro Campos', '11999999958'),
+('11111111111', 'Sabrina Dias', 'F', 'Rua Cristal, 1818', '11999999959', 'sabrina.dias@example.com', 'Terapeuta', 'Solteira', 'Mônica Dias', '11999999960'),
+('22222222222', 'André Matos', 'M', 'Rua Quartzo, 1919', '11999999961', 'andre.matos@example.com', 'Analista de Sistemas', 'Casado', 'José Matos', '11999999962'),
+('33333333333', 'Camila Braga', 'F', 'Rua Ágata, 2020', '11999999963', 'camila.braga@example.com', 'Psicóloga', 'Divorciada', 'Isabel Braga', '11999999964'),
+('44444444444', 'Leandro Pires', 'M', 'Rua Jaspe, 2121', '11999999965', 'leandro.pires@example.com', 'Técnico de Informática', 'Solteiro', 'Luan Pires', '11999999966'),
+('55555555555', 'Viviane Rocha', 'F', 'Rua Coral, 2222', '11999999967', 'viviane.rocha@example.com', 'Enfermeira', 'Casada', 'Tatiane Rocha', '11999999968'),
+('66666666666', 'Henrique Sampaio', 'M', 'Rua Granada, 2323', '11999999969', 'henrique.sampaio@example.com', 'Zootecnista', 'Solteiro', 'Almir Sampaio', '11999999970'),
+('77777777777', 'Larissa Monteiro', 'F', 'Rua Ametista, 2424', '11999999971', 'larissa.monteiro@example.com', 'Arquiteta', 'Casada', 'Sandra Monteiro', '11999999972'),
+('88888888888', 'Rafael Batista', 'M', 'Rua Citrino, 2525', '11999999973', 'rafael.batista@example.com', 'Veterinário', 'Divorciado', 'Otávio Batista', '11999999974'),
+('99999999999', 'Isabela Azevedo', 'F', 'Rua Opala, 2626', '11999999975', 'isabela.azevedo@example.com', 'Administradora', 'Solteira', 'Lorena Azevedo', '11999999976'),
+('11223344556', 'Murilo Neves', 'M', 'Rua Rubelita, 2727', '11999999977', 'murilo.neves@example.com', 'Jornalista', 'Casado', 'Célio Neves', '11999999978'),
+('22334455667', 'Tatiana Barros', 'F', 'Rua Lazurita, 2828', '11999999979', 'tatiana.barros@example.com', 'Bancária', 'Viúva', 'Lívia Barros', '11999999980'),
+('33445566778', 'Caio Ramos', 'M', 'Rua Andaluzita, 2929', '11999999981', 'caio.ramos@example.com', 'Engenheiro Químico', 'Solteiro', 'Eduardo Ramos', '11999999982'),
+('44556677889', 'Melissa Borges', 'F', 'Rua Turquesa, 3030', '11999999983', 'melissa.borges@example.com', 'Esteticista', 'Casada', 'Sandra Borges', '11999999984'),
+('55667788990', 'João Pedro Farias', 'M', 'Rua Obsidiana, 3131', '11999999985', 'joao.farias@example.com', 'Cozinheiro', 'Divorciado', 'Cristiano Farias', '11999999986'),
+('66778899001', 'Lorena Cardoso', 'F', 'Rua Hematita, 3232', '11999999987', 'lorena.cardoso@example.com', 'Gerente de RH', 'Solteira', 'Adriana Cardoso', '11999999988'),
+('77889900112', 'Otávio Rezende', 'M', 'Rua Esfalerita, 3333', '11999999989', 'otavio.rezende@example.com', 'Geógrafo', 'Casado', 'Clécio Rezende', '11999999990');
+
+
+#drop database tests_tcc;

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detalhes do Médico</title>
+    <link rel="stylesheet" href="../CSS/detalhesMedico.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Painel</h2>
+        <ul>
+            <li><a href="painelMedico.html">Voltar à Lista de Médicos</a></li>
+            <li><a href="painel.html">Voltar ao Painel</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>Detalhes do Médico</h1>
+
+        <div id="medicoInfo">
+            <!-- Dados do médico aparecerão aqui -->
+        </div>
+
+        <!-- Form de edição, só para ADM -->
+        <div id="formEditar" style="display:none; margin-top: 30px;">
+            <h2>Editar Médico</h2>
+            <form id="formMedico">
+                <label>
+                    CRM:<br />
+                    <input type="text" id="inputCRM" name="crm" required />
+                </label><br /><br />
+                <label>
+                    Nome:<br />
+                    <input type="text" id="inputNome" name="nome" required />
+                </label><br /><br />
+                <label>
+                    Email:<br />
+                    <input type="email" id="inputEmail" name="email" required />
+                </label><br /><br />
+                <label>
+                    Senha:<br />
+                    <input type="password" id="inputSenha" name="senha" required />
+                </label><br /><br />
+                <button type="submit">Salvar Alterações</button>
+            </form>
+        </div>
+
+        <h2>Pacientes</h2>
+        <table id="tabelaPacientes">
+            <thead>
+                <tr>
+                    <th>CPF</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Pacientes carregados via JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Usuário não autenticado. Faça login novamente.");
+            window.location.href = "../login.html";
+        }
+
+        const payload = jwt_decode(token);
+        const papel = payload.papel;
+
+        // Pega CPF da URL
+        function getCPFfromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("cpf");
+        }
+
+        const cpf = getCPFfromURL();
+
+        if (!cpf) {
+            alert("CPF do médico não especificado.");
+            window.location.href = "medicos.html";
+        }
+
+        // Função para carregar os detalhes e preencher os campos
+        function carregarDetalhesMedico(cpf) {
+            fetch(`http://localhost:8080/medico/cpf/${cpf}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        const medico = data.Médico;
+
+                        // Exibe os dados básicos
+                        const medicoInfoDiv = document.getElementById("medicoInfo");
+                        medicoInfoDiv.innerHTML = `
+            <p><strong>Nome:</strong> ${medico.nome}</p>
+            <p><strong>CPF:</strong> ${medico.CPF}</p>
+            <p><strong>CRM:</strong> ${medico.CRM}</p>
+            <p><strong>Email:</strong> ${medico.email}</p>
+          `;
+
+                        // Preenche tabela de pacientes
+                        const pacientes = medico.Pacientes || [];
+                        const tbody = document.querySelector("#tabelaPacientes tbody");
+                        tbody.innerHTML = "";
+
+                        pacientes.forEach(paciente => {
+                            const tr = document.createElement("tr");
+                            tr.innerHTML = `
+              <td>${paciente.cpf}</td>
+              <td>${paciente.nome}</td>
+            `;
+                            tbody.appendChild(tr);
+                        });
+
+                        // Se for ADM, mostra formulário e preenche campos
+                        if (papel === "adm") {
+                            const formEditar = document.getElementById("formEditar");
+                            formEditar.style.display = "block";
+                            document.getElementById("inputCRM").value = medico.CRM;
+                            document.getElementById("inputNome").value = medico.nome;
+                            document.getElementById("inputEmail").value = medico.email;
+                            document.getElementById("inputSenha").value = ""; // senha fica vazia por segurança
+                        }
+
+                    } else {
+                        alert("Erro ao buscar detalhes do médico: " + data.msg);
+                        window.location.href = "medicos.html";
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro na requisição:", err);
+                    alert("Erro ao carregar os dados.");
+                });
+        }
+
+        // Envia o PUT com dados atualizados
+        document.getElementById("formMedico").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const crm = document.getElementById("inputCRM").value.trim();
+            const nome = document.getElementById("inputNome").value.trim();
+            const email = document.getElementById("inputEmail").value.trim();
+            const senha = document.getElementById("inputSenha").value.trim();
+
+            // Monta o corpo da requisição
+            const dadosAtualizados = {
+                crm: crm,
+                nome: nome,
+                email: email,
+                senha: senha
+            };
+
+            fetch(`http://localhost:8080/medico/${cpf}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(dadosAtualizados)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        alert(data.msg);
+                        carregarDetalhesMedico(cpf); // recarrega com dados atualizados
+                        // limpa o campo senha por segurança
+                        document.getElementById("inputSenha").value = "";
+                    } else {
+                        alert("Erro ao atualizar médico: " + data.msg);
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro na atualização:", err);
+                    alert("Erro ao atualizar médico.");
+                });
+        });
+
+        carregarDetalhesMedico(cpf);
+    </script>
+</body>
+
+</html>

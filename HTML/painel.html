@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel de Controle</title>
+    <link rel="stylesheet" href="../CSS/painel.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Painel</h2>
+        <ul>
+            <li><a href="painelMedico.html" id="menuMedicos">Médicos</a></li>
+            <li><a href="painelPacientes.html" id="menuPacientes">Pacientes</a></li>
+            <!-- <li><a href="painelFichas.html" id="menuFichas">Fichas</a></li> -->
+            <li><a href="painelAdm.html" id="menuAdministradores" style="display:none;">Administradores</a></li>
+            <li class="logout-button" id="logoutBtn">Sair</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1 id="boasVindas">Bem-vindo ao Painel</h1>
+        <p>Escolha uma opção no menu lateral para começar.</p>
+        <div class="clock" id="clock"></div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("token");
+        if (token) {
+            const payload = jwt_decode(token);
+            const papel = payload.papel;
+
+            if (papel === "adm") {
+                document.getElementById("menuAdministradores").style.display = "block";
+            }
+        } else {
+            alert("Usuário não autenticado. Faça login novamente.");
+            window.location.href = "../login.html";
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById("clock").innerText = now.toLocaleString("pt-BR", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        let nome;
+        if (localStorage.getItem("nome_login")) {
+            nome = localStorage.getItem("nome_login");
+        }
+
+        if (nome) {
+            document.getElementById("boasVindas").innerText = `Bem-vindo, ${nome}`;
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            localStorage.clear(); // limpa token e nome do médico
+            window.location.href = "../index.html"; // redireciona para login
+        });
+
+    </script>
+</body>
+
+</html>
