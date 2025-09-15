@@ -292,7 +292,131 @@ class Paciente
         }
     }
 
+    public function readCPFdiagnostico()
+    {
+        $meuBanco = new Banco();
+        $conexao = $meuBanco->getConexao();
+
+        if ($conexao->connect_error) {
+            die("Falha na conexão: " . $conexao->connect_error);
+        }
+
+        $stm = $conexao->prepare("SELECT p.*
+                FROM paciente p
+                WHERE NOT EXISTS (
+                    SELECT *
+                    FROM ia_results ia
+                    WHERE ia.id_paciente = p.id
+                ) AND p.cpf LIKE ?");
+
+        $busca = "%" . $this->cpf . "%";
+        $stm->bind_param("s", $busca);
+
+        if ($stm->execute()) {
+            $resultado = $stm->get_result();
+            $stm->close();
+
+            if ($resultado->num_rows === 0) {
+                return null;
+            }
+
+            $pacientes = [];
+
+            while ($linha = $resultado->fetch_object()) {
+                $Paciente = new Paciente();
+                $Paciente->setcpf($linha->cpf);
+                $Paciente->setNome($linha->nome);
+                $Paciente->setSexo($linha->sexo);
+                $Paciente->setEndereco($linha->endereco);
+                $Paciente->setTelefone($linha->telefone);
+                $Paciente->setEmail($linha->email);
+                $Paciente->setProfissao($linha->profissao);
+                $Paciente->setEstadoCivil($linha->estado_civil);
+                $Paciente->setNomeCuidador($linha->nome_cuidador);
+                $Paciente->setTelefoneCuidador($linha->telefone_cuidador);
+
+                $pacientes[] = $Paciente;
+            }
+
+            return $pacientes;
+        } else {
+            echo "Erro na execução da consulta: " . $stm->error;
+            return false;
+        }
+    }
+
     public function readString()
+    {
+        $meuBanco = new Banco();
+        $conexao = $meuBanco->getConexao();
+
+        if ($conexao->connect_error) {
+            die("Falha na conexão: " . $conexao->connect_error);
+        }
+
+
+        $sql = "SELECT p.*
+                FROM paciente p
+                WHERE NOT EXISTS (
+                    SELECT *
+                    FROM ia_results ia
+                    WHERE ia.id_paciente = p.id
+                ) AND p.nome LIKE ?";
+        $stm = $conexao->prepare($sql);
+
+        $busca = "%" . $this->nome . "%";
+        $stm->bind_param("s", $busca);
+
+        $stm->execute();
+        $resultado = $stm->get_result();
+        $stm->close();
+
+        // Se não encontrou pelo nome, tenta pelo email
+        if ($resultado->num_rows === 0) {
+            $sql = "SELECT p.*
+                FROM paciente p
+                WHERE NOT EXISTS (
+                    SELECT *
+                    FROM ia_results ia
+                    WHERE ia.id_paciente = p.id
+                ) AND p.email LIKE ?";
+                
+            $stm = $conexao->prepare($sql);
+
+            $busca = "%" . $this->nome . "%";
+            $stm->bind_param("s", $busca);
+
+            $stm->execute();
+            $resultado = $stm->get_result();
+            $stm->close();
+
+            if ($resultado->num_rows === 0) {
+                return null;
+            }
+        }
+
+        $pacientes = [];
+
+        while ($linha = $resultado->fetch_object()) {
+            $Paciente = new Paciente();
+            $Paciente->setcpf($linha->cpf);
+            $Paciente->setNome($linha->nome);
+            $Paciente->setSexo($linha->sexo);
+            $Paciente->setEndereco($linha->endereco);
+            $Paciente->setTelefone($linha->telefone);
+            $Paciente->setEmail($linha->email);
+            $Paciente->setProfissao($linha->profissao);
+            $Paciente->setEstadoCivil($linha->estado_civil);
+            $Paciente->setNomeCuidador($linha->nome_cuidador);
+            $Paciente->setTelefoneCuidador($linha->telefone_cuidador);
+
+            $pacientes[] = $Paciente;
+        }
+
+        return $pacientes;
+    }
+
+    public function readStringdiagnostico()
     {
         $meuBanco = new Banco();
         $conexao = $meuBanco->getConexao();

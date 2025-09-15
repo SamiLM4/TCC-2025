@@ -83,7 +83,7 @@
             let url;
             if (filtro != null && filtro != "") {
                 //                console.log(filtro);
-                url = `http://localhost:8080/paciente/cpf/${encodeURIComponent(filtro)}`;
+                url = `http://localhost:8080/paciente/filtrar/${encodeURIComponent(filtro)}/diagnostico`;
             } else {
                 url = `http://localhost:8080/paciente/${pagina}/diagnostico`;
             }
@@ -172,8 +172,7 @@
         carregarPacientes();
 
         function irparadiagnostico(cpf) {
-            localStorage.setItem("cpf_paciente", cpf);
-            window.location.href = "diagnostico.html";
+            window.location.href = "diagnostico.html?cpf=" + cpf;
         }
 
         function filtrarPacientes() {

@@ -20,6 +20,10 @@ $roteador->get("/paciente/(\d+)/diagnostico", function ($pag) {
     require_once("controle/paciente/pacienteReadDiagnostico.php");
 });
 
+$roteador->get("/paciente/filtrar/([^/]+)/diagnostico", function ($filtro) {
+    require_once("controle/paciente/pacienteReadDIDiagnostico.php");
+});
+
 $roteador->post("/paciente", function () {
 
     require_once("controle/paciente/pacienteCadastrar.php");
