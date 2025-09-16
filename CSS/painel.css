@@ -6,6 +6,7 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Botões de diagnóstico */
 .btn-diagnostico {
     padding: 8px 15px;
     border: none;
@@ -101,13 +102,23 @@ body {
     padding: 30px;
     display: flex;
     flex-direction: column;
-    align-items: center; /* centraliza todos os elementos filhos */
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
 }
-
 
 .main-content h1 {
     margin-bottom: 15px;
     color: #2c3e50;
+    font-size: 28px;
+}
+
+.main-content h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #2980b9;
+    font-size: 22px;
+    align-self: flex-start;
 }
 
 .main-content p {
@@ -128,14 +139,16 @@ body {
     display: flex;
     gap: 10px;
     margin: 20px 0;
-    width: 80%; /* largura proporcional */
-    justify-content: center; /* centraliza os itens internos */
+    width: 80%;
+    justify-content: center;
 }
+
 .filtro-container input[type="text"] {
     flex-grow: 1;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 16px;
 }
 
 .filtro-container button {
@@ -146,22 +159,23 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-weight: 600;
 }
 
 .filtro-container button:hover {
     background-color: #1c5980;
 }
 
+/* Tabelas */
 table {
-    width: 80%; /* ou outra largura que preferir */
-    margin: 0 auto; /* centraliza horizontalmente */
+    width: 90%;
+    margin: 0 auto;
     border-collapse: collapse;
     background-color: #fff;
-    border-radius: 5px;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
 }
-
 
 table thead {
     background-color: #2980b9;
@@ -172,19 +186,24 @@ table th, table td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #ddd;
+    font-size: 15px;
 }
 
 table tbody tr:hover {
     background-color: #f2f2f2;
 }
 
+#tabelaPacientesMedico tbody tr:hover {
+    background-color: #ecf9f1;
+}
+
 /* Paginação */
-#paginacao {
+#paginacao, #paginacaoPacientes {
     margin-top: 15px;
     text-align: center;
 }
 
-#paginacao button {
+#paginacao button, #paginacaoPacientes button {
     padding: 8px 12px;
     margin: 0 3px;
     border: none;
@@ -193,12 +212,89 @@ table tbody tr:hover {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-weight: 600;
 }
 
-#paginacao button:hover {
+#paginacao button:hover, #paginacaoPacientes button:hover {
     background-color: #1c5980;
 }
 
-#paginacao button.active {
+#paginacao button.active, #paginacaoPacientes button.active {
     background-color: #1abc9c;
+}
+
+.card-medico {
+    width: 80%;
+    max-width: 400px;
+    margin: 40px auto 20px auto;
+    padding: 20px 25px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    text-align: left;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-medico h2 {
+    margin-bottom: 15px;
+    color: #2980b9;
+    font-size: 22px;
+}
+
+.card-medico p {
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #333;
+}
+
+.card-medico:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .main-content, table {
+        width: 95%;
+    }
+
+    .filtro-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+
+    .sidebar h2 {
+        font-size: 18px;
+    }
+
+    .sidebar ul li a {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .main-content h1 {
+        font-size: 24px;
+    }
+
+    .main-content h2 {
+        font-size: 18px;
+    }
+
+    table th, table td {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+
+    .btn-diagnostico {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+    
 }

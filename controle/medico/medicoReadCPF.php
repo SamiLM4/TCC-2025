@@ -11,11 +11,13 @@ $headers = getallheaders();
 $autorization = $headers['Authorization'];
 $meutoken = new MeuTokenJWT();
 
+
 if ($meutoken->validarToken($autorization) == true) {
     $payloadRecuperado = $meutoken->getPayload();
 
     if ($metodo == "GET") {
         $cpf = $vetor[3];
+        $pagina = $vetor[4] ?? 1;
 
         $medico = new Medico();
         $medico->setCpf($cpf);
@@ -36,7 +38,7 @@ if ($meutoken->validarToken($autorization) == true) {
                     "CRM" => $primeiroMedico->getCrm(),
                     "email" => $primeiroMedico->getEmail(),
                     "nome" => $primeiroMedico->getNome(),
-                    "Pacientes" => $relacionamento->readCPFmedico()
+                    "Pacientes" => $relacionamento->readCPFmedico($pagina)
                 ],
             ]);
         } else {

@@ -24,14 +24,16 @@
     <div class="main-content">
         <h1 id="boasVindas">Bem-vindo ao Painel</h1>
         <p>Escolha uma opção no menu lateral para começar</p>
-        <p>Pacientes sem diagnósticos.</p>
         <div class="clock" id="clock"></div>
 
+        <!-- Filtro para pacientes sem diagnóstico -->
         <div class="filtro-container">
             <input type="text" id="filtro" placeholder="Filtrar" />
             <button onclick="filtrarPacientes()">Buscar</button>
         </div>
 
+        <!-- Tabela 1: Pacientes sem diagnóstico -->
+        <h2>Pacientes sem diagnósticos</h2>
         <table id="tabelaPacientes">
             <thead>
                 <tr>
@@ -47,6 +49,30 @@
             </tbody>
         </table>
         <div id="paginacao"></div>
+
+        <!-- Tabela 2: Pacientes do médico logado -->
+        <br><br>
+        <h2>Seus Pacientes</h2>
+        <table id="tabelaPacientesMedico">
+            <thead>
+                <tr>
+                    <th>CPF</th>
+                    <th>Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Conteúdo via JS (pacientes do médico) -->
+            </tbody>
+        </table>
+        <div id="paginacaoPacientes"></div>
+
+        <div id="medicoCard" class="card-medico" style="display:none;">
+            <h2>Informações do Médico</h2>
+            <p><strong>Nome:</strong> <span id="medicoNome"></span></p>
+            <p><strong>CPF:</strong> <span id="medicoCPF"></span></p>
+            <p><strong>CRM:</strong> <span id="medicoCRM"></span></p>
+            <p><strong>Email:</strong> <span id="medicoEmail"></span></p>
+        </div>
     </div>
 
 
@@ -165,7 +191,99 @@
                 });
         }
 
+        function carregarDetalhesMedico(token, pagina = 1) {
+            const paginaAtualPaciente = pagina;
 
+            fetch(`http://localhost:8080/medico/gerarpacientes/${paginaAtualPaciente}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.cod === 200 && data.Médico) {
+                        const medico = data.Médico;
+
+                        // Exibe dados básicos do médico
+                        const medicoInfoDiv = document.getElementById("medicoInfo");
+                        // Exibe card
+                        document.getElementById("medicoCard").style.display = "block";
+                        document.getElementById("medicoNome").innerText = medico.nome;
+                        document.getElementById("medicoCPF").innerText = medico.CPF;
+                        document.getElementById("medicoCRM").innerText = medico.CRM;
+                        document.getElementById("medicoEmail").innerText = medico.email;
+
+                        // Preenche tabela de pacientes do médico
+                        const pacientes = medico.Pacientes || [];
+                        const tbody = document.querySelector("#tabelaPacientesMedico tbody");
+                        tbody.innerHTML = "";
+
+                        pacientes.forEach(paciente => {
+                            const tr = document.createElement("tr");
+                            tr.innerHTML = `
+                    <td>${paciente.cpf}</td>
+                    <td>${paciente.nome}</td>
+                `;
+                            tbody.appendChild(tr);
+                        });
+
+                        // Paginação para pacientes do médico
+                        const totalPacientes = medico.totalPacientes || pacientes.length;
+                        const itensPorPagina = 10;
+                        const totalPaginas = Math.ceil(totalPacientes / itensPorPagina);
+
+                        const paginacaoDiv = document.getElementById("paginacaoPacientes");
+                        if (paginacaoDiv) {
+                            paginacaoDiv.innerHTML = "";
+                            const maxBotoesVisiveis = 5;
+                            let startPage = Math.max(1, paginaAtualPaciente - Math.floor(maxBotoesVisiveis / 2));
+                            let endPage = startPage + maxBotoesVisiveis - 1;
+                            if (endPage > totalPaginas) {
+                                endPage = totalPaginas;
+                                startPage = Math.max(1, endPage - maxBotoesVisiveis + 1);
+                            }
+
+                            if (paginaAtualPaciente > 1) {
+                                const btnAnterior = document.createElement("button");
+                                btnAnterior.textContent = "«";
+                                btnAnterior.onclick = () => carregarDetalhesMedico(token, paginaAtualPaciente - 1);
+                                paginacaoDiv.appendChild(btnAnterior);
+                            }
+
+                            for (let i = startPage; i <= endPage; i++) {
+                                const btn = document.createElement("button");
+                                btn.textContent = i;
+                                btn.classList.toggle("active", i === paginaAtualPaciente);
+                                btn.disabled = (i === paginaAtualPaciente);
+                                btn.onclick = () => carregarDetalhesMedico(token, i);
+                                paginacaoDiv.appendChild(btn);
+                            }
+
+                            if (paginaAtualPaciente < totalPaginas) {
+                                const btnProximo = document.createElement("button");
+                                btnProximo.textContent = "»";
+                                btnProximo.onclick = () => carregarDetalhesMedico(token, paginaAtualPaciente + 1);
+                                paginacaoDiv.appendChild(btnProximo);
+                            }
+                        }
+
+                    } else {
+                        alert("Erro ao buscar detalhes do médico: " + data.msg);
+                        window.location.href = "medicos.html";
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro na requisição:", err);
+                    alert("Erro ao carregar os dados.");
+                });
+        }
+
+
+
+        if (localStorage.getItem("papel") === "medico") {
+            carregarDetalhesMedico(localStorage.getItem("token"), 1);
+        }
 
         setInterval(updateClock, 1000);
         updateClock();

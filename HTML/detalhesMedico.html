@@ -102,11 +102,11 @@
                         // Exibe os dados básicos
                         const medicoInfoDiv = document.getElementById("medicoInfo");
                         medicoInfoDiv.innerHTML = `
-            <p><strong>Nome:</strong> ${medico.nome}</p>
-            <p><strong>CPF:</strong> ${medico.CPF}</p>
-            <p><strong>CRM:</strong> ${medico.CRM}</p>
-            <p><strong>Email:</strong> ${medico.email}</p>
-          `;
+                                                <p><strong>Nome:</strong> ${medico.nome}</p>
+                                                <p><strong>CPF:</strong> ${medico.CPF}</p>
+                                                <p><strong>CRM:</strong> ${medico.CRM}</p>
+                                                <p><strong>Email:</strong> ${medico.email}</p>
+                                            `;
 
                         // Preenche tabela de pacientes
                         const pacientes = medico.Pacientes || [];
@@ -116,9 +116,9 @@
                         pacientes.forEach(paciente => {
                             const tr = document.createElement("tr");
                             tr.innerHTML = `
-              <td>${paciente.cpf}</td>
-              <td>${paciente.nome}</td>
-            `;
+                                            <td>${paciente.cpf}</td>
+                                            <td>${paciente.nome}</td>
+                                            `;
                             tbody.appendChild(tr);
                         });
 

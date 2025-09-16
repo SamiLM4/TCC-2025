@@ -55,8 +55,12 @@ $roteador->get("/medico/(\d+)", function ($pag) {
     require_once("controle/medico/medicoRead.php");
 });
 
+$roteador->get("/medico/gerarpacientes(/\d+)", function ($pag): void {
 
-$roteador->get("/medico/cpf/(\d+)", function ($cpf) {
+    require_once("controle/medico/medicoReadPacientes.php");
+});
+
+$roteador->get("/medico/cpf/(\d+)/(\d+)", function ($cpf, $pagina) {
 
     require_once("controle/medico/medicoReadCPF.php");
 });

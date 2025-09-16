@@ -11,33 +11,33 @@ $headers = getallheaders();
 $autorization = $headers['Authorization'];
 $meutoken = new MeuTokenJWT();
 
+$pagina = $vetor[3] ?? 1;
+
 if ($meutoken->validarToken($autorization) == true) {
     $payloadRecuperado = $meutoken->getPayload();
 
     if ($metodo == "GET") {
-
-        $nome = $vetor[3];
-        $nome = urldecode($nome);
-        $pagina = $vetor[4] ?? 1;
+        $cpf = $payloadRecuperado->cpf_medico;
 
         $medico = new Medico();
-        $medico->setnome($nome);
-        $medicoSelecionado = $medico->readNome();
+        $medico->setCpf($cpf);
+        $medicoSelecionado = $medico->readCPF();
 
-        if ($medicoSelecionado) {
-            // Só acessa aqui se for diferente de null
+        if ($medicoSelecionado && count($medicoSelecionado) > 0) {
+            $primeiroMedico = $medicoSelecionado[0];
+
             $relacionamento = new Relacao();
-            $relacionamento->setCpfMedico($medicoSelecionado->getCpf());
+            $relacionamento->setCpfMedico($primeiroMedico->getCpf());
 
             header("HTTP/1.1 200 OK");
             echo json_encode([
                 "cod" => 200,
                 "msg" => "Medico encontrado",
                 "Médico" => [
-                    "CPF" => $medicoSelecionado->getCpf(),
-                    "CRM" => $medicoSelecionado->getCrm(),
-                    "email" => $medicoSelecionado->getEmail(),
-                    "nome" => $medicoSelecionado->getNome(),
+                    "CPF" => $primeiroMedico->getCpf(),
+                    "CRM" => $primeiroMedico->getCrm(),
+                    "email" => $primeiroMedico->getEmail(),
+                    "nome" => $primeiroMedico->getNome(),
                     "Pacientes" => $relacionamento->readCPFmedico($pagina)
                 ],
             ]);
