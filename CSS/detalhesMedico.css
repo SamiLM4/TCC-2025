@@ -343,3 +343,39 @@ tbody td {
         content: "Nome";
     }
 }
+
+
+/* ============================
+   Paginação
+   ============================ */
+   #paginacaoPacientes {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+#paginacaoPacientes button {
+    background-color: var(--cor-botao);
+    color: var(--cor-botao-texto);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+#paginacaoPacientes button:hover:not(:disabled) {
+    background-color: var(--cor-botao-gradiente-hover-fim);
+    transform: translateY(-1px);
+}
+
+#paginacaoPacientes button.active,
+#paginacaoPacientes button:disabled {
+    background-color: var(--cor-botao-desabilitado);
+    color: var(--cor-botao-texto);
+    cursor: default;
+    transform: none;
+}

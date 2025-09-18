@@ -178,6 +178,16 @@ $roteador->get("/ficha/pdf/(\d+)", function ($cpf) {
     require_once("controle/ficha/fichaPDF.php");
 });
 
+// MENSAGEM
+
+$roteador->post("/mensagem/enviar/(\d+)", function ($cpf_medico) {
+    require_once("controle/mensagem/mensagemEnviar.php");
+});
+
+$roteador->get("/mensagem/listar/(\d+)", function ($cpf_medico) {
+    require_once("controle/mensagem/mensagemListar.php");
+});
+
 /*
 $roteador->get("/ficha/diagnostico/(\d+)", function ($id) {
     require_once("controle/ficha/fichaReadID.php");

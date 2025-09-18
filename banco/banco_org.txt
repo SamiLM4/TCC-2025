@@ -16,7 +16,7 @@ use tests_tcc;
 
 	CREATE TABLE medico (
 		id int PRIMARY KEY auto_increment, 
-		cpf VARCHAR(11) not null,
+		cpf VARCHAR(11) not null UNIQUE,
 		crm VARCHAR(11) not null,
 		email VARCHAR(100) not null,
 		senha VARCHAR(50) not null,
@@ -154,7 +154,18 @@ use tests_tcc;
     FOREIGN KEY (id_medico) REFERENCES medico(id) ON DELETE SET NULL,
     FOREIGN KEY (id_paciente) REFERENCES paciente(id) ON DELETE CASCADE
 );
-	  
+	
+CREATE TABLE mensagens_chat (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cpf_medico VARCHAR(11) not null,
+  mensagem TEXT NOT NULL,
+  origem ENUM('medico', 'adm') NOT NULL,
+  data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  lida BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY (cpf_medico) REFERENCES medico(cpf) ON DELETE CASCADE
+);
+    
+      
 #	CREATE TABLE relacao_medico_paciente (
 #		id_table int primary key auto_increment,
 #		id_medico INT,

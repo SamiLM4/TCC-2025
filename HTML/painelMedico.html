@@ -43,6 +43,7 @@
                     <th>CPF</th>
                     <th>Selecionar</th>
                     <th>Excluir</th>
+                    <th id="colunaChat">Chat</th>
                 </tr>
             </thead>
             <tbody>
@@ -89,6 +90,8 @@
         // Mostrar botão de cadastrar só para ADM
         if (papel === "adm") {
             document.getElementById("cadastrarMedicoArea").style.display = "block";
+        } else {
+            document.getElementById("colunaChat").style.display = "none";
         }
 
         let paginaAtual = 1;
@@ -134,14 +137,20 @@
                             excluirBtn = `<button class= "btn-excluir" onclick="excluirMedico('${medico.cpf}')">Excluir</button>`;
                         }
 
+                        let chatBtn = "";
+                        if (papel === "adm") {
+                            chatBtn = `<td><button onclick="abrirChat('${medico.cpf}')">Chat</button></td>`;
+                        }
+
                         row.innerHTML = `
-                <td>${medico.crm}</td>
-                <td>${medico.nome}</td>
-                <td>${medico.email}</td>
-                <td>${medico.cpf}</td>
-                <td><button onclick="selecionarMedico('${medico.cpf}')">Selecionar</button></td>
-                <td>${excluirBtn}</td>
-            `;
+                                            <td>${medico.crm}</td>
+                                            <td>${medico.nome}</td>
+                                            <td>${medico.email}</td>
+                                            <td>${medico.cpf}</td>
+                                            <td><button onclick="selecionarMedico('${medico.cpf}')">Selecionar</button></td>
+                                            <td>${excluirBtn}</td>
+                                            ${chatBtn}
+                                        `;
                         tabelaBody.appendChild(row);
                     });
 
@@ -188,6 +197,10 @@
 
         function selecionarMedico(cpf) {
             window.location.href = `detalhesMedico.html?cpf=${cpf}`;
+        }
+
+        function abrirChat(cpf) {
+            window.location.href = `chat.html?cpf=${cpf}`;
         }
 
         function excluirMedico(cpf) {

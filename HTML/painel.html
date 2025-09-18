@@ -74,6 +74,7 @@
             <p><strong>Email:</strong> <span id="medicoEmail"></span></p>
         </div>
     </div>
+    <a id="btnChat" href="#" class="btn-flutuante" style="display:none;">+</a>
 
 
     <script>
@@ -194,6 +195,7 @@
         function carregarDetalhesMedico(token, pagina = 1) {
             const paginaAtualPaciente = pagina;
 
+            // Corrigir URL para passar apenas uma vez a página
             fetch(`http://localhost:8080/medico/gerarpacientes/${paginaAtualPaciente}`, {
                 method: "GET",
                 headers: {
@@ -207,15 +209,19 @@
 
                         // Exibe dados básicos do médico
                         const medicoInfoDiv = document.getElementById("medicoInfo");
-                        // Exibe card
                         document.getElementById("medicoCard").style.display = "block";
                         document.getElementById("medicoNome").innerText = medico.nome;
                         document.getElementById("medicoCPF").innerText = medico.CPF;
                         document.getElementById("medicoCRM").innerText = medico.CRM;
                         document.getElementById("medicoEmail").innerText = medico.email;
 
+                        const btnChat = document.getElementById("btnChat");
+                        if (btnChat) {
+                            btnChat.href = "chat.html?cpf=" + medico.CPF;
+                        }
+
                         // Preenche tabela de pacientes do médico
-                        const pacientes = medico.Pacientes || [];
+                        const pacientes = medico.Pacientes.pacientes || [];
                         const tbody = document.querySelector("#tabelaPacientesMedico tbody");
                         tbody.innerHTML = "";
 
@@ -229,21 +235,23 @@
                         });
 
                         // Paginação para pacientes do médico
-                        const totalPacientes = medico.totalPacientes || pacientes.length;
-                        const itensPorPagina = 10;
+                        const totalPacientes = medico.Pacientes.total || pacientes.length;
+                        const itensPorPagina = 5; // Ajuste para 5, já que você mencionou 5 itens por página
                         const totalPaginas = Math.ceil(totalPacientes / itensPorPagina);
 
                         const paginacaoDiv = document.getElementById("paginacaoPacientes");
                         if (paginacaoDiv) {
                             paginacaoDiv.innerHTML = "";
-                            const maxBotoesVisiveis = 5;
+                            const maxBotoesVisiveis = 5;  // Número máximo de botões visíveis
                             let startPage = Math.max(1, paginaAtualPaciente - Math.floor(maxBotoesVisiveis / 2));
                             let endPage = startPage + maxBotoesVisiveis - 1;
+
                             if (endPage > totalPaginas) {
                                 endPage = totalPaginas;
                                 startPage = Math.max(1, endPage - maxBotoesVisiveis + 1);
                             }
 
+                            // Botão "Anterior"
                             if (paginaAtualPaciente > 1) {
                                 const btnAnterior = document.createElement("button");
                                 btnAnterior.textContent = "«";
@@ -251,6 +259,7 @@
                                 paginacaoDiv.appendChild(btnAnterior);
                             }
 
+                            // Botões de página
                             for (let i = startPage; i <= endPage; i++) {
                                 const btn = document.createElement("button");
                                 btn.textContent = i;
@@ -260,6 +269,7 @@
                                 paginacaoDiv.appendChild(btn);
                             }
 
+                            // Botão "Próximo"
                             if (paginaAtualPaciente < totalPaginas) {
                                 const btnProximo = document.createElement("button");
                                 btnProximo.textContent = "»";
@@ -267,22 +277,22 @@
                                 paginacaoDiv.appendChild(btnProximo);
                             }
                         }
-
                     } else {
-                        alert("Erro ao buscar detalhes do médico: " + data.msg);
-                        window.location.href = "medicos.html";
+                        console.error("Médico não encontrado ou erro na resposta.");
                     }
                 })
                 .catch(err => {
-                    console.error("Erro na requisição:", err);
-                    alert("Erro ao carregar os dados.");
+                    console.error("Erro ao carregar os dados do médico: ", err);
                 });
         }
 
 
 
+
+
         if (localStorage.getItem("papel") === "medico") {
             carregarDetalhesMedico(localStorage.getItem("token"), 1);
+            document.getElementById("btnChat").style.display = "block";
         }
 
         setInterval(updateClock, 1000);
