@@ -6,7 +6,7 @@ class IAResultado
     private $id_paciente;
     private $nome;
     private $cpf;
-    private $imagem;
+    private $imagens = [];
     private $diagnostico;
     private $data;
 
@@ -18,10 +18,25 @@ class IAResultado
 
         $dataAtual = date("Y-m-d H:i:s");
 
-        $stmt = $conexao->prepare("INSERT INTO ia_results (id_paciente, nome, cpf, imagem, diagnostico, data_diagnostico)
-                                   VALUES ((SELECT id FROM paciente WHERE cpf = ?), (SELECT nome FROM paciente WHERE cpf = ?), ?, ?, ?, ?)");
+        $stmt = $conexao->prepare("INSERT INTO ia_results 
+            (id_paciente, nome, cpf, imagem, diagnostico, data_diagnostico)
+            VALUES (
+                (SELECT id FROM paciente WHERE cpf = ?),
+                (SELECT nome FROM paciente WHERE cpf = ?),
+                ?, ?, ?, ?
+            )");
 
-        $stmt->bind_param("ssssss", $this->cpf, $this->cpf, $this->cpf, $this->imagem, $this->diagnostico, $dataAtual);
+        $imagensJson = json_encode($this->imagens);
+
+        // cpf, cpf, cpf, imagensJson, diagnostico, dataAtual
+        $stmt->bind_param("ssssss",
+            $this->cpf,
+            $this->cpf,
+            $this->cpf,
+            $imagensJson,
+            $this->diagnostico,
+            $dataAtual
+        );
 
         if ($stmt->execute()) {
             $stmt->close();
@@ -53,7 +68,14 @@ class IAResultado
             $ia->setIdPaciente($linha->id_paciente);
             $ia->setNome($linha->nome);
             $ia->setCpf($linha->cpf);
-            $ia->setImagem($linha->imagem);
+
+            // garante sempre array
+            $imagens = json_decode($linha->imagem, true);
+            if (!is_array($imagens)) {
+                $imagens = $linha->imagem ? [$linha->imagem] : [];
+            }
+            $ia->setImagens($imagens);
+
             $ia->setDiagnostico($linha->diagnostico);
             $ia->setData($linha->data_diagnostico);
 
@@ -78,7 +100,13 @@ class IAResultado
             $ia->setIdPaciente($linha->id_paciente);
             $ia->setNome($linha->nome);
             $ia->setCpf($linha->cpf);
-            $ia->setImagem($linha->imagem);
+
+            $imagens = json_decode($linha->imagem, true);
+            if (!is_array($imagens)) {
+                $imagens = $linha->imagem ? [$linha->imagem] : [];
+            }
+            $ia->setImagens($imagens);
+
             $ia->setDiagnostico($linha->diagnostico);
             $ia->setData($linha->data_diagnostico);
             $lista[] = $ia;
@@ -86,28 +114,11 @@ class IAResultado
 
         return $lista;
     }
-/*
-    // UPDATE (pelo CPF)
-    public function update()
-    {
-        $banco = new Banco();
-        $conexao = $banco->getConexao();
 
-        $stmt = $conexao->prepare("UPDATE ia_results SET nome = ?, imagem = ?, diagnostico = ?, data_diagnostico = ? WHERE cpf = ?");
-        $stmt->bind_param("sssss", $this->nome, $this->imagem, $this->diagnostico, $this->data, $this->cpf);
-
-        if ($stmt->execute()) {
-            $stmt->close();
-            return true;
-        } else {
-            return false;
-        }
-    }
-*/
     // DELETE (pelo CPF)
     public function delete()
     {
-        $banco = new Banco();   
+        $banco = new Banco();
         $conexao = $banco->getConexao();
 
         $stmt = $conexao->prepare("DELETE FROM ia_results WHERE cpf = ?");
@@ -125,7 +136,7 @@ class IAResultado
     public function getIdPaciente() { return $this->id_paciente; }
     public function getNome() { return $this->nome; }
     public function getCpf() { return $this->cpf; }
-    public function getImagem() { return $this->imagem; }
+    public function getImagens() { return $this->imagens; }
     public function getDiagnostico() { return $this->diagnostico; }
     public function getData() { return $this->data; }
 
@@ -133,8 +144,7 @@ class IAResultado
     public function setIdPaciente($id_paciente) { $this->id_paciente = $id_paciente; }
     public function setNome($nome) { $this->nome = $nome; }
     public function setCpf($cpf) { $this->cpf = $cpf; }
-    public function setImagem($imagem) { $this->imagem = $imagem; }
+    public function setImagens($imagens) { $this->imagens = $imagens; }
     public function setDiagnostico($diagnostico) { $this->diagnostico = $diagnostico; }
     public function setData($data) { $this->data = $data; }
 }
-?>
