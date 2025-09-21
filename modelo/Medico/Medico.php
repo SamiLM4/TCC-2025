@@ -393,6 +393,100 @@ class Medico
 
         return $medicos;
     }
+    // Sem diagnóstico
+
+    public function readCPFSemDiagnostico()
+    {
+        $meuBanco = new Banco();
+        $conexao = $meuBanco->getConexao();
+
+        if ($conexao->connect_error) {
+            die("Falha na conexão: " . $conexao->connect_error);
+        }
+
+        $sql = "
+        SELECT m.* 
+        FROM medico m
+        LEFT JOIN relacao_medico_paciente rmp ON m.id = rmp.id_medico
+        LEFT JOIN ia_results ia ON rmp.id_paciente = ia.id_paciente
+        WHERE m.cpf LIKE ? AND ia.id_table IS NULL
+    ";
+
+        $stm = $conexao->prepare($sql);
+        $busca = "%" . $this->cpf . "%";
+        $stm->bind_param("s", $busca);
+
+        if ($stm->execute()) {
+            $resultado = $stm->get_result();
+            $stm->close();
+
+            if ($resultado->num_rows === 0) {
+                return null;
+            }
+
+            $Medicos = [];
+
+            while ($linha = $resultado->fetch_object()) {
+                $Medico = new Medico();
+                $Medico->setcpf($linha->cpf);
+                $Medico->setNome($linha->nome);
+                $Medico->setemail($linha->email);
+                $Medico->setcrm($linha->crm);
+
+                $Medicos[] = $Medico;
+            }
+
+            return $Medicos;
+        } else {
+            echo "Erro na execução da consulta: " . $stm->error;
+            return false;
+        }
+    }
+
+    public function readStringSemDiagnostico()
+    {
+        $meuBanco = new Banco();
+        $conexao = $meuBanco->getConexao();
+
+        if ($conexao->connect_error) {
+            die("Falha na conexão: " . $conexao->connect_error);
+        }
+
+        $sql = "
+        SELECT m.* 
+        FROM medico m
+        LEFT JOIN relacao_medico_paciente rmp ON m.id = rmp.id_medico
+        LEFT JOIN ia_results ia ON rmp.id_paciente = ia.id_paciente
+        WHERE (m.nome LIKE ? OR m.email LIKE ?) AND ia.id_table IS NULL
+    ";
+
+        $stm = $conexao->prepare($sql);
+        $busca = "%" . $this->nome . "%";
+        $stm->bind_param("ss", $busca, $busca);
+
+        $stm->execute();
+        $resultado = $stm->get_result();
+        $stm->close();
+
+        if ($resultado->num_rows === 0) {
+            return null;
+        }
+
+        $medicos = [];
+
+        while ($linha = $resultado->fetch_object()) {
+            $Medico = new Medico();
+            $Medico->setcpf($linha->cpf);
+            $Medico->setNome($linha->nome);
+            $Medico->setemail($linha->email);
+            $Medico->setcrm($linha->crm);
+
+            $medicos[] = $Medico;
+        }
+
+        return $medicos;
+    }
+
 
 
     // atualizar por cpf

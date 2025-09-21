@@ -55,10 +55,12 @@ $roteador->get("/medico/(\d+)", function ($pag) {
     require_once("controle/medico/medicoRead.php");
 });
 
-$roteador->get("/medico/gerarpacientes(/\d+)", function ($pag): void {
-
+//
+$roteador->get("/medico/gerarpacientes/(\d+)", function ($pag): void {
     require_once("controle/medico/medicoReadPacientes.php");
 });
+
+//
 
 $roteador->get("/medico/cpf/(\d+)/(\d+)", function ($cpf, $pagina) {
 
@@ -77,6 +79,7 @@ $roteador->get("/medico/nome/([^/]+)", function ($nome) {
 $roteador->get("/medico/filtro/([^/]+)", function ($filtro) {
     require_once("controle/medico/medicoReadFiltro.php");
 });
+
 
 $roteador->post("/medico", function () {
 

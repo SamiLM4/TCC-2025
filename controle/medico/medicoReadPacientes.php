@@ -17,6 +17,16 @@ if ($meutoken->validarToken($autorization) == true) {
     $payloadRecuperado = $meutoken->getPayload();
 
     if ($metodo == "GET") {
+
+        if ($payloadRecuperado->papel == "adm") {
+            header("HTTP/1.1 403 Forbidden");
+            echo json_encode([
+                "cod" => 403,
+                "msg" => "Acesso negado, apenas para médicos"
+            ]);
+            exit();
+        }
+        
         $cpf = $payloadRecuperado->cpf_medico;
 
         $medico = new Medico();

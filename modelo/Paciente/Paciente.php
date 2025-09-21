@@ -380,7 +380,7 @@ class Paciente
                     FROM ia_results ia
                     WHERE ia.id_paciente = p.id
                 ) AND p.email LIKE ?";
-                
+
             $stm = $conexao->prepare($sql);
 
             $busca = "%" . $this->nome . "%";
@@ -425,25 +425,33 @@ class Paciente
             die("Falha na conexão: " . $conexao->connect_error);
         }
 
-
-        $sql = "SELECT * FROM paciente WHERE nome LIKE ?";
+        // Primeiro tenta filtrar pelo nome
+        $sql = "
+        SELECT p.* 
+        FROM paciente p
+        LEFT JOIN diagnostico d ON p.id = d.id_paciente
+        LEFT JOIN ia_results ia ON p.id = ia.id_paciente
+        WHERE p.nome LIKE ? AND d.id_table IS NULL AND ia.id_table IS NULL
+    ";
         $stm = $conexao->prepare($sql);
-
         $busca = "%" . $this->nome . "%";
         $stm->bind_param("s", $busca);
-
         $stm->execute();
         $resultado = $stm->get_result();
         $stm->close();
 
         // Se não encontrou pelo nome, tenta pelo email
         if ($resultado->num_rows === 0) {
-            $sql = "SELECT * FROM paciente WHERE email LIKE ?";
+            $sql = "
+            SELECT p.* 
+            FROM paciente p
+            LEFT JOIN diagnostico d ON p.id = d.id_paciente
+            LEFT JOIN ia_results ia ON p.id = ia.id_paciente
+            WHERE p.email LIKE ? AND d.id_table IS NULL AND ia.id_table IS NULL
+        ";
             $stm = $conexao->prepare($sql);
-
             $busca = "%" . $this->nome . "%";
             $stm->bind_param("s", $busca);
-
             $stm->execute();
             $resultado = $stm->get_result();
             $stm->close();
