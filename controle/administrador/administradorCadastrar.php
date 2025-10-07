@@ -18,9 +18,9 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 }
 
 // Verifica se os campos obrigatórios existem
-if (!isset($dados->nome, $dados->email, $dados->senha)) {
+if (!isset($dados->instituicao, $dados->nome, $dados->email, $dados->senha)) {
     http_response_code(400);
-    echo json_encode(["status" => false, "msg" => "Campos obrigatórios ausentes (nome, email, senha)."]);
+    echo json_encode(["status" => false, "msg" => "Campos obrigatórios ausentes (instituicao,nome, email, senha)."]);
     exit();
 }
 
@@ -42,10 +42,11 @@ if (strlen($senha) < 6) {
     exit();
 }
 
-//
+$instituicao = $dados->instituicao;
 
 // Instancia o objeto Adm
 $adm = new Adm();
+$adm->setinstituicao(trim($instituicao));
 $adm->setnome($nome);
 $adm->setemail($email);
 $adm->setsenha($senha);

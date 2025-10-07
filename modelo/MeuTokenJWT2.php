@@ -62,6 +62,7 @@ class MeuTokenJWT2
         
         $objPayload->email = $parametro_claims->email;
         $objPayload->senha = $parametro_claims->senha;
+        $objPayload->instituicao = $parametro_claims->instituicao;
 
         //Private claims
 //        $objPayload->id_prof = $parametro_claims->id_prof;

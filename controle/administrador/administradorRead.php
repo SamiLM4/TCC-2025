@@ -4,10 +4,6 @@ require_once "modelo/adm/administrador.php";
 $vetor = explode("/", $_SERVER['REQUEST_URI']);
 $pagina = $vetor[2];
 
-$adm = new Adm();
-
-$dados = $adm->read($pagina);
-
 use Firebase\JWT\MeuTokenJWT;
 
 require_once "modelo/MeuTokenJWT.php";
@@ -27,6 +23,10 @@ if ($meutoken->validarToken(stringToken: $autorization) == true) {
         ]);
         exit();
     }
+
+    $instituicao = $payloadRecuperado->instituicao;
+    $adm = new Adm();
+    $dados = $adm->read($pagina, $instituicao);
 
     if ($dados !== false) {
         echo json_encode([$dados]);

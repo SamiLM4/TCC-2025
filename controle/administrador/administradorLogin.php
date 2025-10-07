@@ -21,9 +21,9 @@ if ($adm->login()) {
     $tokenJWT = new MeuTokenJWT();
 
     $objectClaimsToken = new stdClass();
-    $objectClaimsToken->email = $adm->getemail();   // universal
-//    $objectClaimsToken->senha = $adm->getsenha();   // universal
-    $objectClaimsToken->papel = $adm->getPapel();   // universal
+    $objectClaimsToken->email = $adm->getemail();
+    $objectClaimsToken->instituicao = $adm->getinstituicao();
+    $objectClaimsToken->papel = $adm->getPapel();
 
     $novoToken = $tokenJWT->gerarToken($objectClaimsToken);
 
@@ -32,6 +32,7 @@ if ($adm->login()) {
         "msg" => "Login realizado com sucesso!!!",
         "adm" => [
             "id" => $adm->getid(),
+            "instituicao" => $adm->getinstituicao(),
             "nome" => $adm->getnome(),
             "email" => $adm->getemail()
         ],

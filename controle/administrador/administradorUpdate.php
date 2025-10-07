@@ -49,10 +49,12 @@ foreach ($camposObrigatorios as $campo) {
     }
 }
 
+$instituicao = $payloadRecuperado->instituicao;
+
 $id = $dados->id;
 $nome = trim($dados->nome);
-$email = trim($dados->email);
-$senha = trim($dados->senha);
+$email = $dados->email;
+$senha = $dados->senha;
 
 if (!is_numeric($id) || intval($id) <= 0) {
     http_response_code(400);
@@ -77,6 +79,9 @@ $adm->setid(intval($id));
 $adm->setnome($nome);
 $adm->setemail($email);
 $adm->setsenha($senha);
+$adm->setinstituicao($instituicao);
+
+if ($adm->read)
 
 if ($adm->update()) {
     echo json_encode(["status" => true, "msg" => "Administrador atualizado com sucesso"]);

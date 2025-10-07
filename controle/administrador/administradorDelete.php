@@ -45,7 +45,7 @@ if (!$meutoken->validarToken($autorization)) {
 }
 
 $payloadRecuperado = $meutoken->getPayload();
-
+$instituicao = $payloadRecuperado->instituicao;
 
 if (!isset($payloadRecuperado->papel) || $payloadRecuperado->papel !== "adm") {
     http_response_code(403);
@@ -55,6 +55,8 @@ if (!isset($payloadRecuperado->papel) || $payloadRecuperado->papel !== "adm") {
     ]);
     exit();
 }
+
+$adm->setinstituicao($instituicao);
 
 if ($adm->delete()) {
     echo json_encode(["status" => true, "msg" => "Administrador deletado com sucesso"]);

@@ -8,6 +8,7 @@ class Adm
     private $email;
     private $senha;
     private $papel = "adm";
+    private $instituicao;
 
     public function jsonSerialize()
     {
@@ -37,10 +38,10 @@ class Adm
             die("Falha na conexão: " . $conexao->connect_error);
         }
 
-        $SQL = "INSERT INTO adm(nome, email, senha) VALUES (?, ?, md5(?));";
+        $SQL = "INSERT INTO adm(id_instituicao, nome, email, senha) VALUES (?, ?, ?, md5(?));";
 
         if ($stmt = $conexao->prepare($SQL)) {
-            $stmt->bind_param("sss", $this->nome, $this->email, $this->senha);
+            $stmt->bind_param("isss", $this->$instituicao, $this->nome, $this->email, $this->senha);
             if ($stmt->execute()) {
                 $stmt->close();
                 return true;
@@ -118,7 +119,7 @@ class Adm
     }
 */
 
-    public function read($pagina)
+    public function read($pagina, $instituicao)
     {
         $itensPorPagina = 10;
         $offset = ($pagina - 1) * $itensPorPagina;
@@ -127,11 +128,11 @@ class Adm
         $conexao = $meuBanco->getConexao();
 
         // Consulta paginada
-        $SQL = "SELECT * FROM adm ORDER BY nome ASC LIMIT ? OFFSET ?;";
+        $SQL = "SELECT * FROM adm ORDER BY nome ASC LIMIT ? OFFSET ? WHERE id_instituicao = ?;";
         $stmt = $conexao->prepare($SQL);
 
         if ($stmt) {
-            $stmt->bind_param("ii", $itensPorPagina, $offset);
+            $stmt->bind_param("iii", $itensPorPagina, $offset, $instituicao);
 
             if ($stmt->execute()) {
                 $result = $stmt->get_result();
@@ -141,16 +142,20 @@ class Adm
                 while ($linha = $result->fetch_object()) {
                     $adms[] = [
                         "id" => $linha->id,
+                        "instituicao" => $linha->instituicao,
                         "nome" => $linha->nome,
                         "email" => $linha->email
                     ];
                 }
 
                 // Consultar o total de administradores
-                $totalSQL = "SELECT COUNT(*) as total FROM adm;";
-                $totalResult = $conexao->query($totalSQL);
-                $totalRow = $totalResult->fetch_assoc();
-                $total = $totalRow['total'];
+                $stmt = $conexao->prepare("SELECT COUNT(*) as total FROM adm WHERE id_instituicao = ?");
+                $stmt->bind_param("i", $instituicao);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $row = $result->fetch_assoc();
+                $total = $row['total'];
+
 
                 return [
                     "status" => true,
@@ -178,12 +183,11 @@ class Adm
             die("Falha na conexão: " . $conexao->connect_error);
         }
 
-
-        $sql = "SELECT * FROM adm WHERE nome LIKE ?";
+        $sql = "SELECT * FROM adm WHERE nome LIKE ? and id_instituicao = ?";
         $stm = $conexao->prepare($sql);
 
         $busca = "%" . $this->nome . "%";
-        $stm->bind_param("s", $busca);
+        $stm->bind_param("si", $busca, $instituicao);
 
         $stm->execute();
         $resultado = $stm->get_result();
@@ -191,11 +195,11 @@ class Adm
 
         // Se não encontrou pelo nome, tenta pelo email
         if ($resultado->num_rows === 0) {
-            $sql = "SELECT * FROM adm WHERE email LIKE ?";
+            $sql = "SELECT * FROM adm WHERE email LIKE ? and id_instituicao = ?";
             $stm = $conexao->prepare($sql);
 
             $busca = "%" . $this->nome . "%";
-            $stm->bind_param("s", $busca);
+            $stm->bind_param("si", $busca, $instituicao);
 
             $stm->execute();
             $resultado = $stm->get_result();
@@ -219,15 +223,17 @@ class Adm
 
         return $adms;
     }
+    
+
     // Atualizar administrador por ID
     public function update()
     {
         $meuBanco = new Banco();
         $conexao = $meuBanco->getConexao();
 
-        $SQL = "UPDATE adm SET nome = ?, email = ?, senha = md5(?) WHERE id = ?;";
+        $SQL = "UPDATE adm SET nome = ?, email = ?, senha = md5(?) WHERE id = ? and id_instituicao = ?;";
         $stmt = $conexao->prepare($SQL);
-        $stmt->bind_param("sssi", $this->nome, $this->email, $this->senha, $this->id);
+        $stmt->bind_param("sssii", $this->nome, $this->email, $this->senha, $this->id, $this->instituicao);
 
         if ($stmt->execute()) {
             $stmt->close();
@@ -244,9 +250,9 @@ class Adm
         $meuBanco = new Banco();
         $conexao = $meuBanco->getConexao();
 
-        $SQL = "DELETE FROM adm WHERE id = ?;";
+        $SQL = "DELETE FROM adm WHERE id = ? and id_instituicao = ?;";
         if ($stmt = $conexao->prepare($SQL)) {
-            $stmt->bind_param("i", $this->id);
+            $stmt->bind_param("ii", $this->id, $this->instituicao);
             if ($stmt->execute()) {
                 $stmt->close();
                 return true;
@@ -304,6 +310,14 @@ class Adm
     public function getPapel()
     {
         return $this->papel;
+    }
+
+    public function setinstituicao($instituicao) {
+        $this->instituicao = $instituicao;
+    }
+
+    public function getinstituicao() {
+        return $this->instituicao;
     }
 }
 ?>

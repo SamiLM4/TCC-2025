@@ -31,7 +31,11 @@ if ($meutoken->validarToken($authorization) === true) {
         $filtro = urldecode($vetor[3]);
         $adm = new Adm();
         $adm->setNome($filtro);
-        $admSelecionado = $adm->readString(); 
+
+        $payloadRecuperado = $meutoken->getPayload();
+        $instituicao = $payloadRecuperado->instituicao;
+
+        $admSelecionado = $adm->readString($instituicao); 
         
         if ($admSelecionado) {
             $administradoresArray = [];
@@ -45,7 +49,6 @@ if ($meutoken->validarToken($authorization) === true) {
                     ];
                 }
             } else {
-                // Caso venha apenas 1 objeto
                 $p = $admSelecionado;
                 $administradoresArray[] = [
                     "id" => $p->getId(),

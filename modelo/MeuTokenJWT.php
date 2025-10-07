@@ -65,8 +65,11 @@ class MeuTokenJWT
         if (isset($parametro_claims->papel)) {
             $objPayload->papel = $parametro_claims->papel;
         }
-                if (isset($parametro_claims->cpf_medico)) {
+        if (isset($parametro_claims->cpf_medico)) {
             $objPayload->cpf_medico = $parametro_claims->cpf_medico;
+        }
+        if (isset($parametro_claims->instituicao)) {
+            $objPayload->instituicao = $parametro_claims->instituicao;
         }
 
 
