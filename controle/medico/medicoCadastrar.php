@@ -110,11 +110,6 @@ if ($meutoken->validarToken($autorization)) {
         ]
     ]);
 */
-    $cpfMedico = $obj->cpf;
-    $crmMedico = $obj->crm;
-    $emailMedico = $obj->email;
-    $senhaMedico = $obj->senha;
-    $nomeMedico = $obj->nome;
 
 
     // Sanitize input
@@ -127,7 +122,7 @@ if ($meutoken->validarToken($autorization)) {
     $medico->setEmail($emailMedico);
     $medico->setSenha($senhaMedico);
     $medico->setNome($nomeMedico);
-
+    $medico->setinstituicao($payloadRecuperado->instituicao);
 
     if ($medico->cadastrarMedico()) {
         echo json_encode([

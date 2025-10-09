@@ -24,9 +24,6 @@ $medico = new Medico();
 $medico->setEmail($emailMedico);
 $medico->setSenha($senhaMedico);
 
-//echo("Email: " . $medico->getEmail() . "<br>");
-//echo("Senha: " . $medico->getSenha() . "<br>");
-
 //die;
 
 if ($medico->login()) {
@@ -34,7 +31,7 @@ if ($medico->login()) {
 
     $objectClaimsToken = new stdClass();
     $objectClaimsToken->email = $medico->getEmail();   // universal
-//    $objectClaimsToken->senha = $medico->getSenha();   // universal
+    $objectClaimsToken->instituicao = $medico->getinstituicao();   // universal
     $objectClaimsToken->papel = $medico->getPapel();   // universal
     $objectClaimsToken->cpf_medico = $medico->getcpf();   // universal
 
@@ -46,6 +43,7 @@ if ($medico->login()) {
         "msg" => "Login realizado com sucesso!!!",
         "Medico" => [
             "cpf" => $medico->getCpf(),
+            "instituicao" => $medico->getinstituicao(),
             "crm" => $medico->getCrm(),
             "email" => $medico->getEmail(),
             "nome" => $medico->getNome()

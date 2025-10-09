@@ -81,8 +81,6 @@ $adm->setemail($email);
 $adm->setsenha($senha);
 $adm->setinstituicao($instituicao);
 
-if ($adm->read)
-
 if ($adm->update()) {
     echo json_encode(["status" => true, "msg" => "Administrador atualizado com sucesso"]);
 } else {

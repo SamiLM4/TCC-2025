@@ -14,6 +14,7 @@ if ($meutoken->validarToken($autorization) == true) {
     $payloadRecuperado = $meutoken->getPayload();
 
     $medico = new Medico();
+    $medico->setinstituicao($payloadRecuperado->instituicao);
 
     if (is_numeric($filtro)) {
         $medico->setCpf($filtro);

@@ -14,8 +14,6 @@ $adm = new Adm();
 $adm->setemail($dados->email);
 $adm->setsenha($dados->senha);
 
-
-
 if ($adm->login()) {
 
     $tokenJWT = new MeuTokenJWT();

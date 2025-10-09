@@ -22,10 +22,10 @@ if ($meutoken->validarToken($autorization) == true) {
 
         $medico = new Medico();
         $medico->setnome($nome);
+        $medico->setinstituicao($payloadRecuperado->instituicao);
         $medicoSelecionado = $medico->readNome();
 
         if ($medicoSelecionado) {
-            // Só acessa aqui se for diferente de null
             $relacionamento = new Relacao();
             $relacionamento->setCpfMedico($medicoSelecionado->getCpf());
 

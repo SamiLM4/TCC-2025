@@ -37,6 +37,7 @@ if ($meutoken->validarToken($autorization) == true) {
 
         $medico = new Medico();
         $medico->setCrm($crm);
+        $medico->setinstituicao($payloadRecuperado->instituicao);
         $medicoSelecionado = $medico->readCRM();
 
         // Verifica se houve erro na consulta (false) ou se não encontrou nada (null)

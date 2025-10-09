@@ -21,7 +21,9 @@ if ($meutoken->validarToken($autorization) == true) {
 
         $medico = new Medico();
         $medico->setCpf($cpf);
+        $medico->setinstituicao($payloadRecuperado->instituicao);
         $medicoSelecionado = $medico->readCPF();
+
 
         if ($medicoSelecionado && count($medicoSelecionado) > 0) {
             $primeiroMedico = $medicoSelecionado[0];

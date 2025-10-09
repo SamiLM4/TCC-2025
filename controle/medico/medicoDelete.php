@@ -50,6 +50,7 @@ if ($meutoken->validarToken($autorization)) {
 
         $medico = new Medico();
         $medico->setCpf($cpf);
+        $medico->setinstituicao($payloadRecuperado->instituicao);
 
         // Verifica se o médico existe antes de tentar deletar
         $medicoExistente = $medico->readCPF();

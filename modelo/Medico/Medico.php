@@ -10,6 +10,7 @@ class Medico
     private $senha;
     private $nome;
     private $papel = "medico";
+    private $instituicao;
 
     // Método necessário pela interface JsonSerializable para serialização do objeto para JSON
     public function jsonSerialize()
@@ -33,8 +34,8 @@ class Medico
             'cpf' => $this->getcpf(),
             'crm' => $this->getcrm(),
             'email' => $this->getemail(),
-            'nome' => $this->getnome()
-
+            'nome' => $this->getnome(),
+            'instituicao' => $this->getinstituicao()
         ];
     }
 
@@ -49,10 +50,10 @@ class Medico
             die("Falha na conexão: " . $conexao->connect_error);
         }
 
-        $SQL = "INSERT INTO medico (cpf, crm, email, senha, nome) VALUES (?, ?, ?, md5(?), ?);";
+        $SQL = "INSERT INTO medico (id_instituicao, cpf, crm, email, senha, nome) VALUES (?, ?, ?, ?, md5(?), ?);";
 
         if ($prepareSQL = $conexao->prepare($SQL)) {
-            $prepareSQL->bind_param("sssss", $this->cpf, $this->crm, $this->email, $this->senha, $this->nome);
+            $prepareSQL->bind_param("isssss", $this->instituicao, $this->cpf, $this->crm, $this->email, $this->senha, $this->nome);
             if ($prepareSQL->execute()) {
                 $prepareSQL->close();
                 return true;
@@ -86,14 +87,15 @@ class Medico
                 $matrizTupla = $prepareSQL->get_result();
 
                 if ($tupla = $matrizTupla->fetch_object()) {
+                    $this->setinstituicao($tupla->id_instituicao);
                     $this->setcpf($tupla->cpf);
                     $this->setcrm($tupla->crm);
                     $this->setemail($tupla->email);
                     $this->setnome($tupla->nome);
-                    return true;  // Login bem-sucedido
+                    return true;
                 }
                 $prepareSQL->close();
-                return false; // falha no login
+                return false;
             } else {
                 echo "Erro na execução da consulta: " . $prepareSQL->error;
                 return false;
@@ -157,10 +159,10 @@ class Medico
             die("Falha na conexão: " . $conexao->connect_error);
         }
 
-        $SQL = "SELECT * FROM medico ORDER BY nome ASC LIMIT ? OFFSET ?";
+        $SQL = "SELECT * FROM medico WHERE id_instituicao = ? ORDER BY nome ASC LIMIT ? OFFSET ?";
         $stm = $conexao->prepare($SQL);
         if ($stm) {
-            $stm->bind_param("ii", $itensPorPagina, $offset);
+            $stm->bind_param("iii", $this->instituicao, $itensPorPagina, $offset);
         }
 
 
@@ -177,16 +179,20 @@ class Medico
             while ($tupla = $resultado->fetch_object()) {
                 $vetorMedico[] = [
                     "cpf" => $tupla->cpf,
+                    "insituicao" => $tupla->id_instituicao,
                     "crm" => $tupla->crm,
                     "email" => $tupla->email,
                     "nome" => $tupla->nome
                 ];
             }
 
-            $totalSQL = "SELECT COUNT(*) as total FROM medico;";
-            $totalResult = $conexao->query($totalSQL);
-            $totalRow = $totalResult->fetch_assoc();
+            $stmt = $conexao->prepare("SELECT COUNT(*) as total FROM medico WHERE id_instituicao = ?");
+            $stmt->bind_param("i", $this->instituicao);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $totalRow = $result->fetch_assoc();
             $total = $totalRow['total'];
+            $stmt->close();
 
 
             return [
@@ -215,13 +221,13 @@ class Medico
             return false;
         }
 
-        $stm = $conexao->prepare("SELECT * FROM Medico WHERE crm = ?");
+        $stm = $conexao->prepare("SELECT * FROM Medico WHERE crm = ? AND id_instituicao = ?");
         if (!$stm) {
             error_log("Erro na preparação da consulta: " . $conexao->error);
             return false;
         }
 
-        $stm->bind_param("s", $this->crm);
+        $stm->bind_param("si", $this->crm, $this->instituicao);
         $medicos = [];
 
         if ($stm->execute()) {
@@ -262,10 +268,10 @@ class Medico
             die("Falha na conexão: " . $conexao->connect_error);
         }
 
-        $stm = $conexao->prepare("SELECT * FROM medico WHERE cpf LIKE ?");
+        $stm = $conexao->prepare("SELECT * FROM medico WHERE cpf LIKE ? AND id_instituicao = ?");
 
         $busca = "%" . $this->cpf . "%";
-        $stm->bind_param("s", $busca);
+        $stm->bind_param("si", $busca, $this->instituicao);
 
         if ($stm->execute()) {
             $resultado = $stm->get_result();
@@ -304,14 +310,14 @@ class Medico
                 throw new Exception("Falha na conexão: " . $conexao->connect_error);
             }
 
-            $sql = "SELECT * FROM Medico WHERE nome = ?";
+            $sql = "SELECT * FROM Medico WHERE nome = ? AND id_instituicao = ?";
             $stm = $conexao->prepare($sql);
 
             if (!$stm) {
                 throw new Exception("Erro ao preparar a query: " . $conexao->error);
             }
 
-            $stm->bind_param("s", $this->nome);
+            $stm->bind_param("si", $this->nome, $this->instituicao);
 
             if (!$stm->execute()) {
                 throw new Exception("Erro na execução da consulta: " . $stm->error);
@@ -352,11 +358,11 @@ class Medico
         }
 
 
-        $sql = "SELECT * FROM medico WHERE nome LIKE ?";
+        $sql = "SELECT * FROM medico WHERE nome LIKE ? AND id_insituicao = ?";
         $stm = $conexao->prepare($sql);
 
         $busca = "%" . $this->nome . "%";
-        $stm->bind_param("s", $busca);
+        $stm->bind_param("si", $busca, $this->instituicao);
 
         $stm->execute();
         $resultado = $stm->get_result();
@@ -364,11 +370,11 @@ class Medico
 
         // Se não encontrou pelo nome, tenta pelo email
         if ($resultado->num_rows === 0) {
-            $sql = "SELECT * FROM medico WHERE email LIKE ?";
+            $sql = "SELECT * FROM medico WHERE email LIKE ? AND id_insituicao = ?";
             $stm = $conexao->prepare($sql);
 
             $busca = "%" . $this->nome . "%";
-            $stm->bind_param("s", $busca);
+            $stm->bind_param("si", $busca, $this->instituicao);
 
             $stm->execute();
             $resultado = $stm->get_result();
@@ -409,12 +415,12 @@ class Medico
         FROM medico m
         LEFT JOIN relacao_medico_paciente rmp ON m.id = rmp.id_medico
         LEFT JOIN ia_results ia ON rmp.id_paciente = ia.id_paciente
-        WHERE m.cpf LIKE ? AND ia.id_table IS NULL
+        WHERE m.cpf LIKE ? AND ia.id_table IS NULL and m.id_insituicao = ?
     ";
 
         $stm = $conexao->prepare($sql);
         $busca = "%" . $this->cpf . "%";
-        $stm->bind_param("s", $busca);
+        $stm->bind_param("si", $busca, $this->instituicao);
 
         if ($stm->execute()) {
             $resultado = $stm->get_result();
@@ -457,12 +463,12 @@ class Medico
         FROM medico m
         LEFT JOIN relacao_medico_paciente rmp ON m.id = rmp.id_medico
         LEFT JOIN ia_results ia ON rmp.id_paciente = ia.id_paciente
-        WHERE (m.nome LIKE ? OR m.email LIKE ?) AND ia.id_table IS NULL
+        WHERE (m.nome LIKE ? OR m.email LIKE ?) AND ia.id_table IS NULL AND m.id_insituicao = ?
     ";
 
         $stm = $conexao->prepare($sql);
         $busca = "%" . $this->nome . "%";
-        $stm->bind_param("ss", $busca, $busca);
+        $stm->bind_param("ssi", $busca, $busca, $this->instituicao);
 
         $stm->execute();
         $resultado = $stm->get_result();
@@ -501,14 +507,14 @@ class Medico
                 throw new Exception("Falha na conexão: " . $conexao->connect_error);
             }
 
-            $sql = "UPDATE medico SET crm = ?, nome = ?, email = ?, senha = md5(?) WHERE cpf = ?";
+            $sql = "UPDATE medico SET crm = ?, nome = ?, email = ?, senha = md5(?) WHERE cpf = ? AND id_instituicao = ?";
             $stm = $conexao->prepare($sql);
 
             if (!$stm) {
                 throw new Exception("Erro ao preparar a consulta: " . $conexao->error);
             }
 
-            $stm->bind_param("sssss", $this->crm, $this->nome, $this->email, $this->senha, $this->cpf);
+            $stm->bind_param("sssssi", $this->crm, $this->nome, $this->email, $this->senha, $this->cpf, $this->instituicao);
 
             if ($stm->execute()) {
                 if ($stm->affected_rows === 0) {
@@ -541,11 +547,11 @@ class Medico
             die("Falha na conexão: " . $conexao->connect_error);
         }
 
-        $SQL = "DELETE FROM medico WHERE cpf = ?;";
+        $SQL = "DELETE FROM medico WHERE cpf = ? and id_instituicao = ?;";
 
 
         if ($prepareSQL = $conexao->prepare($SQL)) {
-            $prepareSQL->bind_param("s", $this->cpf);
+            $prepareSQL->bind_param("si", $this->cpf, $this->instituicao);
             if ($prepareSQL->execute()) {
                 $prepareSQL->close();
                 return true;
@@ -621,6 +627,15 @@ class Medico
     public function getPapel()
     {
         return $this->papel;
+    }
+
+    public function setinstituicao($instituicao)
+    {
+        $this->instituicao = $instituicao;
+    }
+    public function getinstituicao()
+    {
+        return $this->instituicao;
     }
 }
 ?>

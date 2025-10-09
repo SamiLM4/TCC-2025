@@ -41,7 +41,7 @@ class Adm
         $SQL = "INSERT INTO adm(id_instituicao, nome, email, senha) VALUES (?, ?, ?, md5(?));";
 
         if ($stmt = $conexao->prepare($SQL)) {
-            $stmt->bind_param("isss", $this->$instituicao, $this->nome, $this->email, $this->senha);
+            $stmt->bind_param("isss", $this->instituicao, $this->nome, $this->email, $this->senha);
             if ($stmt->execute()) {
                 $stmt->close();
                 return true;
@@ -69,6 +69,7 @@ class Adm
                 $resultado = $stmt->get_result();
                 if ($linha = $resultado->fetch_object()) {
                     $this->setid($linha->id);
+                    $this->setinstituicao($linha->id_instituicao);
                     $this->setnome($linha->nome);
                     $this->setemail($linha->email);
                     return true;
@@ -85,40 +86,6 @@ class Adm
         }
     }
 
-    /*
-    // Ler todos os administradores
-    public function read($pagina)
-    {
-        $meuBanco = new Banco();
-        $conexao = $meuBanco->getConexao();
-
-        $SQL = "SELECT * FROM adm;";
-        $stmt = $conexao->prepare($SQL);
-        if ($stmt->execute()) {
-            $result = $stmt->get_result();
-            $stmt->close();
-
-            if ($result->num_rows === 0) {
-                return null;
-            }
-
-            $adms = [];
-            while ($linha = $result->fetch_object()) {
-                $adms[] = [
-                    "id" => $linha->id,
-                    "nome" => $linha->nome,
-                    "email" => $linha->email
-                ];
-            }
-
-            return $adms;
-        } else {
-            echo "Erro na execução: " . $stmt->error;
-            return false;
-        }
-    }
-*/
-
     public function read($pagina, $instituicao)
     {
         $itensPorPagina = 10;
@@ -128,11 +95,12 @@ class Adm
         $conexao = $meuBanco->getConexao();
 
         // Consulta paginada
-        $SQL = "SELECT * FROM adm ORDER BY nome ASC LIMIT ? OFFSET ? WHERE id_instituicao = ?;";
+        $SQL = "SELECT * FROM adm WHERE id_instituicao = ? ORDER BY nome ASC LIMIT ? OFFSET ?;";
+
         $stmt = $conexao->prepare($SQL);
 
         if ($stmt) {
-            $stmt->bind_param("iii", $itensPorPagina, $offset, $instituicao);
+            $stmt->bind_param("iii", $instituicao, $itensPorPagina, $offset);
 
             if ($stmt->execute()) {
                 $result = $stmt->get_result();
@@ -142,7 +110,7 @@ class Adm
                 while ($linha = $result->fetch_object()) {
                     $adms[] = [
                         "id" => $linha->id,
-                        "instituicao" => $linha->instituicao,
+                        "instituicao" => $linha->id_instituicao,
                         "nome" => $linha->nome,
                         "email" => $linha->email
                     ];
@@ -171,10 +139,46 @@ class Adm
             echo "Erro ao preparar statement: " . $conexao->error;
             return false;
         }
+    }    
+    
+    public function readID()
+    {
+        $meuBanco = new Banco();
+        $conexao = $meuBanco->getConexao();
+
+        if ($conexao->connect_error) {
+            die("Falha na conexão: " . $conexao->connect_error);
+        }
+
+        $SQL = "SELECT * FROM adm WHERE id = ?;";
+
+        if ($stmt = $conexao->prepare($SQL)) {
+            $stmt->bind_param("i", $this->id);
+            if ($stmt->execute()) {
+                $resultado = $stmt->get_result();
+                if ($linha = $resultado->fetch_object()) {
+                    $this->setid($linha->id);
+                    $this->setnome($linha->nome);
+                    $this->setemail($linha->email);
+                    $this->setinstituicao($linha->id_instituicao);
+                    $stmt->close();
+                    return true;
+                }
+                $stmt->close();
+                return false;
+            } else {
+                echo "Erro na execução: " . $stmt->error;
+                return false;
+            }
+        } else {
+            echo "Erro na preparação: " . $conexao->error;
+            return false;
+        }
     }
 
+
     
-    public function readString()
+    public function readString($instituicao)
     {
         $meuBanco = new Banco();
         $conexao = $meuBanco->getConexao();
@@ -231,7 +235,7 @@ class Adm
         $meuBanco = new Banco();
         $conexao = $meuBanco->getConexao();
 
-        $SQL = "UPDATE adm SET nome = ?, email = ?, senha = md5(?) WHERE id = ? and id_instituicao = ?;";
+        $SQL = "UPDATE adm SET nome = ?, email = ?, senha = md5(?) WHERE id = ? AND id_instituicao = ?;";
         $stmt = $conexao->prepare($SQL);
         $stmt->bind_param("sssii", $this->nome, $this->email, $this->senha, $this->id, $this->instituicao);
 
@@ -250,7 +254,7 @@ class Adm
         $meuBanco = new Banco();
         $conexao = $meuBanco->getConexao();
 
-        $SQL = "DELETE FROM adm WHERE id = ? and id_instituicao = ?;";
+        $SQL = "DELETE FROM adm WHERE id = ? AND id_instituicao = ?;";
         if ($stmt = $conexao->prepare($SQL)) {
             $stmt->bind_param("ii", $this->id, $this->instituicao);
             if ($stmt->execute()) {

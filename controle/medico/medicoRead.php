@@ -12,9 +12,10 @@ $pagina = $vetor[2];
 
 if ($meutoken->validarToken($autorization) == true) {
     $payloadRecuperado = $meutoken->getPayload();
-
+    $instituicao = $payloadRecuperado->instituicao;
 
     $medico = new Medico();
+    $medico->setinstituicao($instituicao);
     $medicos = $medico->read($pagina);
 
     header("Content-Type: application/json");

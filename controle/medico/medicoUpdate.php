@@ -92,6 +92,7 @@ $medico->setCrm($crmMedico);
 $medico->setEmail($emailMedico);
 $medico->setSenha($senhaMedico);
 $medico->setNome($nomeMedico);
+$medico->setinstituicao($payloadRecuperado->instituicao);
 
 $resultado = $medico->update();
 
