@@ -84,6 +84,8 @@ if ($meutoken->validarToken($autorization) == true) {
     $Paciente->setNomeCuidador($nome_cuidador);
     $Paciente->setTelefoneCuidador($telefone_cuidador);
 
+    $Paciente->setinstituicao($payloadRecuperado->instituicao);
+
     if ($Paciente->cadastrarPaciente()) {
         http_response_code(201); // 201 Created
         echo json_encode([

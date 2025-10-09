@@ -97,6 +97,7 @@ $paciente->setProfissao($profissao);
 $paciente->setEstadoCivil($estado_civil);
 $paciente->setNomeCuidador($nome_cuidador);
 $paciente->setTelefoneCuidador($telefone_cuidador);
+$paciente->setinstituicao($payload->instituicao);
 
 // Executa o update
 $resultado = $paciente->update();

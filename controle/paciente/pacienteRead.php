@@ -20,6 +20,7 @@ if ($meutoken->validarToken($autorization) == true) {
 
 
     $paciente = new Paciente();
+    $paciente->setinstituicao($payloadRecuperado->instituicao);
     $dados = $paciente->read($pagina);
 
     header("Content-Type: application/json");

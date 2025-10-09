@@ -45,6 +45,7 @@ if (!preg_match('/^\d{11}$/', $cpf)) {
 // Instancia o paciente e tenta excluir
 $paciente = new Paciente();
 $paciente->setCpf($cpf);
+$paciente->setinstituicao($tokenJWT->getPayload()->instituicao);
 
 if ($paciente->delete()) {
     http_response_code(204); // No Content

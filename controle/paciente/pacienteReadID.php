@@ -32,6 +32,7 @@ if ($meutoken->validarToken($authorization) === true) {
 
         $filtro = urldecode($vetor[3]);
         $paciente = new Paciente();
+        $paciente->setinstituicao($meutoken->getPayload()->instituicao);
 
         if (is_numeric($filtro)) {
             $paciente->setCpf($filtro);
