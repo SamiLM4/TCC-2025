@@ -1,6 +1,8 @@
 <?php
 namespace Firebase\JWT;
+require_once __DIR__ . "/Banco.php";
 
+use Banco;
 use stdClass;
 use Firebase\JWT\Key;
 use Firebase\JWT\JWT;
@@ -17,7 +19,6 @@ require_once "jwt/SignatureInvalidException.php";
 
 require_once "jwt/ExpiredException.php";
 
-
 class MeuTokenJWT2
 {
     //chave de criptografia, defina uma chave forte e a mantenha segura.
@@ -31,12 +32,72 @@ class MeuTokenJWT2
     private $aud = 'http://localhost'; //destinatário do token
     private $sub = "acesso_sistema";   //assunto do token
     private $iat = "";  //momento de emissão
-    private $exp = "";     //momento de expiração
+    private $exp = "";  //momento de expiração
     private $nbf = ""; //não é válido antes do tempo especificado
     private $jti = "";  //Identificador único
     private $payload; //claims 
     //tempo de validade do token
     private $duracaoToken = 3600 * 24 * 30; //3600 segundos = 60 min
+
+    public function registrarToken($token, $payload)
+    {
+        $meuBanco = new Banco();
+        $conexao = $meuBanco->getConexao();
+
+        // Ajustado para incluir 'instituicao' e 'usado'
+        $SQL = "INSERT INTO licencas (token, email, instituicao, tipo_licenca, status, usado, expira_em)
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $conexao->prepare($SQL);
+
+        if (!$stmt) {
+            throw new Exception("Erro ao preparar query: " . $conexao->error);
+        }
+
+        // Cria variáveis separadas para passar por referência
+        $instituicao = null; // ainda não vinculada
+        $usado = 0; // token ainda não usado
+        $expira_em = date('Y-m-d H:i:s', $payload->exp);
+
+        $stmt->bind_param(
+            "ssissis",
+            $token,
+            $payload->email,
+            $instituicao,
+            $payload->tipo_licenca,
+            $payload->status,
+            $usado,
+            $expira_em
+        );
+
+        return $stmt->execute();
+    }
+
+
+    public function marcarUsado($token, $id_instituicao)
+    {
+        $meuBanco = new Banco();
+        $conexao = $meuBanco->getConexao();
+
+        $SQL = "UPDATE licencas SET usado = 1, instituicao = ? WHERE token = ?";
+        $stmt = $conexao->prepare($SQL);
+        $stmt->bind_param("is", $id_instituicao, $token);
+        return $stmt->execute();
+    }
+
+    public function verificarToken($token)
+    {
+        $meuBanco = new Banco();
+        $conexao = $meuBanco->getConexao();
+
+        $SQL = "SELECT * FROM licencas WHERE token = ?";
+        $stmt = $conexao->prepare($SQL);
+        $stmt->bind_param("s", $token);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        return $resultado->fetch_object();
+    }
+
 
     public function gerarToken($parametro_claims)
     {
@@ -59,10 +120,13 @@ class MeuTokenJWT2
         $objPayload->jti = bin2hex(random_bytes(16)); // gera um valor aleatório para jti;
 
         //Public Claims
-        
-        $objPayload->email = $parametro_claims->email;
-        $objPayload->senha = $parametro_claims->senha;
-        $objPayload->instituicao = $parametro_claims->instituicao;
+
+        $objPayload->email = $parametro_claims->email;           // email do comprador
+        $objPayload->tipo_licenca = $parametro_claims->tipo_licenca ?? "anual"; // tipo de licença
+        $objPayload->status = "ativa";                           // status inicial
+        $objPayload->chave_unica = uniqid("lic_", true);         // chave única da licença
+        $objPayload->usado = false;                              // indica se já foi usada
+        $objPayload->id_instituicao = null;                     // vai ser preenchido quando usado
 
         //Private claims
 //        $objPayload->id_prof = $parametro_claims->id_prof;
@@ -82,25 +146,25 @@ class MeuTokenJWT2
                 $remover = ["Bearer ", " "];
                 $token = str_replace($remover, "", $stringToken);
                 try {
-                   
+
                     $payloadValido = JWT::decode($token, new Key($this->key, $this->alg));
                     $this->setPayload($payloadValido);
-                   
+
                     return true;
                 } catch (SignatureInvalidException $e) {
                     // A assinatura do token é inválida.
                     //error_log("Invalid token signature: " . $e->getMessage());
-                   
+
                     return false;
                 } catch (BeforeValidException $e) {
                     // O token não é válido ainda (antes do tempo 'nbf').
                     //error_log("Token not valid yet: " . $e->getMessage());
-                    
+
                     return false;
                 } catch (ExpiredException $e) {
                     // O token expirou.
                     // error_log("Token expired: " . $e->getMessage());
-                    
+
                     return false;
                 } catch (InvalidArgumentException $e) {
                     // Argumento inválido passado.

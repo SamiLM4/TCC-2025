@@ -1,20 +1,35 @@
 create database tests_tcc;
 use tests_tcc;
 
+	CREATE TABLE licencas (
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		token VARCHAR(512) NOT NULL,
+		email VARCHAR(255),
+		instituicao INT DEFAULT NULL,
+		tipo_licenca VARCHAR(50),
+		status ENUM('ativa','inativa') DEFAULT 'ativa',
+		usado TINYINT(1) DEFAULT 0,
+		criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		expira_em TIMESTAMP NULL
+	);
+    
+    select * from licencas;
+    
 	create table instituicao (
 		id int primary key auto_increment,
         nome varchar(100) not null,
-        CEP VARCHAR(12),
+        CEP VARCHAR(12) not null,
         logradouro text,
         cidade VARCHAR(60),
         bairro varchar(50),
-        cnpj varchar(20) UNIQUE,
+        cnpj varchar(20) UNIQUE NOT NULL,
         tipo ENUM('público', 'privado', 'filantrópico'),
         telefone varchar(25),
         email varchar(155),
         site text,
         atividade ENUM('ativo', 'inativo') default 'ativo',
-        nome_responsavel varchar(100)
+        nome_responsavel varchar(100),
+        telefone_responsavel varchar(20)
     );
 
 	create table adm (
@@ -198,17 +213,22 @@ CREATE TABLE mensagens_chat (
 -- INSERTS ADM -- 
 
 INSERT INTO instituicao 
-(nome, CEP, logradouro, cidade, bairro, cnpj, tipo, telefone, email, site, atividade, nome_responsavel)
+(nome, CEP, logradouro, cidade, bairro, cnpj, tipo, telefone, email, site, atividade, nome_responsavel, telefone_responsavel)
 VALUES
-('Hospital Santa Luzia', '01311000', 'Av. Paulista, 1000', 'São Paulo', 'Bela Vista', '12345678000101', 'privado', '(11) 3234-1000', 'contato@santaluzia.com.br', 'www.santaluzia.com.br', 'ativo', 'Dr. Marcos Almeida'),
+('Hospital Santa Luzia', '01311000', 'Av. Paulista, 1000', 'São Paulo', 'Bela Vista', '12345678000101', 'privado', '(11) 3234-1000', 'contato@santaluzia.com.br', 'www.santaluzia.com.br', 'ativo', 
+'Dr. Marcos Almeida', '(55) 12 996789101'),
 
-('Hospital Público Central', '20040002', 'Rua da Saúde, 200', 'Rio de Janeiro', 'Centro', '23456789000112', 'público', '(21) 2222-3000', 'administracao@hpc.rj.gov.br', 'www.hpc.rj.gov.br', 'ativo', 'Dra. Patrícia Costa'),
+('Hospital Público Central', '20040002', 'Rua da Saúde, 200', 'Rio de Janeiro', 'Centro', '23456789000112', 'público', '(21) 2222-3000', 'administracao@hpc.rj.gov.br', 'www.hpc.rj.gov.br', 'ativo', 
+'Dra. Patrícia Costa', '(55) 12 996789102'),
 
-('Instituto Vida Plena', '30130000', 'Av. Amazonas, 500', 'Belo Horizonte', 'Centro', '34567890000123', 'filantrópico', '(31) 3333-4000', 'contato@vidaplena.org.br', 'www.vidaplena.org.br', 'ativo', 'Dr. Ricardo Moreira'),
+('Instituto Vida Plena', '30130000', 'Av. Amazonas, 500', 'Belo Horizonte', 'Centro', '34567890000123', 'filantrópico', '(31) 3333-4000', 'contato@vidaplena.org.br', 'www.vidaplena.org.br', 'ativo',
+'Dr. Ricardo Moreira', '(55) 12 996789103'),
 
-('Clínica São Rafael', '40010000', 'Rua das Flores, 150', 'Salvador', 'Comércio', '45678901000134', 'privado', '(71) 3444-5000', 'contato@saorafael.com.br', 'www.saorafael.com.br', 'ativo', 'Dra. Helena Santos'),
+('Clínica São Rafael', '40010000', 'Rua das Flores, 150', 'Salvador', 'Comércio', '45678901000134', 'privado', '(71) 3444-5000', 'contato@saorafael.com.br', 'www.saorafael.com.br', 'ativo',
+ 'Dra. Helena Santos', '(55) 12 996789104'),
 
-('Hospital Esperança', '80010010', 'Av. Curitiba, 250', 'Curitiba', 'Centro', '56789012000145', 'filantrópico', '(41) 3555-6000', 'contato@esperanca.org.br', 'www.esperanca.org.br', 'ativo', 'Dr. André Pires');
+('Hospital Esperança', '80010010', 'Av. Curitiba, 250', 'Curitiba', 'Centro', '56789012000145', 'filantrópico', '(41) 3555-6000', 'contato@esperanca.org.br', 'www.esperanca.org.br', 'ativo',
+'Dr. André Pires', '(55) 12 996789105');
 
 
 INSERT INTO adm (id_instituicao, nome, email, senha) VALUES 
@@ -263,7 +283,7 @@ INSERT INTO adm (id_instituicao, nome, email, senha) VALUES
 (2, 'adm49', 'adm49@gmail.com', MD5('adm49')),
 (2, 'adm50', 'adm50@gmail.com', MD5('adm50'));
 
-
+Select * from adm;
 -- INSERT MÉDICOS --
 
 INSERT INTO medico (id_instituicao, cpf, crm, email, senha, nome) VALUES
@@ -318,6 +338,8 @@ INSERT INTO medico (id_instituicao, cpf, crm, email, senha, nome) VALUES
 (2, '11111111159', 'CRM000049', 'medico49@gmail.com', MD5('med49'), 'Dr. Médico 49'),
 (2, '11111111160', 'CRM000050', 'medico50@gmail.com', MD5('med50'), 'Dr. Médico 50');
 
+Select * from medico;
+SELECT COUNT(*) as total FROM medico WHERE id_instituicao = 1;
 -- INSERT PACIENTES --
 
 INSERT INTO paciente (id_instituicao, cpf, nome, sexo, endereco, telefone, email, profissao, estado_civil, nome_cuidador, telefone_cuidador) VALUES
@@ -372,5 +394,6 @@ INSERT INTO paciente (id_instituicao, cpf, nome, sexo, endereco, telefone, email
 (2,'11111111159','Willian Ferreira','M','Rua Bela Rosa, 21','11990010049','willian.ferreira49@gmail.com','Estudante','Solteiro','Rita Ferreira','11988880049'),
 (2,'11111111160','Yara Rodrigues','F','Rua Primavera, 16','11990010050','yara.rodrigues50@gmail.com','Bancária','Casada','Renato Rodrigues','11988880050');
 
-
+select * from paciente;
+SELECT COUNT(*) as total FROM paciente WHERE id_instituicao = 2;
 #drop database tests_tcc;

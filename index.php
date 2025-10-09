@@ -191,6 +191,17 @@ $roteador->get("/mensagem/listar/(\d+)", function ($cpf_medico) {
     require_once("controle/mensagem/mensagemListar.php");
 });
 
+// INSTITUIÇÃO
+$roteador->post("/instituicao", function () {
+    require_once("controle/instituicao/instituicaoCadastrar.php");
+});
+
+
+// LICENÇA
+$roteador->post("/licenca/comprar", function () {
+    require_once("controle/licenca/licencaGerar.php");
+});
+
 /*
 $roteador->get("/ficha/diagnostico/(\d+)", function ($id) {
     require_once("controle/ficha/fichaReadID.php");
