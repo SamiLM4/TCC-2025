@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprar Licença</title>
+    <link rel="stylesheet" href="CSS/main.css">
+    <style>
+        /* ============================
+   Paleta de Cores
+   ============================ */
+        :root {
+            --cor-fundo-gradiente-inicio: #E0F2FE;
+            --cor-fundo-gradiente-fim: #F8FAFC;
+
+            --cor-container-fundo: #2c3e50;
+            --cor-container-sombra: rgba(12, 74, 110, 0.5);
+
+            --cor-texto-principal: #0d91d8;
+            --cor-texto-secundario: #38BDF8;
+
+            --cor-input-fundo: #FFFFFF;
+            --cor-input-texto: #075985;
+            --cor-input-borda: #075985;
+            --cor-input-focus: #0EA5E9;
+
+            --cor-botao-gradiente-inicio: #075985;
+            --cor-botao-gradiente-fim: #0EA5E9;
+            --cor-botao-gradiente-hover-inicio: #064E6C;
+            --cor-botao-gradiente-hover-fim: #38BDF8;
+            --cor-botao-texto: #FFFFFF;
+        }
+
+        /* ============================
+   Layout Base
+   ============================ */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, var(--cor-fundo-gradiente-inicio), var(--cor-fundo-gradiente-fim));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--cor-texto-principal);
+        }
+
+        /* ============================
+   Container Principal
+   ============================ */
+        .container {
+            background-color: var(--cor-container-fundo);
+            padding: 35px 45px;
+            border-radius: 14px;
+            width: 400px;
+            box-shadow: 0 6px 25px var(--cor-container-sombra);
+            color: var(--cor-texto-secundario);
+        }
+
+        /* ============================
+   Título
+   ============================ */
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--cor-texto-secundario);
+            font-size: 24px;
+        }
+
+        /* ============================
+   Campos de Entrada
+   ============================ */
+        input,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid var(--cor-input-borda);
+            font-size: 15px;
+            color: var(--cor-input-texto);
+            background-color: var(--cor-input-fundo);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--cor-input-focus);
+            box-shadow: 0 0 5px var(--cor-input-focus);
+        }
+
+        /* ============================
+   Botão
+   ============================ */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 18px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, var(--cor-botao-gradiente-inicio), var(--cor-botao-gradiente-fim));
+            color: var(--cor-botao-texto);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(7, 89, 133, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, var(--cor-botao-gradiente-hover-inicio), var(--cor-botao-gradiente-hover-fim));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(14, 165, 233, 0.5);
+        }
+
+        /* ============================
+   Mensagem de Retorno
+   ============================ */
+        #message {
+            margin-top: 20px;
+            text-align: center;
+            word-break: break-word;
+            color: var(--cor-texto-secundario);
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Comprar Licença</h1>
+
+        <input type="email" id="email" placeholder="Seu email" required>
+
+        <select id="tipo_licenca" required>
+            <option value="">Selecione o tipo de licença</option>
+            <option value="anual">Anual</option>
+        </select>
+
+        <button id="comprarBtn">Gerar Licença</button>
+        <button type="button" onclick="window.location.href='/index.html'">Voltar</button>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const button = document.getElementById('comprarBtn');
+        const message = document.getElementById('message');
+
+        button.addEventListener('click', async () => {
+            const email = document.getElementById('email').value.trim();
+            const tipo = document.getElementById('tipo_licenca').value;
+
+            if (!email || !tipo) {
+                message.style.color = 'red';
+                message.textContent = 'Por favor, preencha todos os campos.';
+                return;
+            }
+
+            const data = {
+                email: email,
+                tipo_licenca: tipo
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/licenca/comprar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.status) {
+                    message.style.color = 'lightgreen';
+                    message.innerHTML = `${result.msg}<br><strong>Token:</strong> <br><br> ${result.token}<br><br><strong>Expira em:</strong> ${result.expira_em}`;
+                } else {
+                    message.style.color = 'red';
+                    message.textContent = result.msg || 'Erro ao gerar licença.';
+                }
+            } catch (error) {
+                message.style.color = 'red';
+                message.textContent = 'Erro na conexão com a API.';
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+
+</html>

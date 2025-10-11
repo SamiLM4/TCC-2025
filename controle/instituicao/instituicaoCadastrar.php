@@ -27,7 +27,7 @@ $cidade = isset($dados->cidade) ? trim($dados->cidade) : null;
 $bairro = isset($dados->bairro) ? trim($dados->bairro) : null;
 $cnpj = trim($dados->cnpj);
 $tipo = trim($dados->tipo);
-$tiposValidos = ['público', 'privado', 'filantrópico'];
+$tiposValidos = ['publico', 'privado', 'filantropico'];
 
 if (!in_array($tipo, $tiposValidos)) {
     http_response_code(400);

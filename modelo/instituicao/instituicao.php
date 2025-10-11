@@ -188,7 +188,7 @@ class Instituicao
     public function setTipo($tipo)
     {
         $tipo = trim($tipo);
-        $tiposValidos = ['público', 'privado', 'filantrópico'];
+        $tiposValidos = ['publico', 'privado', 'filantropico'];
         if (!in_array($tipo, $tiposValidos)) {
             throw new Exception("Tipo de instituição inválido. Use: público, privado ou filantrópico.");
         }

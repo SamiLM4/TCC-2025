@@ -25,6 +25,7 @@ if ($adm->login()) {
 
     $novoToken = $tokenJWT->gerarToken($objectClaimsToken);
 
+
     echo json_encode([
         "cod" => 200,
         "msg" => "Login realizado com sucesso!!!",
