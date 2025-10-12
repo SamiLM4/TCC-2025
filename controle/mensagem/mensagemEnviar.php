@@ -26,6 +26,7 @@ $mensagem = new Mensagem();
 $mensagem->setCpfMedico($uriParts[3]);
 $mensagem->setMensagem(trim($body->mensagem));
 $mensagem->setOrigem($body->origem);
+$mensagem->setInstituicao($payloadRecuperado->instituicao);
 
 if ($mensagem->enviar()) {
     echo json_encode([

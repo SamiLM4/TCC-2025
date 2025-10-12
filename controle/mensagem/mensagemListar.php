@@ -18,6 +18,7 @@ if ($meutoken->validarToken($autorization) == true) {
         $cpf_medico = $vetor[3];
 
         $mensagem = new Mensagem();
+        $mensagem->setInstituicao($payloadRecuperado->instituicao);
         $mensagem->setCpfMedico($cpf_medico);
     $mensagens = $mensagem->listarMensagensMedico($cpf_medico);
 
