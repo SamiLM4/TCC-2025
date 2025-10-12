@@ -20,14 +20,12 @@ if (!isset($dados->email, $dados->tipo_licenca)) {
     exit();
 }
 
-// Cria objeto payload para gerar token
 $payload = new stdClass();
 $payload->email = trim($dados->email);
 $payload->tipo_licenca = trim($dados->tipo_licenca);
 $payload->status = "ativa";
-$payload->exp = time() + 3600 * 24 * 30; // token válido por 30 dias
+$payload->exp = time() + 3600 * 24 * 30 * 12; // token válido por 12 meses
 
-// Gera o token JWT
 $meutoken = new MeuTokenJWT2();
 $token = $meutoken->gerarToken($payload);
 

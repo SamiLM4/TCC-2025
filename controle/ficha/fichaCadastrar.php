@@ -146,7 +146,13 @@ try {
         $relacao->setcpfpaciente($cpf);
 
         $medico = new Medico();
-        $medico->setcpf($dados->cpf_medicoResponsavel);
+        if ($payloadRecuperado->papel == "adm") {
+            $medico->setcpf($dados->cpf_medicoResponsavel);
+        } else {
+            $medico->setcpf($payloadRecuperado->cpf_medico);
+        }
+
+        $medico->setinstituicao($payloadRecuperado->instituicao);
 
         $medico_array  = $medico->readCPF();
 

@@ -41,9 +41,10 @@ if ($payload->papel == "medico") {
 */
 
 $cpfPaciente = trim($body->cpf);
+$instituicao = $payload->instituicao;
 
 // Busca os dados da ficha
-$dados = buscarDadosFicha($cpfPaciente);
+$dados = buscarDadosFicha($cpfPaciente, $instituicao);
 
 ob_clean();
 ob_start();

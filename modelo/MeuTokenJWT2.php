@@ -22,7 +22,7 @@ require_once "jwt/ExpiredException.php";
 class MeuTokenJWT2
 {
     //chave de criptografia, defina uma chave forte e a mantenha segura.
-    private $key = "x9S4q0v+V0IjvHkG20uAxaHx1ijj+q1HWjHKv+ohxp/oK+77qyXkVj/l4QYHHTF3";
+    private $key = "x9S4q0v+V0IjvHkG20uAxaHx1ijj+q1HWjHKv+ohxp/oK+77qyXkVj/l4QYHHTF3a";
 
     //algoritmo de criptografia para assinatura
     //Suportados: 'HS256' , 'ES384','ES256', 'ES256K', ,'HS384', 'HS512', 'RS256', 'RS384'
@@ -36,8 +36,8 @@ class MeuTokenJWT2
     private $nbf = ""; //não é válido antes do tempo especificado
     private $jti = "";  //Identificador único
     private $payload; //claims 
-    //tempo de validade do token
-    private $duracaoToken = 3600 * 24 * 30; //3600 segundos = 60 min
+
+   // private $duracaoToken = 3600 * 24 * 30; //3600 segundos = 60 min
 
     public function registrarToken($token, $payload)
     {
@@ -115,7 +115,7 @@ class MeuTokenJWT2
         $objPayload->aud = $this->aud;        // destinatário do token
         $objPayload->sub = $this->sub;        // assunto do token  
         $objPayload->iat = time();            // momento de criação do token
-        $objPayload->exp = time() + $this->duracaoToken;   // momento de expiração = tempo atual + duração
+        $objPayload->exp = $parametro_claims->exp;   // momento de expiração = tempo atual + duração
         $objPayload->nbf = time();        // momento em que o token torna-se valido. 
         $objPayload->jti = bin2hex(random_bytes(16)); // gera um valor aleatório para jti;
 
@@ -128,11 +128,7 @@ class MeuTokenJWT2
         $objPayload->usado = false;                              // indica se já foi usada
         $objPayload->id_instituicao = null;                     // vai ser preenchido quando usado
 
-        //Private claims
-//        $objPayload->id_prof = $parametro_claims->id_prof;
 
-
-        // Utiliza a biblioteca do Firebase para gerar o token com os parâmetros
         $token = JWT::encode((array) $objPayload, $this->key, $this->alg, null, (array) $objHeaders);
         return $token;
     }

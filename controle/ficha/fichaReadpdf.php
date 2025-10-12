@@ -11,7 +11,7 @@ require_once "modelo/Medico/Medico.php";
 require_once "modelo/Paciente/Paciente.php";
 require_once "modelo/Medico/RelacaoMedicoPaciente.php";
 
-function buscarDadosFicha($cpfPaciente)
+function buscarDadosFicha($cpfPaciente, $instituicao)
 {
     $sintomas = new Sintomas();
     $sintomas->setCpf($cpfPaciente);
@@ -51,11 +51,13 @@ function buscarDadosFicha($cpfPaciente)
     $cpfMedico = isset($relacoes[0]) ? $relacoes[0]->getcpfmedico() : null;
 
     $medico = new Medico();
+    $medico->setinstituicao($instituicao);
     $medico->setcpf($cpfMedico);
     $medicos = $medico->readCPF();
     $nomeMedico = $medicos[0]->getNome();
 
     $paciente = new Paciente();
+    $paciente->setinstituicao($instituicao);
     $pacientes = $paciente->readCPF();
     $nomePaciente = $pacientes[0]->getNome();
 

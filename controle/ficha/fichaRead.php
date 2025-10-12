@@ -95,6 +95,7 @@ try {
 
         $medico = new Medico();
         $medico->setcpf($cpfMedico);
+        $medico->setinstituicao($payloadRecuperado->instituicao);
         $medicos = $medico->readCPF();
 
         $medicoResponsavelNome = !empty($medicos) && is_array($medicos) && is_object($medicos[0])
