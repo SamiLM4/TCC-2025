@@ -1,21 +1,238 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Principal</title>
-    <link rel="stylesheet" href="CSS/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Software de Pré-Diagnóstico</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
 
+    body {
+      background-color: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #0b2239;
+      color: white;
+      text-align: center;
+      padding: 30px 15px;
+    }
+
+    header img {
+      width: 120px;
+      height: auto;
+      margin-bottom: 15px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+
+    nav {
+      margin-top: 15px;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #4db6ff;
+    }
+
+    main {
+      flex: 1;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .video-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .video-container iframe {
+      width: 560px;
+      height: 315px;
+      max-width: 90%;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .participants {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .participant {
+      background-color: white;
+      border-radius: 20px;
+      padding: 25px;
+      width: 300px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .participant:hover {
+      transform: translateY(-5px);
+    }
+
+    .participant img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+    }
+
+    .participant h3 {
+      color: #0b2239;
+      margin-bottom: 5px;
+    }
+
+    .participant p {
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .socials img {
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .socials img:hover {
+      transform: scale(1.1);
+    }
+
+    footer {
+      background-color: #0b2239;
+      color: white;
+      text-align: center;
+      padding: 20px 10px;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: #4db6ff;
+      text-decoration: none;
+      margin: 0 10px;
+      transition: 0.3s;
+    }
+
+    footer a:hover {
+      color: white;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Bem-vindo ao Sistema</h1>
-        <a href="HTML/login.html" class="btn">Login</a>
-        <a href="HTML/comprar-licenca.html" class="btn secondary">Comprar Licença</a>
-        <a href="HTML/cadastrar-instituicao.html" class="btn">Cadastrar Instituição</a>
-    </div>
-</body>
 
+  <!-- ====== CABEÇALHO ====== -->
+  <header>
+    <img src="imagens/logo.jpg" alt="Logo do Software"> <!-- 🔧 Troque o caminho -->
+    <h1>Software de Pré-Diagnóstico de Doenças</h1>
+    <p>IA a serviço da saúde — simples, humana e transformadora.</p>
+    <p>Inovação com propósito: detectar cedo, cuidar melhor.</p>
+
+    <nav>
+      <a href="/HTML/comprar-licenca.html">Comprar Licença</a>
+      <a href="HTML/cadastrar-instituicao.html">Cadastrar Instituição</a>
+      <a href="HTML/login.html">Login</a>
+    </nav>
+  </header>
+
+  <!-- ====== CONTEÚDO PRINCIPAL ====== -->
+  <main>
+
+    <!-- Vídeo -->
+    <div class="video-container">
+      <iframe src="https://www.youtube.com/embed/qfZCkIbvnbM" 
+              title="Vídeo de introdução"
+              allowfullscreen></iframe>
+    </div>
+
+    <!-- Participantes -->
+    <div class="participants">
+      
+      <!-- MURILO -->
+      <div class="participant">
+        <img src="imagens/profile-pic-Murilo.png" alt="Murilo">
+        <h3>Murilo Gonçalves de Lima – 30/05/2008</h3>
+        <p>Desenvolvedor</p>
+        <p>Somos três amigos que desenvolvemos um software de pré-diagnóstico de Esclerose Múltipla como nosso Trabalho de Conclusão de Curso (TCC) em 2025.</p>
+        <div class="socials">
+          <a href="https://github.com/SamiLM4" target="_blank"><img src="imagens/github-icone.png" alt="GitHub"></a>
+          <a href="https://www.linkedin.com/in/murilo-gon%C3%A7alves-de-lima-dev/" target="_blank"><img src="imagens/linkedin.jpg" alt="LinkedIn"></a>
+        </div>
+      </div>
+
+      <!-- LUCAS -->
+      <div class="participant">
+        <img src="imagens/profile-pic-Murilo.png" alt="Lucas">
+        <h3>Lucas Marassi Cipriano Pereira – 10/08/2007</h3>
+        <p>Desenvolvedor</p>
+        <p>Demos nosso melhor, e o trabalho recebeu muitos elogios e ideias de implementação de novas funcionalidades, ficamos muito felizes pelo feedback, o que compensou todo o nosso esforço.</p>
+        <div class="socials">
+          <a href="https://github.com/SEU_GITHUB" target="_blank"><img src="imagens/github-icone.png" alt="GitHub"></a>
+          <a href="https://linkedin.com/in/SEU_LINKEDIN" target="_blank"><img src="imagens/linkedin.jpg" alt="LinkedIn"></a>
+        </div>
+      </div>
+
+      <!-- NICOLAS -->
+      <div class="participant">
+        <img src="imagens/profile-pic-Murilo.png" alt="Nicolas">
+        <h3>Nicolas Lorena Pimentel – 30/05/2008</h3>
+        <p>Desenvolvedor</p>
+        <p>Motivados pelo retorno positivo, resolvemos expandir o projeto e criar uma ferramenta acessível, que usa IA para interpretar diferentes tipos de exames e identificar possíveis doenças. Queremos que a tecnologia fale a língua das pessoas — simples, humana e feita para cuidar.</p>
+        <div class="socials">
+          <a href="https://github.com/SEU_GITHUB" target="_blank"><img src="imagens/github-icone.png" alt="GitHub"></a>
+          <a href="https://linkedin.com/in/SEU_LINKEDIN" target="_blank"><img src="imagens/linkedin.jpg" alt="LinkedIn"></a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ====== RODAPÉ ====== -->
+  <footer>
+    <p>
+      <a href="link_para_documentacao.html">Documentação do Sistema</a> |
+      <a href="link_para_sobre.html">Sobre o Projeto</a> |
+      <a href="link_para_tutorial.html">Tutorial do Sistema</a>
+    </p>
+  </footer>
+
+</body>
 </html>
