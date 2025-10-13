@@ -21,7 +21,6 @@
             background-color: #f4f4f4;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 220px;
             background-color: #2c3e50;
@@ -57,7 +56,6 @@
             background-color: #1abc9c;
         }
 
-        /* Conteúdo principal */
         .main-content {
             flex: 1;
             padding: 40px;
@@ -98,7 +96,6 @@
             background-color: #3498db;
         }
 
-        /* Cards */
         .cards-container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -137,7 +134,6 @@
 
 <body>
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>Menu</h2>
         <button onclick="removerNomeMedicoERedirecionar()">
@@ -148,24 +144,23 @@
         </button>
     </div>
 
-    <!-- Conteúdo principal -->
     <div class="main-content">
         <h1>Painel do Médico</h1>
 
+        <!-- 🔹 Área de input e botão dinâmico -->
         <div class="input-area" id="inputArea" style="display: none;">
             <input type="text" id="cpfMedico" placeholder="Digite o CPF do médico responsável">
-            <button onclick="vincularMedico()">Confirmar</button>
+            <button id="btnAcao" onclick="vincularMedico()">Confirmar</button>
         </div>
 
-        <div id="cardsContainer" class="cards-container" style="display: none;">
-            <!-- Cards aparecem aqui -->
-        </div>
+        <div id="cardsContainer" class="cards-container" style="display: none;"></div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const cpfPaciente = urlParams.get("cpf");
         const token = localStorage.getItem("token");
+        const papel = localStorage.getItem("papel"); // 🔹 Pegamos o papel
 
         function removerNomeMedicoERedirecionar() {
             localStorage.removeItem("nomeMedico");
@@ -176,7 +171,6 @@
             window.location.href = 'diagnostico.html';
         }
 
-        // 🔹 Função principal: verifica médico ao abrir a página
         async function verificarMedico() {
             if (!cpfPaciente) {
                 alert("CPF do paciente não encontrado na URL.");
@@ -188,7 +182,6 @@
             }
 
             try {
-                // 1️⃣ Buscar ficha do paciente
                 const resposta = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${token}` }
@@ -203,64 +196,98 @@
                 const medicoResponsavelNome = data.dados?.Medico_Responsavel;
 
                 if (medicoResponsavelNome && medicoResponsavelNome !== "Nenhuma relação médico-paciente encontrada") {
-                    // ✅ Já tem médico → agora buscamos o CPF dele
-                    try {
-                        const respostaMedico = await fetch(`http://localhost:8080/medico/nome/${encodeURIComponent(medicoResponsavelNome)}`, {
-                            method: "GET",
-                            headers: { "Authorization": `Bearer ${token}` }
-                        });
+                    const respostaMedico = await fetch(`http://localhost:8080/medico/nome/${encodeURIComponent(medicoResponsavelNome)}`, {
+                        method: "GET",
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
 
-                        const dataMedico = await respostaMedico.json();
-                        if (dataMedico.cod !== 200 || !dataMedico.Médico?.CPF) {
-                            alert("Erro ao buscar CPF do médico.");
-                            return;
-                        }
-
-                        const cpfMedico = dataMedico.Médico.CPF;
-                        // Passa CPF do paciente e do médico para mostrarCards
-                        mostrarCards(cpfPaciente, cpfMedico);
-
-                    } catch (erroMedico) {
-                        console.error("Erro ao buscar dados do médico:", erroMedico);
-                        alert("Não foi possível recuperar o CPF do médico.");
+                    const dataMedico = await respostaMedico.json();
+                    if (dataMedico.cod !== 200 || !dataMedico.Médico?.CPF) {
+                        alert("Erro ao buscar CPF do médico.");
+                        return;
                     }
 
+                    const cpfMedico = dataMedico.Médico.CPF;
+                    mostrarCards(cpfPaciente, cpfMedico);
                 } else {
-                    // ❌ Não tem médico → mostra input para vincular
-                    document.getElementById("inputArea").style.display = "block";
-                }
+                    // 🔹 Mostra a área de input conforme o papel
 
+                    const papel = localStorage.getItem("papel");
+                    const inputArea = document.getElementById("inputArea");
+                    inputArea.style.display = "block";
+
+                    if (papel === "medico") {
+                        inputArea.innerHTML = `
+                            <button onclick="vincularMedico()">Aderir paciente</button>
+                        `;
+                    } else {
+                        inputArea.innerHTML = `
+                            <input type="text" id="cpfMedico" placeholder="Digite o CPF do médico responsável">
+                            <button onclick="vincularMedico()">Confirmar</button>
+                        `;
+                    }
+
+
+                    const cpfInput = document.getElementById("cpfMedico");
+                    const botao = document.getElementById("btnAcao");
+
+                    inputArea.style.display = "block";
+
+                    if (papel === "medico") {
+                        cpfInput.style.display = "none";
+                        botao.textContent = "Aderir paciente";
+                    } else {
+                        cpfInput.style.display = "inline-block";
+                        botao.textContent = "Confirmar";
+                    }
+                }
             } catch (erro) {
                 console.error("Erro na requisição:", erro);
                 alert("Não foi possível verificar o paciente. Verifique a conexão com o servidor.");
             }
         }
 
-        // 🔹 Função para vincular médico via POST
+        // 🔹 POST adaptado
         async function vincularMedico() {
-            const cpfMedico = document.getElementById("cpfMedico").value.trim();
-            if (!cpfMedico) {
-                alert("Por favor, insira o CPF do médico.");
-                return;
-            }
-
+            const papel = localStorage.getItem("papel");
             const token = localStorage.getItem("token");
+
             if (!token) {
                 alert("Token não encontrado. Faça login novamente.");
                 return;
             }
 
+            let bodyRequest = {};
+            let url = `http://localhost:8080/ficha/${cpfPaciente}`;
+
+            // 🔹 Se for médico, não precisa inserir CPF nem mostrar input
+            if (papel === "medico") {
+                bodyRequest = {}; // Corpo mínimo para evitar erro no backend
+            }
+            // 🔹 Se for adm, precisa digitar o CPF do médico
+            else if (papel === "adm") {
+                const cpfMedico = document.getElementById("cpfMedico").value.trim();
+                if (!cpfMedico) {
+                    alert("Por favor, insira o CPF do médico.");
+                    return;
+                }
+                bodyRequest = { cpf_medicoResponsavel: cpfMedico };
+            }
+            else {
+                alert("Papel de usuário inválido ou não reconhecido.");
+                return;
+            }
+
             try {
-                const resposta = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
+                const resposta = await fetch(url, {
                     method: "POST",
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ cpf_medicoResponsavel: cpfMedico })
+                    body: JSON.stringify(bodyRequest)
                 });
 
-                // Tenta converter a resposta para JSON, mas evita erro caso não seja JSON válido
                 let data = {};
                 try {
                     data = await resposta.json();
@@ -268,19 +295,17 @@
                     console.warn("Resposta não contém JSON válido:", jsonErro);
                 }
 
-                // Verifica se o POST foi bem-sucedido (HTTP 2xx ou cod 200/201)
                 if (resposta.ok || data.cod === 200 || data.cod === 201) {
-                    alert("Médico responsável vinculado com sucesso!");
+                    alert("Paciente vinculado com sucesso!");
                     document.getElementById("inputArea").style.display = "none";
-                    // Reaproveita a função de verificação para habilitar os cards
                     verificarMedico();
                 } else {
-                    alert("Erro ao vincular médico: " + (data.msg || `Status HTTP ${resposta.status}`));
+                    alert("Erro ao vincular paciente: " + (data.msg || `Status HTTP ${resposta.status}`));
                 }
 
             } catch (erro) {
                 console.error("Erro na requisição:", erro);
-                alert("Não foi possível vincular o médico. Verifique a conexão com o servidor.");
+                alert("Não foi possível enviar a solicitação. Verifique a conexão com o servidor.");
             }
         }
 
@@ -288,30 +313,25 @@
             const container = document.getElementById("cardsContainer");
             container.style.display = "grid";
 
-            const editar = "false"; // parâmetro que será enviado na URL
-
             const cards = [
-                { nome: "Preencher Diagnóstico", icone: "fa-stethoscope", link: `anamnese/diagnostico.html?cpf=${encodeURIComponent(cpfPaciente)}&cpfM=${encodeURIComponent(cpfMedico)}` },
-                { nome: "Sintomas", icone: "fa-notes-medical", link: `anamnese/sintomas.html?cpf=${encodeURIComponent(cpfPaciente)}&cpfM=${encodeURIComponent(cpfMedico)}` },
-                { nome: "Histórico Médico", icone: "fa-hospital-user", link: `anamnese/historicoMedico.html?cpf=${encodeURIComponent(cpfPaciente)}&cpfM=${encodeURIComponent(cpfMedico)}` },
-                { nome: "Histórico Social", icone: "fa-users", link: `anamnese/historicoSocial.html?cpf=${encodeURIComponent(cpfPaciente)}&cpfM=${encodeURIComponent(cpfMedico)}` },
-                { nome: "Qualidade de Vida afetada pela EM", icone: "fa-heartbeat", link: `anamnese/qualidadeVida.html?cpf=${encodeURIComponent(cpfPaciente)}&cpfM=${encodeURIComponent(cpfMedico)}` },
-                { nome: "Exames Físicos", icone: "fa-user-md", link: `anamnese/examesFisicos.html?cpf=${encodeURIComponent(cpfPaciente)}&cpfM=${encodeURIComponent(cpfMedico)}` },
-                { nome: "Exames Complementares", icone: "fa-vials", link: `anamnese/examesComplementares.html?cpf=${encodeURIComponent(cpfPaciente)}&cpfM=${encodeURIComponent(cpfMedico)}` },
-                { nome: "Plano de Tratamento", icone: "fa-pills", link: `anamnese/planoTratamento.html?cpf=${encodeURIComponent(cpfPaciente)}&cpfM=${encodeURIComponent(cpfMedico)}` }
+                { nome: "Preencher Diagnóstico", icone: "fa-stethoscope", link: `anamnese/diagnostico.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
+                { nome: "Sintomas", icone: "fa-notes-medical", link: `anamnese/sintomas.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
+                { nome: "Histórico Médico", icone: "fa-hospital-user", link: `anamnese/historicoMedico.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
+                { nome: "Histórico Social", icone: "fa-users", link: `anamnese/historicoSocial.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
+                { nome: "Qualidade de Vida afetada pela EM", icone: "fa-heartbeat", link: `anamnese/qualidadeVida.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
+                { nome: "Exames Físicos", icone: "fa-user-md", link: `anamnese/examesFisicos.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
+                { nome: "Exames Complementares", icone: "fa-vials", link: `anamnese/examesComplementares.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
+                { nome: "Plano de Tratamento", icone: "fa-pills", link: `anamnese/planoTratamento.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` }
             ];
 
             container.innerHTML = cards.map(card => `
-        <div class="card" onclick="window.location.href='${card.link}'">
-          <i class="fas ${card.icone}"></i>
-          <h3>${card.nome}</h3>
-        </div>
-    `).join('');
+                <div class="card" onclick="window.location.href='${card.link}'">
+                  <i class="fas ${card.icone}"></i>
+                  <h3>${card.nome}</h3>
+                </div>
+            `).join('');
         }
 
-
-
-        // 🔹 Executa verificação ao carregar a página
         window.onload = verificarMedico;
     </script>
 
