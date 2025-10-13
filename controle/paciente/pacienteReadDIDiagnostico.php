@@ -22,6 +22,7 @@ $meutoken = new MeuTokenJWT();
 
 if ($meutoken->validarToken($authorization) === true) {
 
+
     if ($metodo === "GET") {
 
         if (!isset($vetor[3]) || empty($vetor[3])) {
@@ -33,7 +34,7 @@ if ($meutoken->validarToken($authorization) === true) {
         $filtro = urldecode($vetor[3]);
         $paciente = new Paciente();
         $paciente->setinstituicao($meutoken->getPayload()->instituicao);
-
+        
         if (is_numeric($filtro)) {
             $paciente->setCpf($filtro);
             $pacienteSelecionado = $paciente->readCPFdiagnostico();
@@ -69,6 +70,7 @@ if ($meutoken->validarToken($authorization) === true) {
                 "msg" => "Paciente(s) encontrado(s)",
                 "pacientes" => $pacientesArray
             ]);
+            
         } else {
             header("HTTP/1.1 404 Not Found");
             echo json_encode([

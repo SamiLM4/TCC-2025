@@ -54,8 +54,8 @@ if (!$dados || !isset($cpf)) {
 // SINTOMAS
 $sintomas = new Sintomas();
 $sintomas->setCpf(strip_tags($cpf));
-$sintomas->setSintomasIniciais(strip_tags($dados->sintomas->iniciais));
-$sintomas->setSintomasAtuais(strip_tags($dados->sintomas->atuais));
+$sintomas->setSintomasIniciais(strip_tags($dados->sintomas->sintomas_iniciais));
+$sintomas->setSintomasAtuais(strip_tags($dados->sintomas->sintomas_atuais));
 $sintomas->setFadiga(filter_var($dados->sintomas->fadiga, FILTER_VALIDATE_BOOLEAN));
 $sintomas->setProblemaVisao(strip_tags($dados->sintomas->problema_visao));
 $sintomas->setProblemaEquilibrio(filter_var($dados->sintomas->problema_equilibrio, FILTER_VALIDATE_BOOLEAN));
