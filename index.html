@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Software de Pré-Diagnóstico</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -79,63 +80,58 @@
       box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
     }
 
-    .participants {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 40px;
+    .system-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
     }
 
-    .participant {
+    .feature {
       background-color: white;
       border-radius: 20px;
-      padding: 25px;
-      width: 300px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      padding: 25px 20px;
+      box-shadow: 0px 6px 20px rgba(0,0,0,0.1);
       text-align: center;
-      transition: 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
     }
 
-    .participant:hover {
-      transform: translateY(-5px);
+    .feature:hover {
+      transform: translateY(-8px);
+      box-shadow: 0px 12px 25px rgba(0,0,0,0.15);
     }
 
-    .participant img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
+    .feature i {
+      font-size: 3rem;
       margin-bottom: 15px;
-    }
-
-    .participant h3 {
       color: #0b2239;
-      margin-bottom: 5px;
+      transition: transform 0.3s;
     }
 
-    .participant p {
-      font-size: 0.9rem;
-      margin-bottom: 10px;
-      line-height: 1.4;
+    .feature:hover i {
+      transform: scale(1.2);
     }
 
-    .socials {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 10px;
+    .feature h3 {
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+      color: #0b2239;
     }
 
-    .socials img {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      transition: 0.3s;
+    .feature p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #555;
     }
 
-    .socials img:hover {
-      transform: scale(1.1);
-    }
+    /* Diferentes cores para cada card */
+    .feature:nth-child(1) i { color: #4db6ff; }
+    .feature:nth-child(2) i { color: #ff8c42; }
+    .feature:nth-child(3) i { color: #00b894; }
+    .feature:nth-child(4) i { color: #e17055; }
+    .feature:nth-child(5) i { color: #6c5ce7; }
 
     footer {
       background-color: #0b2239;
@@ -155,14 +151,15 @@
     footer a:hover {
       color: white;
     }
+
   </style>
 </head>
 <body>
 
   <!-- ====== CABEÇALHO ====== -->
   <header>
-    <img src="imagens/logo.jpg" alt="Logo do Software"> <!-- 🔧 Troque o caminho -->
-    <h1>Software de Pré-Diagnóstico de Doenças</h1>
+    <img src="imagens/logo.jpg" alt="Logo do Software">
+    <h1>Software de Pré-Diagnóstico de Esclerose Múltipla</h1>
     <p>IA a serviço da saúde — simples, humana e transformadora.</p>
     <p>Inovação com propósito: detectar cedo, cuidar melhor.</p>
 
@@ -183,44 +180,39 @@
               allowfullscreen></iframe>
     </div>
 
-    <!-- Participantes -->
-    <div class="participants">
-      
-      <!-- MURILO -->
-      <div class="participant">
-        <img src="imagens/profile-pic-Murilo.png" alt="Murilo">
-        <h3>Murilo Gonçalves de Lima – 30/05/2008</h3>
-        <p>Desenvolvedor</p>
-        <p>Somos três amigos que desenvolvemos um software de pré-diagnóstico de Esclerose Múltipla como nosso Trabalho de Conclusão de Curso (TCC) em 2025.</p>
-        <div class="socials">
-          <a href="https://github.com/SamiLM4" target="_blank"><img src="imagens/github-icone.png" alt="GitHub"></a>
-          <a href="https://www.linkedin.com/in/murilo-gon%C3%A7alves-de-lima-dev/" target="_blank"><img src="imagens/linkedin.jpg" alt="LinkedIn"></a>
-        </div>
+    <!-- Explicação do Sistema com Ícones -->
+    <div class="system-info">
+
+      <div class="feature">
+        <i class="fas fa-eye"></i>
+        <h3>Detecção Precoce</h3>
+        <p>O sistema utiliza Inteligência Artificial Generativa para analisar imagens de ressonância magnética e identificar sinais iniciais de Esclerose Múltipla, permitindo intervenções médicas mais rápidas.</p>
       </div>
 
-      <!-- LUCAS -->
-      <div class="participant">
-        <img src="imagens/profile-pic-Murilo.png" alt="Lucas">
-        <h3>Lucas Marassi Cipriano Pereira – 10/08/2007</h3>
-        <p>Desenvolvedor</p>
-        <p>Demos nosso melhor, e o trabalho recebeu muitos elogios e ideias de implementação de novas funcionalidades, ficamos muito felizes pelo feedback, o que compensou todo o nosso esforço.</p>
-        <div class="socials">
-          <a href="https://github.com/SEU_GITHUB" target="_blank"><img src="imagens/github-icone.png" alt="GitHub"></a>
-          <a href="https://linkedin.com/in/SEU_LINKEDIN" target="_blank"><img src="imagens/linkedin.jpg" alt="LinkedIn"></a>
-        </div>
+      <div class="feature">
+        <i class="fas fa-users-cog"></i>
+        <h3>Gestão Completa</h3>
+        <p>Gerencie pacientes, médicos e administradores com segurança, mantendo histórico clínico completo e integridade dos dados.</p>
       </div>
 
-      <!-- NICOLAS -->
-      <div class="participant">
-        <img src="imagens/profile-pic-Murilo.png" alt="Nicolas">
-        <h3>Nicolas Lorena Pimentel – 30/05/2008</h3>
-        <p>Desenvolvedor</p>
-        <p>Motivados pelo retorno positivo, resolvemos expandir o projeto e criar uma ferramenta acessível, que usa IA para interpretar diferentes tipos de exames e identificar possíveis doenças. Queremos que a tecnologia fale a língua das pessoas — simples, humana e feita para cuidar.</p>
-        <div class="socials">
-          <a href="https://github.com/SEU_GITHUB" target="_blank"><img src="imagens/github-icone.png" alt="GitHub"></a>
-          <a href="https://linkedin.com/in/SEU_LINKEDIN" target="_blank"><img src="imagens/linkedin.jpg" alt="LinkedIn"></a>
-        </div>
+      <div class="feature">
+        <i class="fas fa-file-alt"></i>
+        <h3>Relatórios Automatizados</h3>
+        <p>Geração automática de relatórios técnicos de pré-análise, facilitando a triagem médica e fornecendo informações detalhadas de forma prática.</p>
       </div>
+
+      <div class="feature">
+        <i class="fas fa-shield-alt"></i>
+        <h3>Segurança e Confiabilidade</h3>
+        <p>Armazenamento seguro e protocolos de proteção garantem a privacidade dos pacientes e confiabilidade dos dados clínicos.</p>
+      </div>
+
+      <div class="feature">
+        <i class="fas fa-laptop-medical"></i>
+        <h3>Interface Intuitiva</h3>
+        <p>Design moderno e simples, permitindo que profissionais de saúde utilizem o sistema de forma prática, rápida e eficiente.</p>
+      </div>
+
     </div>
 
   </main>
