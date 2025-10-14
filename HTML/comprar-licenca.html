@@ -20,6 +20,7 @@
         </select>
 
         <button id="comprarBtn">Gerar Licença</button>
+        <button type="button" id="jaTenhoBtn">Já tenho licença</button>
         <button type="button" onclick="window.location.href='/index.html'">Voltar</button>
 
         <div id="message"></div>
@@ -28,6 +29,12 @@
     <script>
         const button = document.getElementById('comprarBtn');
         const message = document.getElementById('message');
+        const jaTenhoBtn = document.getElementById('jaTenhoBtn');
+
+        // Redireciona para a página de cadastro da instituição
+        jaTenhoBtn.addEventListener('click', () => {
+            window.location.href = "cadastrar-instituicao.html";
+        });
 
         button.addEventListener('click', async () => {
             const email = document.getElementById('email').value.trim();
@@ -39,17 +46,12 @@
                 return;
             }
 
-            const data = {
-                email: email,
-                tipo_licenca: tipo
-            };
+            const data = { email, tipo_licenca: tipo };
 
             try {
                 const response = await fetch('http://localhost:8080/licenca/comprar', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
@@ -57,7 +59,7 @@
 
                 if (result.status) {
                     message.style.color = 'lightgreen';
-                    message.innerHTML = `${result.msg}<br><strong>Token:</strong> <br><br> ${result.token}<br><br><strong>Expira em:</strong> ${result.expira_em}`;
+                    message.innerHTML = `${result.msg}<br><strong>Token:</strong><br><br>${result.token}<br><br><strong>Expira em:</strong> ${result.expira_em}`;
                 } else {
                     message.style.color = 'red';
                     message.textContent = result.msg || 'Erro ao gerar licença.';

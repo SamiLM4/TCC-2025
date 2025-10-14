@@ -217,7 +217,8 @@
 
                         const btnChat = document.getElementById("btnChat");
                         if (btnChat) {
-                            btnChat.href = "chat.html?cpf=" + medico.CPF;
+                             localStorage.setItem('cpfMedicoSelecionado', medico.CPF);
+                            btnChat.href = "chat.html";
                         }
 
                         // Preenche tabela de pacientes do médico
@@ -300,7 +301,8 @@
         carregarPacientes();
 
         function irparadiagnostico(cpf) {
-            window.location.href = "diagnostico.html?cpf=" + cpf;
+            localStorage.setItem('cpfSelecionado', cpf);
+            window.location.href = "diagnostico.html";
         }
 
         function filtrarPacientes() {
@@ -318,8 +320,8 @@
         }
 
         document.getElementById("logoutBtn").addEventListener("click", function () {
-            localStorage.clear(); // limpa token e nome do médico
-            window.location.href = "../index.html"; // redireciona para login
+            localStorage.clear(); 
+            window.location.href = "../index.html";
         });
 
     </script>

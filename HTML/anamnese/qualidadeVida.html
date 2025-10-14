@@ -113,7 +113,7 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const cpf = urlParams.get("cpf");
+      const cpf = localStorage.getItem('cpfSelecionado');
       const cpfM = urlParams.get("cpfM");
 
       if (!cpf) { alert("CPF do paciente ausente!"); return; }

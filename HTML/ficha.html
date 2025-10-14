@@ -157,10 +157,10 @@
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const cpfPaciente = urlParams.get("cpf");
+//        const urlParams = new URLSearchParams(window.location.search);
+        const cpfPaciente = localStorage.getItem('cpfSelecionado');
         const token = localStorage.getItem("token");
-        const papel = localStorage.getItem("papel"); // 🔹 Pegamos o papel
+        const papel = localStorage.getItem("papel");
 
         function removerNomeMedicoERedirecionar() {
             localStorage.removeItem("nomeMedico");
@@ -168,6 +168,7 @@
         }
 
         function diagnostico() {
+            localStorage.setItem('cpfSelecionado', cpfPaciente);
             window.location.href = 'diagnostico.html';
         }
 
@@ -313,14 +314,14 @@
             container.style.display = "grid";
 
             const cards = [
-                { nome: "Preencher Diagnóstico", icone: "fa-stethoscope", link: `anamnese/diagnostico.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
-                { nome: "Sintomas", icone: "fa-notes-medical", link: `anamnese/sintomas.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
-                { nome: "Histórico Médico", icone: "fa-hospital-user", link: `anamnese/historicoMedico.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
-                { nome: "Histórico Social", icone: "fa-users", link: `anamnese/historicoSocial.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
-                { nome: "Qualidade de Vida afetada pela EM", icone: "fa-heartbeat", link: `anamnese/qualidadeVida.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
-                { nome: "Exames Físicos", icone: "fa-user-md", link: `anamnese/examesFisicos.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
-                { nome: "Exames Complementares", icone: "fa-vials", link: `anamnese/examesComplementares.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` },
-                { nome: "Plano de Tratamento", icone: "fa-pills", link: `anamnese/planoTratamento.html?cpf=${cpfPaciente}&cpfM=${cpfMedico}` }
+                { nome: "Preencher Diagnóstico", icone: "fa-stethoscope", link: `anamnese/diagnostico.html?cpfM=${cpfMedico}` },
+                { nome: "Sintomas", icone: "fa-notes-medical", link: `anamnese/sintomas.html?cpfM=${cpfMedico}` },
+                { nome: "Histórico Médico", icone: "fa-hospital-user", link: `anamnese/historicoMedico.html?cpfM=${cpfMedico}` },
+                { nome: "Histórico Social", icone: "fa-users", link: `anamnese/historicoSocial.html?cpfM=${cpfMedico}` },
+                { nome: "Qualidade de Vida afetada pela EM", icone: "fa-heartbeat", link: `anamnese/qualidadeVida.html?cpfM=${cpfMedico}` },
+                { nome: "Exames Físicos", icone: "fa-user-md", link: `anamnese/examesFisicos.html?cpfM=${cpfMedico}` },
+                { nome: "Exames Complementares", icone: "fa-vials", link: `anamnese/examesComplementares.html?cpfM=${cpfMedico}` },
+                { nome: "Plano de Tratamento", icone: "fa-pills", link: `anamnese/planoTratamento.html?cpfM=${cpfMedico}` }
             ];
 
             container.innerHTML = cards.map(card => `

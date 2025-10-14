@@ -99,8 +99,7 @@
     const payload = jwt_decode(token);
     const papel = payload.papel;
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const cpfMedico = urlParams.get("cpf");
+    const cpfMedico = localStorage.getItem('cpfMedicoSelecionado');
 
     const mensagensContainer = document.getElementById("mensagensContainer");
 

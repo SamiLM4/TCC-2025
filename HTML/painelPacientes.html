@@ -361,9 +361,11 @@
 
         function abrirFicha() {
             if (cpfSelecionado) {
-                window.location.href = `fichaPaciente.html?cpf=${cpfSelecionado}`;
+                localStorage.setItem('cpfSelecionado', cpfSelecionado);
+                window.location.href = 'fichaPaciente.html';
             }
         }
+
 
         carregarPacientes();
 

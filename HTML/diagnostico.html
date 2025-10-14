@@ -55,6 +55,13 @@
       color: #1f2937;
     }
 
+    .nome-paciente {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #10b981;
+    }
+
     .card {
       background-color: #ffffff;
       padding: 25px;
@@ -191,12 +198,13 @@
   <div class="sidebar">
     <button id="voltarBtn">← Voltar</button>
   </div>
+
   <div class="main">
+    <div id="pacienteNome" class="nome-paciente">Carregando paciente...</div>
     <h2>Diagnóstico por Inteligência Artificial</h2>
 
     <div class="card" id="diagnosticoInfo">Carregando diagnóstico...</div>
 
-    <!-- Galeria de imagens -->
     <div class="galeria" id="galeriaImagens"></div>
 
     <div class="card">
@@ -214,40 +222,49 @@
   </div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const cpf = urlParams.get('cpf');
+    //const urlParams = new URLSearchParams(window.location.search);
+    const cpf = localStorage.getItem('cpfSelecionado');
     const token = localStorage.getItem('token');
 
-    const headers = {
-      'Authorization': `Bearer ${token}`
-    };
+    const headers = { 'Authorization': `Bearer ${token}` };
 
     const diagnosticoInfo = document.getElementById('diagnosticoInfo');
     const galeriaImagens = document.getElementById('galeriaImagens');
     const uploadBtn = document.getElementById('uploadBtn');
     const fileInput = document.getElementById('fileInput');
+    const pacienteNome = document.getElementById('pacienteNome');
 
     document.getElementById('voltarBtn').onclick = () => {
       window.location.href = `fichaPaciente.html?cpf=${cpf}`;
     };
 
-    let diagnosticoExiste = false;
+    async function carregarPaciente() {
+      try {
+        const res = await fetch(`http://localhost:8080/paciente/cpf/${cpf}`, { headers });
+        const data = await res.json();
+        if (data.cod === 200 && data.pacientes && data.pacientes.length > 0) {
+          pacienteNome.textContent = `Paciente: ${data.pacientes[0].nome}`;
+        } else {
+          pacienteNome.textContent = "Paciente não encontrado.";
+        }
+      } catch (err) {
+        console.error("Erro ao carregar paciente:", err);
+        pacienteNome.textContent = "Erro ao carregar informações do paciente.";
+      }
+    }
 
     function carregarDiagnostico() {
       fetch(`http://localhost:8080/ia/img/${cpf}`, { headers })
         .then(res => res.json())
         .then(data => {
           if (data.cod === 200) {
-            // Atualiza o card com nome, diagnóstico e data
             diagnosticoInfo.innerHTML = `
-          <p><strong>CPF:</strong> ${cpf}</p>
-          <p><strong>Nome:</strong> ${data.nome}</p>
-          <p><strong>Data:</strong> ${data.data}</p>
-          <hr>
-          <div>${data.diagnostico}</div>
-        `;
+              <p><strong>CPF:</strong> ${cpf}</p>
+              <p><strong>Data:</strong> ${data.data}</p>
+              <hr>
+              <div>${data.diagnostico}</div>
+            `;
 
-            // Galeria de imagens
             if (Array.isArray(data.imagens)) {
               galeriaImagens.innerHTML = "";
               data.imagens.forEach(imgBase64 => {
@@ -266,32 +283,11 @@
         });
     }
 
-
-    async function carregarImagens() {
-      try {
-        const res = await fetch(`http://localhost:8080/ia/img/${cpf}`, { headers });
-        const data = await res.json();
-
-        if (data.cod === 200 && Array.isArray(data.imagens)) {
-          galeriaImagens.innerHTML = "";
-          data.imagens.forEach(imgBase64 => {
-            const img = document.createElement("img");
-            img.src = `data:image/png;base64,${imgBase64}`;
-            galeriaImagens.appendChild(img);
-          });
-        }
-      } catch (err) {
-        console.error("Erro ao carregar imagens:", err);
-      }
-    }
-
-    // Upload de imagens
     document.getElementById('formUpload').onsubmit = async function (e) {
       e.preventDefault();
-
       const formData = new FormData(e.target);
       formData.append('cpf', cpf);
-      formData.append('diagnostico', ''); // opcional: enviar diagnóstico inicial vazio
+      formData.append('diagnostico', '');
 
       document.getElementById("loadingScreen").style.display = "flex";
 
@@ -305,7 +301,7 @@
         document.getElementById("loadingScreen").style.display = "none";
 
         if (response.ok) {
-          window.location.reload(); // recarrega para mostrar as imagens e o laudo salvos
+          window.location.reload();
         } else {
           const erro = await response.json();
           alert("Erro ao enviar imagens: " + (erro.msg || "Desconhecido"));
@@ -317,16 +313,11 @@
       }
     };
 
-    // Deletar diagnóstico
     document.getElementById('btnDeletar').onclick = async () => {
       if (!confirm("Tem certeza que deseja excluir este diagnóstico?")) return;
 
       try {
-        const res = await fetch(`http://localhost:8080/ia/${cpf}`, {
-          method: 'DELETE',
-          headers
-        });
-        const data = await res.json();
+        await fetch(`http://localhost:8080/ia/${cpf}`, { method: 'DELETE', headers });
         location.reload();
       } catch (err) {
         console.error("Erro ao deletar diagnóstico:", err);
@@ -334,16 +325,11 @@
       }
     };
 
-    fileInput.addEventListener('change', () => {
-      uploadBtn.disabled = diagnosticoExiste && fileInput.files.length === 0;
-    });
-
     window.onload = function () {
+      carregarPaciente();
       carregarDiagnostico();
-      carregarImagens();
     };
   </script>
-
 
   <div id="loadingScreen" style="display: none;">
     <div class="overlay">

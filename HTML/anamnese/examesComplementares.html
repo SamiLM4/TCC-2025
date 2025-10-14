@@ -99,8 +99,10 @@
         <textarea id="potenciais_evocados_somatossensoriais" name="potenciais_evocados_somatossensoriais" rows="2"
           placeholder="Registre os resultados dos potenciais evocados somatossensoriais"></textarea>
 
-        <label for="potenciais_evocados_auditivos_de_tronco_encefalico">Potenciais Evocados Auditivos de Tronco Encefálico:</label>
-        <textarea id="potenciais_evocados_auditivos_de_tronco_encefalico" name="potenciais_evocados_auditivos_de_tronco_encefalico" rows="2"
+        <label for="potenciais_evocados_auditivos_de_tronco_encefalico">Potenciais Evocados Auditivos de Tronco
+          Encefálico:</label>
+        <textarea id="potenciais_evocados_auditivos_de_tronco_encefalico"
+          name="potenciais_evocados_auditivos_de_tronco_encefalico" rows="2"
           placeholder="Registre os resultados dos potenciais auditivos de tronco"></textarea>
 
         <label for="analise_liquido_cefalorraquidiano">Análise do Líquido Cefalorraquidiano:</label>
@@ -126,7 +128,7 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const cpf = urlParams.get("cpf");
+      const cpf = localStorage.getItem('cpfSelecionado');
       const cpfM = urlParams.get("cpfM");
 
       if (!cpf) { alert("CPF do paciente ausente!"); return; }
@@ -219,4 +221,5 @@
     });
   </script>
 </body>
+
 </html>

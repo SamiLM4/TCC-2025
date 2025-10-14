@@ -6,35 +6,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Instituição</title>
     <link rel="stylesheet" href="CSS/main.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 30px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        #token {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 15px 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #0066cc;
+            color: white;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #004a99;
+        }
+
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
         <h1>Cadastrar Instituição</h1>
-        <!-- Campo do Token -->
+
         <input type="text" id="token" placeholder="Insira seu token de licença">
 
-        <!-- Formulário de cadastro -->
-        <input type="text" id="nome" placeholder="Nome da Instituição" required>
-        <input type="text" id="cep" placeholder="CEP" required>
-        <input type="text" id="logradouro" placeholder="Logradouro" required>
-        <input type="text" id="cidade" placeholder="Cidade" required>
-        <input type="text" id="bairro" placeholder="Bairro" required>
-        <input type="text" id="cnpj" placeholder="CNPJ" required>
-        <select id="tipo" required>
-            <option value="">Selecione o tipo</option>
-            <option value="privado">privado</option>
-            <option value="publico">publico</option>
-            <option value="publico">filantropico</option>
-        </select>
-        <input type="text" id="telefone" placeholder="Telefone" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="url" id="site" placeholder="Site">
-        <input type="text" id="nome_responsavel" placeholder="Nome do responsável" required>
-        <input type="text" id="telefone_responsavel" placeholder="Telefone do responsável" required>
+        <div class="form-grid">
+            <input type="text" id="nome" placeholder="Nome da Instituição" required>
+            <input type="text" id="cep" placeholder="CEP" required>
+            <input type="text" id="logradouro" placeholder="Logradouro" required>
+            <input type="text" id="cidade" placeholder="Cidade" required>
+            <input type="text" id="bairro" placeholder="Bairro" required>
+            <input type="text" id="cnpj" placeholder="CNPJ" required>
+            <select id="tipo" required>
+                <option value="">Selecione o tipo</option>
+                <option value="privado">Privado</option>
+                <option value="publico">Público</option>
+                <option value="filantropico">Filantrópico</option>
+            </select>
+            <input type="text" id="telefone" placeholder="Telefone" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="url" id="site" placeholder="Site">
+            <input type="text" id="nome_responsavel" placeholder="Nome do responsável" required>
+            <input type="text" id="telefone_responsavel" placeholder="Telefone do responsável" required>
+        </div>
 
-        <button id="cadastrarBtn">Cadastrar Instituição</button>
-        <button type="button" onclick="window.location.href='/index.html'">Voltar</button>
+        <div class="btn-group">
+            <button id="cadastrarBtn">Cadastrar Instituição</button>
+            <button type="button" onclick="window.location.href='/index.html'">Voltar</button>
+        </div>
+
         <div id="message"></div>
     </div>
 
@@ -77,7 +152,7 @@
                 const result = await response.json();
 
                 if (result.status) {
-                    message.style.color = 'lightgreen';
+                    message.style.color = 'green';
                     message.innerHTML = `${result.msg}<br>Login ADM: ${result.login_adm}<br>Senha ADM: ${result.senha_adm}`;
                 } else {
                     message.style.color = 'red';

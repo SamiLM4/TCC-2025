@@ -82,8 +82,7 @@
 
         // Pega CPF da URL
         function getCPFfromURL() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get("cpf");
+            return localStorage.getItem('cpfMedicoSelecionado');
         }
 
         const cpf = getCPFfromURL();

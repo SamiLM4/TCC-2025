@@ -58,9 +58,17 @@
 
     .main-content h1 {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 5px;
       font-size: 32px;
       color: #2c3e50;
+    }
+
+    #nomePaciente {
+      text-align: center;
+      color: #16a085;
+      font-size: 22px;
+      margin-bottom: 30px;
+      font-weight: bold;
     }
 
     .section {
@@ -126,6 +134,7 @@
 
   <div class="main-content">
     <h1>Ficha do Paciente</h1>
+    <div id="nomePaciente">Carregando nome...</div>
     <div id="ficha">Carregando ficha...</div>
 
     <div class="actions">
@@ -136,17 +145,38 @@
     </div>
   </div>
 
-
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const cpf = urlParams.get("cpf");
+    const cpf = localStorage.getItem('cpfSelecionado');
     const token = localStorage.getItem("token");
 
     const fichaDiv = document.getElementById("ficha");
+    const nomePacienteDiv = document.getElementById("nomePaciente");
 
     if (!cpf || !token) {
       fichaDiv.innerText = "CPF ou token não encontrado. Faça login novamente.";
       throw new Error("CPF ou token ausente.");
+    }
+
+    // Busca o nome do paciente
+    async function carregarNomePaciente() {
+      try {
+        const resposta = await fetch(`http://localhost:8080/paciente/cpf/${cpf}`, {
+          method: "GET",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        const data = await resposta.json();
+
+        if (data.cod === 200 && data.pacientes && data.pacientes.length > 0) {
+          const nome = data.pacientes[0].nome;
+          nomePacienteDiv.textContent = `Paciente: ${nome}`;
+        } else {
+          nomePacienteDiv.textContent = "Paciente não encontrado.";
+        }
+      } catch (err) {
+        nomePacienteDiv.textContent = "Erro ao carregar nome do paciente.";
+      }
     }
 
     // Carrega a ficha do paciente
@@ -175,8 +205,6 @@
         const hs = d.historico_social;
         const pt = d.plano_tratamento;
         const qv = d.qualidade_vida_em;
-
-        //        alert(s.problema_visao);
 
         fichaDiv.innerHTML = `
         <div class="section"><strong>Médico Responsável:</strong> ${d["Medico_Responsavel"]}</div>
@@ -255,11 +283,14 @@
       }
     }
 
+    // Executa ambas as funções ao carregar
+    carregarNomePaciente();
     carregarFicha();
 
     // Botões
     function editarFicha() {
-      window.location.href = `ficha.html?cpf=${cpf}&editar=true`;
+      localStorage.setItem('cpfSelecionado', cpf);
+      window.location.href = `ficha.html`;
     }
 
     function excluirFicha() {
@@ -267,9 +298,7 @@
 
       fetch(`http://localhost:8080/ficha/${cpf}`, {
         method: "DELETE",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
+        headers: { "Authorization": `Bearer ${token}` }
       })
         .then(res => res.json())
         .then(json => {
@@ -280,55 +309,45 @@
             alert("Erro ao excluir ficha: " + json.msg);
           }
         })
-        .catch(err => {
-          alert("Erro na requisição: " + err.message);
-        });
+        .catch(err => alert("Erro na requisição: " + err.message));
       location.reload();
     }
 
     function cadastrarFicha() {
-      window.location.href = `ficha.html?cpf=${cpf}&editar=false`;
+      localStorage.setItem('cpfSelecionado', cpf);
+      window.location.href = `ficha.html`;
     }
 
     function gerarPdf() {
-      const bodyEnviar = { cpf: cpf }; // seu JSON com o CPF
-
+      const bodyEnviar = { cpf: cpf };
       fetch('http://localhost:8080/ficha/pdf', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json' // importante enviar JSON
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(bodyEnviar)
       })
         .then(res => {
           if (!res.ok) throw new Error('Erro na requisição: ' + res.statusText);
-          return res.blob();  // pega o conteúdo como arquivo binário
+          return res.blob();
         })
         .then(blob => {
-          // cria url temporária para o arquivo
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = 'ficha_paciente.pdf'; // nome do arquivo no download
+          a.download = 'ficha_paciente.pdf';
           document.body.appendChild(a);
-          a.click();   // força o download
+          a.click();
           a.remove();
-          window.URL.revokeObjectURL(url);  // libera memória
+          window.URL.revokeObjectURL(url);
         })
-        .catch(err => {
-          alert(err.message);
-        });
-    }
-
-
-
-    function montarJSON() {
-      return { cpf: cpf };
+        .catch(err => alert(err.message));
     }
 
     function diagnostico() {
-      window.location.href = `diagnostico.html?cpf=${cpf}`;
+      localStorage.setItem('cpfSelecionado', cpf);
+      window.location.href = `diagnostico.html`;
     }
 
     function removerNomeMedicoERedirecionar() {
@@ -337,7 +356,5 @@
     }
   </script>
 
-
 </body>
-
 </html>

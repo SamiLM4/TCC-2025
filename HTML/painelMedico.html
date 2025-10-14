@@ -196,12 +196,15 @@
 
 
         function selecionarMedico(cpf) {
-            window.location.href = `detalhesMedico.html?cpf=${cpf}`;
+            localStorage.setItem('cpfMedicoSelecionado', cpf);
+            window.location.href = 'detalhesMedico.html';
         }
 
         function abrirChat(cpf) {
-            window.location.href = `chat.html?cpf=${cpf}`;
+            localStorage.setItem('cpfMedicoSelecionado', cpf);
+            window.location.href = 'chat.html';
         }
+
 
         function excluirMedico(cpf) {
             if (confirm("Tem certeza que deseja excluir este médico?")) {
