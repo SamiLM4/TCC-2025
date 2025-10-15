@@ -141,14 +141,23 @@
                     listaPacientes.forEach(paciente => {
                         const row = document.createElement("tr");
 
-                        row.innerHTML = `
+                        if (papel === 'medico') {
+                            row.innerHTML = `
                         <td class="texto-tabela" data-label="Nome">${paciente.nome}</td>
                         <td class="texto-tabela" data-label="CPF">${paciente.cpf}</td>
                         <td class="texto-tabela" data-label="Email">${paciente.email}</td>
                         <td data-label="Selecionar"><button onclick='abrirSidebar(${JSON.stringify(paciente)})'>Selecionar</button></td>
                         <td data-label="Excluir"><button class="btn-excluir" onclick='excluirPaciente("${paciente.cpf}")'>Excluir</button></td>
                         `;
-
+                        } else {
+                            row.innerHTML = `
+                        <td class="texto-tabela" data-label="Nome">${paciente.nome}</td>
+                        <td class="texto-tabela" data-label="CPF">${paciente.cpf}</td>
+                        <td class="texto-tabela" data-label="Email">${paciente.email}</td>
+                        <td data-label="Selecionar"><button onclick='abrirSidebar(${JSON.stringify(paciente)})'>Selecionar</button></td>
+                        <td data-label="Excluir"><button class="btn-excluir" onclick='excluirPaciente("${paciente.cpf}")'>Excluir</button></td>
+                        `;
+                        }
                         tabelaBody.appendChild(row);
                     });
 
