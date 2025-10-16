@@ -156,8 +156,9 @@
         <div id="cardsContainer" class="cards-container" style="display: none;"></div>
     </div>
 
+    <!-- 🔹 Mantém todo o HTML e CSS iguais -->
+
     <script>
-//        const urlParams = new URLSearchParams(window.location.search);
         const cpfPaciente = localStorage.getItem('cpfSelecionado');
         const token = localStorage.getItem("token");
         const papel = localStorage.getItem("papel");
@@ -173,110 +174,73 @@
         }
 
         async function verificarMedico() {
-            if (!cpfPaciente) {
-                alert("CPF do paciente não encontrado na URL.");
-                return;
-            }
-            if (!token) {
-                alert("Token não encontrado. Faça login novamente.");
-                return;
-            }
+            if (!cpfPaciente) { alert("CPF do paciente não encontrado."); return; }
+            if (!token) { alert("Token não encontrado. Faça login novamente."); return; }
 
             try {
                 const resposta = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${token}` }
                 });
-
                 const data = await resposta.json();
-                if (data.cod !== 200) {
-                    alert("Erro ao buscar dados: " + (data.msg || "Erro desconhecido."));
-                    return;
-                }
+                if (data.cod !== 200) { alert("Erro ao buscar dados: " + data.msg); return; }
 
                 const medicoResponsavelNome = data.dados?.Medico_Responsavel;
 
-                if (medicoResponsavelNome && medicoResponsavelNome !== "Nenhuma relação médico-paciente encontrada") {
-                    const respostaMedico = await fetch(`http://localhost:8080/medico/nome/${encodeURIComponent(medicoResponsavelNome)}`, {
-                        method: "GET",
-                        headers: { "Authorization": `Bearer ${token}` }
-                    });
-
-                    const dataMedico = await respostaMedico.json();
-                    if (dataMedico.cod !== 200 || !dataMedico.Médico?.CPF) {
-                        alert("Erro ao buscar CPF do médico.");
-                        return;
-                    }
-
-                    const cpfMedico = dataMedico.Médico.CPF;
-                    mostrarCards(cpfPaciente, cpfMedico);
-                } else {
-                    // 🔹 Mostra a área de input conforme o papel
-
-                    const papel = localStorage.getItem("papel");
-                    const inputArea = document.getElementById("inputArea");
+                // 🔹 Se for ADM, permite alterar
+                const inputArea = document.getElementById("inputArea");
+                if (papel === "adm") {
+                    inputArea.innerHTML = `
+                    <label>Atual médico: ${medicoResponsavelNome || "Nenhum"}</label><br><br>
+                    <input type="text" id="cpfMedico" placeholder="Digite o CPF do novo médico responsável">
+                    <button onclick="alterarMedico()">Alterar Médico</button>
+                `;
                     inputArea.style.display = "block";
-
-                    if (papel === "medico") {
-                        inputArea.innerHTML = `
-                            <button onclick="vincularMedico()">Aderir paciente</button>
-                        `;
-                    } else {
-                        inputArea.innerHTML = `
-                            <input type="text" id="cpfMedico" placeholder="Digite o CPF do médico responsável">
-                            <button onclick="vincularMedico()">Confirmar</button>
-                        `;
-                    }
-
-
-                    const cpfInput = document.getElementById("cpfMedico");
-                    const botao = document.getElementById("btnAcao");
-
-                    inputArea.style.display = "block";
-
-                    if (papel === "medico") {
-                        cpfInput.style.display = "none";
-                        botao.textContent = "Aderir paciente";
-                    } else {
-                        cpfInput.style.display = "inline-block";
-                        botao.textContent = "Confirmar";
-                    }
                 }
+
+                // 🔹 Se não tiver médico vinculado, mostra para médicos aderirem
+                if (!medicoResponsavelNome && papel === "medico") {
+                    inputArea.innerHTML = `<button onclick="vincularMedico()">Aderir paciente</button>`;
+                    inputArea.style.display = "block";
+                }
+
+                const cpfMedico = await buscarCpfMedico(medicoResponsavelNome);
+                mostrarCards(cpfPaciente, cpfMedico);
+
             } catch (erro) {
                 console.error("Erro na requisição:", erro);
             }
         }
 
-        // 🔹 POST adaptado
+        async function buscarCpfMedico(nomeMedico) {
+            if (!nomeMedico) return "";
+            try {
+                const resposta = await fetch(`http://localhost:8080/medico/nome/${encodeURIComponent(nomeMedico)}`, {
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                const data = await resposta.json();
+                if (data.cod === 200 && data.Médico?.CPF) return data.Médico.CPF;
+            } catch (erro) { console.warn("Erro ao buscar CPF do médico:", erro); }
+            return "";
+        }
+
+        // 🔹 Vincular paciente (médico ou adm)
         async function vincularMedico() {
             const papel = localStorage.getItem("papel");
             const token = localStorage.getItem("token");
-
-            if (!token) {
-                alert("Token não encontrado. Faça login novamente.");
-                return;
-            }
+            if (!token) { alert("Token não encontrado."); return; }
 
             let bodyRequest = {};
             let url = `http://localhost:8080/ficha/${cpfPaciente}`;
 
-            // 🔹 Se for médico, não precisa inserir CPF nem mostrar input
             if (papel === "medico") {
-                bodyRequest = {}; // Corpo mínimo para evitar erro no backend
-            }
-            // 🔹 Se for adm, precisa digitar o CPF do médico
-            else if (papel === "adm") {
+                bodyRequest = {};
+            } else if (papel === "adm") {
                 const cpfMedico = document.getElementById("cpfMedico").value.trim();
-                if (!cpfMedico) {
-                    alert("Por favor, insira o CPF do médico.");
-                    return;
-                }
+                if (!cpfMedico) { alert("Insira o CPF do médico."); return; }
                 bodyRequest = { cpf_medicoResponsavel: cpfMedico };
-            }
-            else {
-                alert("Papel de usuário inválido ou não reconhecido.");
-                return;
-            }
+            } else { alert("Papel inválido."); return; }
 
             try {
                 const resposta = await fetch(url, {
@@ -288,24 +252,63 @@
                     body: JSON.stringify(bodyRequest)
                 });
 
-                let data = {};
-                try {
-                    data = await resposta.json();
-                } catch (jsonErro) {
-                    console.warn("Resposta não contém JSON válido:", jsonErro);
-                }
-
+                const data = await resposta.json().catch(() => ({}));
                 if (resposta.ok || data.cod === 200 || data.cod === 201) {
                     alert("Paciente vinculado com sucesso!");
                     document.getElementById("inputArea").style.display = "none";
                     verificarMedico();
-                } else {
-                    alert("Erro ao vincular paciente: " + (data.msg || `Status HTTP ${resposta.status}`));
-                }
+                } else { alert("Erro: " + (data.msg || resposta.status)); }
+
+            } catch (erro) { console.error(erro); alert("Não foi possível enviar a solicitação."); }
+        }
+
+        // 🔹 ALTERAR médico (somente ADM)
+        async function alterarMedico() {
+            const cpfNovoMedico = document.getElementById("cpfMedico").value.trim();
+            if (!cpfNovoMedico) { alert("Digite o CPF do novo médico."); return; }
+
+            try {
+                // Primeiro, pega os dados atuais do paciente
+                const respostaGet = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                const dataAtual = await respostaGet.json();
+                if (dataAtual.cod !== 200) { alert("Erro ao buscar dados atuais."); return; }
+
+                const dados = dataAtual.dados;
+
+                // Corpo do PUT mantendo todos os dados atuais, mas alterando apenas o médico
+                const bodyPut = {
+                    cpf_medicoResponsavel: cpfNovoMedico,
+                    sintomas: dados.sintomas,
+                    diagnostico: dados.diagnostico,
+                    exame_fisico: dados.exame_fisico,
+                    exames_complementares: dados.exames_complementares,
+                    historico_medico: dados.historico_medico,
+                    historico_social: dados.historico_social,
+                    plano_tratamento: dados.plano_tratamento,
+                    qualidade_vida_em: dados.qualidade_vida_em
+                };
+
+                const respostaPut = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(bodyPut)
+                });
+
+                const dataPut = await respostaPut.json();
+                if (respostaPut.ok && dataPut.cod === 200) {
+                    alert("Médico alterado com sucesso!");
+                    verificarMedico();
+                } else { alert("Erro ao alterar médico: " + (dataPut.msg || respostaPut.status)); }
 
             } catch (erro) {
-                console.error("Erro na requisição:", erro);
-                alert("Não foi possível enviar a solicitação. Verifique a conexão com o servidor.");
+                console.error("Erro ao alterar médico:", erro);
+                alert("Não foi possível alterar o médico. Verifique a conexão.");
             }
         }
 
@@ -325,15 +328,16 @@
             ];
 
             container.innerHTML = cards.map(card => `
-                <div class="card" onclick="window.location.href='${card.link}'">
-                  <i class="fas ${card.icone}"></i>
-                  <h3>${card.nome}</h3>
-                </div>
-            `).join('');
+            <div class="card" onclick="window.location.href='${card.link}'">
+              <i class="fas ${card.icone}"></i>
+              <h3>${card.nome}</h3>
+            </div>
+        `).join('');
         }
 
         window.onload = verificarMedico;
     </script>
+
 
 </body>
 
