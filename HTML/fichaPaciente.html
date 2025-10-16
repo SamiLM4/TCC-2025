@@ -321,13 +321,11 @@
         .then(res => res.json())
         .then(json => {
           if (json.cod === 200) {
-            alert("Ficha excluída com sucesso!");
+            console.log("Ficha excluída com sucesso!");
             fichaDiv.innerHTML = "";
-          } else {
-            alert("Erro ao excluir ficha: " + json.msg);
           }
         })
-        .catch(err => alert("Erro na requisição: " + err.message));
+        .catch(err => console.log("Erro na requisição: " + err.message));
       location.reload();
     }
 
@@ -360,7 +358,7 @@
           a.remove();
           window.URL.revokeObjectURL(url);
         })
-        .catch(err => alert(err.message));
+        .catch(err => console.log(err.message));
     }
 
     function diagnostico() {
