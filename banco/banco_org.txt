@@ -19,18 +19,20 @@ use tests_tcc;
 		id int primary key auto_increment,
         nome varchar(100) not null,
         CEP VARCHAR(12) not null,
-        logradouro text,
-        cidade VARCHAR(60),
-        bairro varchar(50),
+        logradouro text not null,
+        cidade VARCHAR(60) not null,
+        bairro varchar(50) not null,
         cnpj varchar(20) UNIQUE NOT NULL,
-        tipo ENUM('publico', 'privado', 'filantropico'),
-        telefone varchar(25),
-        email varchar(155),
-        site text,
+        tipo ENUM('publico', 'privado', 'filantropico') not null,
+        telefone varchar(25) not null,
+        email varchar(155) not null,
+        site text not null,
         atividade ENUM('ativo', 'inativo') default 'ativo',
-        nome_responsavel varchar(100),
-        telefone_responsavel varchar(20)
+        nome_responsavel varchar(100) not null,
+        telefone_responsavel varchar(20) not null
     );
+    
+    select * from instituicao;
 
 	create table adm (
 		id int primary key auto_increment,
@@ -397,5 +399,7 @@ INSERT INTO paciente (id_instituicao, cpf, nome, sexo, endereco, telefone, email
 
 select * from paciente WHERE cpf = "11111111137";
 SELECT COUNT(*) as total FROM paciente WHERE id_instituicao = 1;
+
+select * from diagnostico;
 
 #drop database tests_tcc;
