@@ -199,7 +199,7 @@
                 }
 
                 // 🔹 Se não tiver médico vinculado, mostra para médicos aderirem
-                if (!medicoResponsavelNome && papel === "medico") {
+                if (papel === "medico") {
                     inputArea.innerHTML = `<button onclick="vincularMedico()">Aderir paciente</button>`;
                     inputArea.style.display = "block";
                 }
@@ -268,7 +268,7 @@
             if (!cpfNovoMedico) { alert("Digite o CPF do novo médico."); return; }
 
             try {
-                // Primeiro, pega os dados atuais do paciente
+                // 1️⃣ Buscar dados atuais
                 const respostaGet = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${token}` }
@@ -278,19 +278,26 @@
 
                 const dados = dataAtual.dados;
 
-                // Corpo do PUT mantendo todos os dados atuais, mas alterando apenas o médico
+                // 2️⃣ Corrigir o campo antes de montar o body
+                if (dados.diagnostico && dados.diagnostico["id do paciente"]) {
+                    dados.diagnostico.id_paciente = dados.diagnostico["id do paciente"];
+                    delete dados.diagnostico["id do paciente"];
+                }
+
+                // 3️⃣ Montar o corpo do PUT
                 const bodyPut = {
                     cpf_medicoResponsavel: cpfNovoMedico,
-                    sintomas: dados.sintomas,
-                    diagnostico: dados.diagnostico,
-                    exame_fisico: dados.exame_fisico,
-                    exames_complementares: dados.exames_complementares,
-                    historico_medico: dados.historico_medico,
-                    historico_social: dados.historico_social,
-                    plano_tratamento: dados.plano_tratamento,
-                    qualidade_vida_em: dados.qualidade_vida_em
+                    sintomas: dados.sintomas || {},
+                    diagnostico: dados.diagnostico || {},
+                    exame_fisico: dados.exame_fisico || {},
+                    exames_complementares: dados.exames_complementares || {},
+                    historico_medico: dados.historico_medico || {},
+                    historico_social: dados.historico_social || {},
+                    plano_tratamento: dados.plano_tratamento || {},
+                    qualidade_vida_em: dados.qualidade_vida_em || {}
                 };
 
+                // 4️⃣ Fazer o PUT
                 const respostaPut = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
                     method: "PUT",
                     headers: {
@@ -300,17 +307,22 @@
                     body: JSON.stringify(bodyPut)
                 });
 
+                // 5️⃣ Ler resposta do servidor
                 const dataPut = await respostaPut.json();
+
                 if (respostaPut.ok && dataPut.cod === 200) {
                     alert("Médico alterado com sucesso!");
                     verificarMedico();
-                } else { alert("Erro ao alterar médico: " + (dataPut.msg || respostaPut.status)); }
+                } else {
+                    alert("Erro ao alterar médico: " + (dataPut.msg || respostaPut.status));
+                }
 
             } catch (erro) {
                 console.error("Erro ao alterar médico:", erro);
                 alert("Não foi possível alterar o médico. Verifique a conexão.");
             }
         }
+
 
         function mostrarCards(cpfPaciente, cpfMedico) {
             const container = document.getElementById("cardsContainer");

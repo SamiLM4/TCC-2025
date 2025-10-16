@@ -58,6 +58,9 @@
                 <tr>
                     <th>CPF</th>
                     <th>Nome</th>
+                    <th id='selecionarPaciente'>Selecionar Paciente</th>
+                    <th id='atualizarPaciente'>Atualizar Paciente</th>
+                    <th id='excluirPaciente'>Excluir Paciente</th>
                 </tr>
             </thead>
             <tbody>
@@ -75,6 +78,48 @@
         </div>
     </div>
     <a id="btnChat" href="#" class="btn-flutuante" style="display:none;">+</a>
+
+    <!-- Sidebar de Detalhes do Paciente (mesma da página de pacientes) -->
+    <div id="sidebarPaciente" class="sidebar-right">
+        <h2>Detalhes do Paciente</h2>
+        <form id="formEditarPaciente">
+            <label>Nome:</label>
+            <input type="text" id="nome" />
+
+            <label style="display:none;">CPF:</label>
+            <input type="hidden" id="cpf" />
+
+            <label>Sexo:</label>
+            <input type="text" id="sexo" />
+
+            <label>Endereço:</label>
+            <input type="text" id="endereco" />
+
+            <label>Telefone:</label>
+            <input type="text" id="telefone" />
+
+            <label>Email:</label>
+            <input type="text" id="email" />
+
+            <label>Profissão:</label>
+            <input type="text" id="profissao" />
+
+            <label>Estado Civil:</label>
+            <input type="text" id="estadoCivil" />
+
+            <label>Nome do Cuidador:</label>
+            <input type="text" id="nomeCuidador" />
+
+            <label>Telefone do Cuidador:</label>
+            <input type="text" id="telefoneCuidador" />
+            <!-- Botão na sidebar -->
+            <div class="botoes-acoes">
+                <button type="button" id="btnAtualizar" onclick="atualizarPacienteConfirmar()">Atualizar</button>
+                <button type="button" onclick="fecharSidebar()">Fechar</button>
+            </div>
+
+        </form>
+    </div>
 
 
     <script>
@@ -245,7 +290,10 @@
                             tr.innerHTML = `
                     <td>${paciente.cpf}</td>
                     <td>${paciente.nome}</td>
-                `;
+                    <td><button class="btn-diagnostico" onclick='irparaficha("${paciente.cpf}")'>Ir para ficha</button></td>
+                    <td><button class="btn-atualizar" onclick='atualizarPaciente("${paciente.cpf}")'>Atualizar</button></td>
+                    <td><button class="btn-excluir" onclick='excluirPaciente("${paciente.cpf}")'>Excluir</button></td>
+                    `;
                             tbody.appendChild(tr);
                         });
 
@@ -301,6 +349,32 @@
                 });
         }
 
+        function excluirPaciente(cpf) {
+            if (!confirm(`Tem certeza que deseja excluir o paciente com CPF ${cpf}?`)) {
+                return;
+            }
+
+            fetch(`http://localhost:8080/paciente/${cpf}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        alert("Paciente excluído com sucesso.");
+                        carregarDetalhesMedico(token); // Recarrega a lista de pacientes do médico
+                    } else {
+                        alert("Erro ao excluir paciente: " + (data.msg || "Erro desconhecido."));
+                    }
+                })
+                .catch(error => {
+                    //console.error('Erro ao excluir paciente:', error);
+                    //alert("Erro ao excluir paciente. Tente novamente mais tarde.");
+                });
+        }
+
 
         if (localStorage.getItem("papel") === "medico") {
             carregarDetalhesMedico(localStorage.getItem("token"), 1);
@@ -314,6 +388,11 @@
         function irparadiagnostico(cpf) {
             localStorage.setItem('cpfSelecionado', cpf);
             window.location.href = "diagnostico.html";
+        }
+
+        function irparaficha(cpf) {
+            localStorage.setItem('cpfSelecionado', cpf);
+            window.location.href = "fichaPaciente.html";
         }
 
         function filtrarPacientes() {
@@ -334,6 +413,89 @@
             localStorage.clear();
             window.location.href = "../index.html";
         });
+
+
+        let cpfSelecionado = "";
+
+        // Função para abrir sidebar e preencher com dados do paciente
+        function atualizarPaciente(cpf) {
+            cpfSelecionado = cpf;
+            localStorage.setItem('cpfSelecionado', cpf); // salva CPF no localStorage
+
+            fetch(`http://localhost:8080/paciente/cpf/${cpf}`, {
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.pacientes && data.pacientes.length > 0) {
+                        const p = data.pacientes[0]; // acessa o primeiro paciente do array
+
+                        document.getElementById("nome").value = p.nome || "";
+                        document.getElementById("cpf").value = p.cpf || "";
+                        document.getElementById("cpf").disabled = true;
+                        document.getElementById("sexo").value = p.sexo || "";
+                        document.getElementById("endereco").value = p.endereco || "";
+                        document.getElementById("telefone").value = p.telefone || "";
+                        document.getElementById("email").value = p.email || "";
+                        document.getElementById("profissao").value = p.profissao || "";
+                        document.getElementById("estadoCivil").value = p.estado_civil || "";
+                        document.getElementById("nomeCuidador").value = p.nome_cuidador || "";
+                        document.getElementById("telefoneCuidador").value = p.telefone_cuidador || "";
+
+                        document.getElementById("sidebarPaciente").classList.add("active");
+                    } else {
+                        alert("Erro: paciente não encontrado!");
+                    }
+                })
+                .catch(err => console.error("Erro ao buscar paciente:", err));
+        }
+
+
+        function atualizarPacienteConfirmar() {
+            if (!cpfSelecionado) {
+                alert("Nenhum paciente selecionado.");
+                return;
+            }
+
+            const dadosAtualizados = {
+                nome: document.getElementById("nome").value,
+                sexo: document.getElementById("sexo").value,
+                endereco: document.getElementById("endereco").value,
+                telefone: document.getElementById("telefone").value,
+                email: document.getElementById("email").value,
+                profissao: document.getElementById("profissao").value,
+                estado_civil: document.getElementById("estadoCivil").value,
+                nome_cuidador: document.getElementById("nomeCuidador").value,
+                telefone_cuidador: document.getElementById("telefoneCuidador").value,
+            };
+
+            fetch(`http://localhost:8080/paciente/${cpfSelecionado}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                },
+                body: JSON.stringify(dadosAtualizados),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        alert("Paciente atualizado com sucesso!");
+                        fecharSidebar();
+                        carregarDetalhesMedico(token); // Recarrega a tabela
+                    } else {
+                        alert("Erro ao atualizar paciente: " + (data.msg || "Erro desconhecido."));
+                    }
+                })
+                .catch(err => console.error("Erro ao atualizar:", err));
+        }
+
+        function fecharSidebar() {
+            document.getElementById("sidebarPaciente").classList.remove("active");
+            cpfSelecionado = "";
+        }
+
 
     </script>
 </body>

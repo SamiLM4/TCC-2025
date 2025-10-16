@@ -158,6 +158,8 @@
       throw new Error("CPF ou token ausente.");
     }
 
+    const papel = localStorage.getItem("papel"); // pega "adm" ou outro
+
     // Busca o nome do paciente
     async function carregarNomePaciente() {
       try {
@@ -206,73 +208,88 @@
         const pt = d.plano_tratamento;
         const qv = d.qualidade_vida_em;
 
+        // Lógica de permissões
+        const medicoResponsavel = d["Medico_Responsavel"];
+        const medicoLogado = localStorage.getItem("nome_login"); // médico logado
+        const podeEditarExcluir = !medicoResponsavel
+          || medicoResponsavel === "Nenhuma relação médico-paciente encontrada"
+          || medicoResponsavel === medicoLogado;
+
+        if (localStorage.getItem("papel") === "adm") {
+          document.getElementById("btnEditar").style.display = "inline-block";
+          document.getElementById("btnExcluir").style.display = "inline-block";
+        } else {
+          document.getElementById("btnEditar").style.display = podeEditarExcluir ? "inline-block" : "none";
+          document.getElementById("btnExcluir").style.display = podeEditarExcluir ? "inline-block" : "none";
+        }
+
         fichaDiv.innerHTML = `
-        <div class="section"><strong>Médico Responsável:</strong> ${d["Medico_Responsavel"]}</div>
-        <div class="section"><h3>Sintomas</h3>
-          <p><strong>Iniciais:</strong> ${s.sintomas_iniciais}</p>
-          <p><strong>Atuais:</strong> ${s.sintomas_atuais}</p>
-          <p><strong>Fadiga:</strong> ${s.fadiga ? 'Sim' : 'Não'}</p>
-          <p><strong>Problema Visão:</strong> ${s.problema_visao}</p>
-          <p><strong>Coordenação:</strong> ${s.problema_coordenacao ? 'Sim' : 'Não'}</p>
-          <p><strong>Espasticidade:</strong> ${s.espaticidade ? 'Sim' : 'Não'}</p>
-          <p><strong>Fraqueza Muscular:</strong> ${s.fraqueza_muscular ? 'Sim' : 'Não'}</p>
-          <p><strong>Sensibilidade:</strong> ${s.problema_sensibilidade}</p>
-          <p><strong>Bexiga:</strong> ${s.problema_bexiga ? 'Sim' : 'Não'}</p>
-          <p><strong>Intestino:</strong> ${s.problema_intestino ? 'Sim' : 'Não'}</p>
-          <p><strong>Cognitivo:</strong> ${s.problema_cognitivo}</p>
-          <p><strong>Emocional:</strong> ${s.problema_emocional}</p>
-        </div>
-        <div class="section"><h3>Diagnóstico</h3>
-          <p><strong>Data:</strong> ${diag["data_diagnostico"]}</p>
-          <p><strong>Tipo EM:</strong> ${diag["tipo_em"]}</p>
-          <p><strong>Surtos:</strong> ${diag.surtos}</p>
-        </div>
-        <div class="section"><h3>Exame Físico</h3>
-          <p><strong>Neurológico:</strong> ${ef.exame_neurologico}</p>
-          <p><strong>Força Muscular:</strong> ${ef.forca_muscular}</p>
-          <p><strong>Reflexos:</strong> ${ef.reflexos}</p>
-          <p><strong>Coordenação:</strong> ${ef.coordenacao}</p>
-          <p><strong>Sensibilidade:</strong> ${ef.sensibilidade}</p>
-          <p><strong>Equilíbrio:</strong> ${ef.equilibrio}</p>
-          <p><strong>Função Visual:</strong> ${ef.funcao_visual}</p>
-          <p><strong>Outros:</strong> ${ef.outros_exames_fisicos}</p>
-        </div>
-        <div class="section"><h3>Exames Complementares</h3>
-          <p><strong>RM:</strong> ${ec.rm_cerebro_medula}</p>
-          <p><strong>PEV:</strong> ${ec.potenciais_evocados_visuais}</p>
-          <p><strong>PESS:</strong> ${ec.potenciais_evocados_somatossensoriais}</p>
-          <p><strong>PEAT:</strong> ${ec.potenciais_evocados_auditivos_de_tronco_encefalico}</p>
-          <p><strong>Líquido:</strong> ${ec.analise_liquido_cefalorraquidiano}</p>
-          <p><strong>Outros:</strong> ${ec.outros_exames}</p>
-        </div>
-        <div class="section"><h3>Histórico Médico</h3>
-          <p><strong>Medicamento:</strong> ${hm.medicamento_em_uso}</p>
-          <p><strong>Tratamentos Anteriores:</strong> ${hm.tratamentos_anteriores_em || hm.tratamentos_anteriores}</p>
-          <p><strong>Alergias:</strong> ${hm.alergias}</p>
-          <p><strong>Doenças:</strong> ${hm.historico_outras_doencas}</p>
-          <p><strong>Familiar:</strong> ${hm.historico_familiar}</p>
-        </div>
-        <div class="section"><h3>Histórico Social</h3>
-          <p><strong>Tabagismo:</strong> ${hs.tabagismo}</p>
-          <p><strong>Álcool:</strong> ${hs.alcool}</p>
-          <p><strong>Atividade Física:</strong> ${hs.atividade_fisica}</p>
-          <p><strong>Suporte:</strong> ${hs.suporte_social}</p>
-          <p><strong>Impacto Profissional/Social:</strong> ${hs.impacto_profissional_social}</p>
-        </div>
-        <div class="section"><h3>Plano de Tratamento</h3>
-          <p><strong>Modificadores:</strong> ${pt.medicamentos_modificadores_doenca}</p>
-          <p><strong>Surtos:</strong> ${pt.tratamento_surtos}</p>
-          <p><strong>Sintomas:</strong> ${pt.tratamento_sintomas}</p>
-          <p><strong>Reabilitação:</strong> ${pt.reabilitacao}</p>
-          <p><strong>Psicológico:</strong> ${pt.acompanhamento_psicologico}</p>
-          <p><strong>Outras Terapias:</strong> ${pt.outras_terapias}</p>
-        </div>
-        <div class="section"><h3>Qualidade de Vida</h3>
-          <p><strong>EDSS:</strong> ${qv.edss}</p>
-          <p><strong>MSQOL-54:</strong> ${qv.questionario_msqol54}</p>
-          <p><strong>Avaliações:</strong> ${qv.outras_avaliacoes}</p>
-        </div>
-      `;
+      <div class="section"><strong>Médico Responsável:</strong> ${medicoResponsavel}</div>
+      <div class="section"><h3>Sintomas</h3>
+        <p><strong>Iniciais:</strong> ${s.sintomas_iniciais}</p>
+        <p><strong>Atuais:</strong> ${s.sintomas_atuais}</p>
+        <p><strong>Fadiga:</strong> ${s.fadiga ? 'Sim' : 'Não'}</p>
+        <p><strong>Problema Visão:</strong> ${s.problema_visao}</p>
+        <p><strong>Coordenação:</strong> ${s.problema_coordenacao ? 'Sim' : 'Não'}</p>
+        <p><strong>Espasticidade:</strong> ${s.espaticidade ? 'Sim' : 'Não'}</p>
+        <p><strong>Fraqueza Muscular:</strong> ${s.fraqueza_muscular ? 'Sim' : 'Não'}</p>
+        <p><strong>Sensibilidade:</strong> ${s.problema_sensibilidade}</p>
+        <p><strong>Bexiga:</strong> ${s.problema_bexiga ? 'Sim' : 'Não'}</p>
+        <p><strong>Intestino:</strong> ${s.problema_intestino ? 'Sim' : 'Não'}</p>
+        <p><strong>Cognitivo:</strong> ${s.problema_cognitivo}</p>
+        <p><strong>Emocional:</strong> ${s.problema_emocional}</p>
+      </div>
+      <div class="section"><h3>Diagnóstico</h3>
+        <p><strong>Data:</strong> ${diag["data_diagnostico"]}</p>
+        <p><strong>Tipo EM:</strong> ${diag["tipo_em"]}</p>
+        <p><strong>Surtos:</strong> ${diag.surtos}</p>
+      </div>
+      <div class="section"><h3>Exame Físico</h3>
+        <p><strong>Neurológico:</strong> ${ef.exame_neurologico}</p>
+        <p><strong>Força Muscular:</strong> ${ef.forca_muscular}</p>
+        <p><strong>Reflexos:</strong> ${ef.reflexos}</p>
+        <p><strong>Coordenação:</strong> ${ef.coordenacao}</p>
+        <p><strong>Sensibilidade:</strong> ${ef.sensibilidade}</p>
+        <p><strong>Equilíbrio:</strong> ${ef.equilibrio}</p>
+        <p><strong>Função Visual:</strong> ${ef.funcao_visual}</p>
+        <p><strong>Outros:</strong> ${ef.outros_exames_fisicos}</p>
+      </div>
+      <div class="section"><h3>Exames Complementares</h3>
+        <p><strong>RM:</strong> ${ec.rm_cerebro_medula}</p>
+        <p><strong>PEV:</strong> ${ec.potenciais_evocados_visuais}</p>
+        <p><strong>PESS:</strong> ${ec.potenciais_evocados_somatossensoriais}</p>
+        <p><strong>PEAT:</strong> ${ec.potenciais_evocados_auditivos_de_tronco_encefalico}</p>
+        <p><strong>Líquido:</strong> ${ec.analise_liquido_cefalorraquidiano}</p>
+        <p><strong>Outros:</strong> ${ec.outros_exames}</p>
+      </div>
+      <div class="section"><h3>Histórico Médico</h3>
+        <p><strong>Medicamento:</strong> ${hm.medicamento_em_uso}</p>
+        <p><strong>Tratamentos Anteriores:</strong> ${hm.tratamentos_anteriores_em || hm.tratamentos_anteriores}</p>
+        <p><strong>Alergias:</strong> ${hm.alergias}</p>
+        <p><strong>Doenças:</strong> ${hm.historico_outras_doencas}</p>
+        <p><strong>Familiar:</strong> ${hm.historico_familiar}</p>
+      </div>
+      <div class="section"><h3>Histórico Social</h3>
+        <p><strong>Tabagismo:</strong> ${hs.tabagismo}</p>
+        <p><strong>Álcool:</strong> ${hs.alcool}</p>
+        <p><strong>Atividade Física:</strong> ${hs.atividade_fisica}</p>
+        <p><strong>Suporte:</strong> ${hs.suporte_social}</p>
+        <p><strong>Impacto Profissional/Social:</strong> ${hs.impacto_profissional_social}</p>
+      </div>
+      <div class="section"><h3>Plano de Tratamento</h3>
+        <p><strong>Modificadores:</strong> ${pt.medicamentos_modificadores_doenca}</p>
+        <p><strong>Surtos:</strong> ${pt.tratamento_surtos}</p>
+        <p><strong>Sintomas:</strong> ${pt.tratamento_sintomas}</p>
+        <p><strong>Reabilitação:</strong> ${pt.reabilitacao}</p>
+        <p><strong>Psicológico:</strong> ${pt.acompanhamento_psicologico}</p>
+        <p><strong>Outras Terapias:</strong> ${pt.outras_terapias}</p>
+      </div>
+      <div class="section"><h3>Qualidade de Vida</h3>
+        <p><strong>EDSS:</strong> ${qv.edss}</p>
+        <p><strong>MSQOL-54:</strong> ${qv.questionario_msqol54}</p>
+        <p><strong>Avaliações:</strong> ${qv.outras_avaliacoes}</p>
+      </div>
+    `;
 
         document.getElementById("btnCadastrar").disabled = true;
       } catch (err) {
@@ -282,6 +299,7 @@
         document.getElementById("btnGerarPdf").disabled = true;
       }
     }
+
 
     // Executa ambas as funções ao carregar
     carregarNomePaciente();
@@ -357,4 +375,5 @@
   </script>
 
 </body>
+
 </html>

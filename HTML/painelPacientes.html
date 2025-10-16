@@ -36,8 +36,8 @@
                     <th>Nome</th>
                     <th>CPF</th>
                     <th>Email</th>
-                    <th>Selecionar</th>
-                    <th>Excluir</th>
+                    <th id="selecionarPaciente">Selecionar</th>
+                    <th id="excluirPaciente">Excluir</th>
                 </tr>
             </thead>
             <tbody>
@@ -105,6 +105,11 @@
 
         let paginaAtual = 1;
 
+        if (papel === 'medico') {
+            //document.getElementById("selecionarPaciente").style.display = "none";
+            document.getElementById("excluirPaciente").style.display = "none";
+        }
+
         function carregarPacientes(pagina = 1, filtro = "") {
             paginaAtual = pagina;
 
@@ -137,6 +142,8 @@
                         tabelaBody.innerHTML = '<tr><td colspan="5">Nenhum paciente encontrado.</td></tr>';
                         return;
                     }
+                    // <td data-label="Selecionar"><button onclick='abrirSidebar(${JSON.stringify(paciente)})'>Selecionar</button></td>
+                    // <td data-label="Excluir"><button class="btn-excluir" onclick='excluirPaciente("${paciente.cpf}")'>Excluir</button></td>
 
                     listaPacientes.forEach(paciente => {
                         const row = document.createElement("tr");
@@ -147,7 +154,7 @@
                         <td class="texto-tabela" data-label="CPF">${paciente.cpf}</td>
                         <td class="texto-tabela" data-label="Email">${paciente.email}</td>
                         <td data-label="Selecionar"><button onclick='abrirSidebar(${JSON.stringify(paciente)})'>Selecionar</button></td>
-                        <td data-label="Excluir"><button class="btn-excluir" onclick='excluirPaciente("${paciente.cpf}")'>Excluir</button></td>
+                        
                         `;
                         } else {
                             row.innerHTML = `
@@ -203,36 +210,13 @@
         }
 
 
-        function abrirSidebar(paciente) {
-            cpfSelecionado = paciente.cpf;
-
-            document.getElementById("nome").value = paciente.nome || "";
-            document.getElementById("cpf").value = paciente.cpf || "";
-            document.getElementById("cpf").disabled = true; // CPF não editável ao editar
-
-            document.getElementById("sexo").value = paciente.sexo || "";
-            document.getElementById("endereco").value = paciente.endereco || "";
-            document.getElementById("telefone").value = paciente.telefone || "";
-            document.getElementById("email").value = paciente.email || "";
-            document.getElementById("profissao").value = paciente.profissao || "";
-            document.getElementById("estadoCivil").value = paciente.estado_civil || "";
-            document.getElementById("nomeCuidador").value = paciente.nome_cuidador || "";
-            document.getElementById("telefoneCuidador").value = paciente.telefone_cuidador || "";
-
-            // Mostra os botões correspondentes
-            document.getElementById("btnAtualizar").style.display = "inline-block";
-            document.getElementById("btnCadastrar").style.display = "none";
-
-            document.getElementById("sidebarPaciente").classList.add("active");
-        }
-
-        // Função para abrir sidebar para cadastro, com campos limpos
+        // Abrir sidebar para cadastro (formulário limpo)
         function abrirSidebarParaCadastro() {
             cpfSelecionado = "";
 
             document.getElementById("nome").value = "";
             document.getElementById("cpf").value = "";
-            document.getElementById("cpf").disabled = false; // libera edição do CPF
+            document.getElementById("cpf").disabled = false;
 
             document.getElementById("sexo").value = "";
             document.getElementById("endereco").value = "";
@@ -243,12 +227,50 @@
             document.getElementById("nomeCuidador").value = "";
             document.getElementById("telefoneCuidador").value = "";
 
-            // Exibe o botão cadastrar e esconde o atualizar
             document.getElementById("btnAtualizar").style.display = "none";
             document.getElementById("btnCadastrar").style.display = "inline-block";
 
+            // Esconde os botões que não devem aparecer no cadastro
+            document.querySelector(".btn-excluir").style.display = "none";
+            document.querySelector("button[onclick='abrirFicha()']").style.display = "none";
+
             document.getElementById("sidebarPaciente").classList.add("active");
         }
+
+        // Abrir sidebar para paciente existente
+        function abrirSidebar(paciente) {
+            cpfSelecionado = paciente.cpf;
+
+            document.getElementById("nome").value = paciente.nome || "";
+            document.getElementById("cpf").value = paciente.cpf || "";
+            document.getElementById("cpf").disabled = true;
+
+            document.getElementById("sexo").value = paciente.sexo || "";
+            document.getElementById("endereco").value = paciente.endereco || "";
+            document.getElementById("telefone").value = paciente.telefone || "";
+            document.getElementById("email").value = paciente.email || "";
+            document.getElementById("profissao").value = paciente.profissao || "";
+            document.getElementById("estadoCivil").value = paciente.estado_civil || "";
+            document.getElementById("nomeCuidador").value = paciente.nome_cuidador || "";
+            document.getElementById("telefoneCuidador").value = paciente.telefone_cuidador || "";
+
+            if (papel === 'medico') {
+                document.getElementById("btnAtualizar").style.display = "none";
+                document.getElementById("btnCadastrar").style.display = "none";
+                document.querySelector(".btn-excluir").style.display = "none";
+            } else {
+                document.getElementById("btnAtualizar").style.display = "inline-block";
+                document.getElementById("btnCadastrar").style.display = "none";
+                document.querySelector(".btn-excluir").style.display = "inline-block";
+            }
+
+            // Sempre mostra o botão Abrir Ficha ao abrir paciente existente
+            document.querySelector("button[onclick='abrirFicha()']").style.display = "inline-block";
+
+            document.getElementById("sidebarPaciente").classList.add("active");
+        }
+
+
 
         function atualizarPaciente() {
             if (!cpfSelecionado) {
