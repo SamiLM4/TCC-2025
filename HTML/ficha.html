@@ -198,12 +198,13 @@
                     inputArea.style.display = "block";
                 }
 
+                /*
                 // 🔹 Se não tiver médico vinculado, mostra para médicos aderirem
                 if (papel === "medico") {
                     inputArea.innerHTML = `<button onclick="vincularMedico()">Aderir paciente</button>`;
                     inputArea.style.display = "block";
                 }
-
+                */
                 const cpfMedico = await buscarCpfMedico(medicoResponsavelNome);
                 mostrarCards(cpfPaciente, cpfMedico);
 

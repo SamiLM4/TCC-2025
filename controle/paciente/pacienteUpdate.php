@@ -2,6 +2,7 @@
 require_once "modelo/Paciente/Paciente.php";
 require_once "modelo/Medico/Medico.php";
 require_once "modelo/MeuTokenJWT.php";
+//require_once "modelo/medico/RelacaoMedicoPaciente.php";
 
 use Firebase\JWT\MeuTokenJWT;
 
@@ -98,6 +99,11 @@ $paciente->setEstadoCivil($estado_civil);
 $paciente->setNomeCuidador($nome_cuidador);
 $paciente->setTelefoneCuidador($telefone_cuidador);
 $paciente->setinstituicao($payload->instituicao);
+
+//$relacaoMedicoPaciente = new RelacaoMedicoPaciente();
+//$relacaoMedicoPaciente->readByCpfMedico($payload->cpf);
+
+
 
 // Executa o update
 $resultado = $paciente->update();

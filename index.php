@@ -30,7 +30,6 @@ $roteador->post("/paciente", function () {
 });
 
 
-
 $roteador->put("/paciente/(\d+)", function ($cpf) {
 
     require_once("controle/paciente/pacienteUpdate.php");
