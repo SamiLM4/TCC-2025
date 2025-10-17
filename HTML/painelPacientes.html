@@ -85,7 +85,8 @@
                 <button type="button" id="btnAtualizar" onclick="atualizarPaciente()">Atualizar</button>
                 <button type="button" id="btnCadastrar" onclick="cadastrarPaciente()">Cadastrar</button>
                 <button type="button" onclick="abrirFicha()">Abrir Ficha</button>
-                <button type="button" class="btn-excluir" onclick="excluirPacienteSelecionado()">Excluir</button>
+            <!--    <button type="button" class="btn-excluir" onclick="excluirPacienteSelecionado()" style="display: none;">Excluir</button>  -->
+
                 <button type="button" onclick="fecharSidebar()">Fechar</button>
             </div>
 
@@ -231,7 +232,7 @@
             document.getElementById("btnCadastrar").style.display = "inline-block";
 
             // Esconde os botões que não devem aparecer no cadastro
-            document.querySelector(".btn-excluir").style.display = "none";
+            //document.querySelector(".btn-excluir").style.display = "none";
             document.querySelector("button[onclick='abrirFicha()']").style.display = "none";
 
             document.getElementById("sidebarPaciente").classList.add("active");
@@ -403,6 +404,7 @@
         function fecharSidebar() {
             document.getElementById("sidebarPaciente").classList.remove("active");
             cpfSelecionado = "";
+            window.location.reload();
         }
 
         function filtrarPacientes() {
