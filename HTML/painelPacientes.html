@@ -258,11 +258,11 @@
             if (papel === 'medico') {
                 document.getElementById("btnAtualizar").style.display = "none";
                 document.getElementById("btnCadastrar").style.display = "none";
-                document.querySelector(".btn-excluir").style.display = "none";
+                //document.querySelector(".btn-excluir").style.display = "none";
             } else {
                 document.getElementById("btnAtualizar").style.display = "inline-block";
                 document.getElementById("btnCadastrar").style.display = "none";
-                document.querySelector(".btn-excluir").style.display = "inline-block";
+                //document.querySelector(".btn-excluir").style.display = "inline-block";
             }
 
             // Sempre mostra o botão Abrir Ficha ao abrir paciente existente
@@ -382,6 +382,7 @@
                     .catch((error) => {
                         console.error("Erro ao excluir:", error);
                     });
+                window.location.reload();
             }
         }
 
