@@ -370,13 +370,7 @@ class Paciente
         }
 
 
-        $sql = "SELECT p.*
-                FROM paciente p
-                WHERE NOT EXISTS (
-                    SELECT *
-                    FROM ia_results ia
-                    WHERE ia.id_paciente = p.id
-                ) AND p.nome LIKE ? AND p.id_instituicao = ?";
+        $sql = "SELECT p.* FROM paciente p WHERE p.nome LIKE ? AND p.id_instituicao = ?";
         $stm = $conexao->prepare($sql);
 
         $busca = "%" . $this->nome . "%";
@@ -388,6 +382,7 @@ class Paciente
 
         // Se não encontrou pelo nome, tenta pelo email
         if ($resultado->num_rows === 0) {
+
             $sql = "SELECT p.*
                 FROM paciente p
                 WHERE NOT EXISTS (

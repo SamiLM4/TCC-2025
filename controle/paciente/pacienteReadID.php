@@ -37,9 +37,11 @@ if ($meutoken->validarToken($authorization) === true) {
         if (is_numeric($filtro)) {
             $paciente->setCpf($filtro);
             $pacienteSelecionado = $paciente->readCPF();
+            echo("chegou aqui");
+            die;
         } else {
             $paciente->setNome($filtro);
-            $pacienteSelecionado = $paciente->readString(); 
+            $pacienteSelecionado = $paciente->readString();  
         }
 
         if ($pacienteSelecionado) {
