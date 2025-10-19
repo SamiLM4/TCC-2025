@@ -25,9 +25,9 @@
 
         <div style="display: flex; justify-content: flex-end; margin: 10px 0;">
             <input type="text" id="filtro" placeholder="Filtrar"
-                style="padding: 8px; width: 300px; border-radius: 5px 0 0 5px; border: 1px solid #ae00ff; border-right: none;" />
+                style="padding: 8px; width: 300px; border-radius: 5px 0 0 5px; border: 1px solid #00b7ff; border-right: none;" />
             <button onclick="filtrarPacientes()"
-                style="padding: 8px 16px; border-radius: 0 5px 5px 0; border: 1px solid #cccccc; background-color: #9900ff; color: white; cursor: pointer;">
+                style="padding: 8px 16px; border-radius: 0 5px 5px 0; border: 1px solid #cccccc; background-color: #006eff; color: white; cursor: pointer;">
                 Buscar
             </button>
         </div>
@@ -194,11 +194,13 @@
 
         function abrirSidebarCadastro() {
             document.getElementById("sidebarRight").classList.add("active");
+            document.getElementById("overlay").classList.add("active");
         }
 
         function fecharSidebar() {
             document.getElementById("sidebarEditarAdm").classList.remove("active");
             document.getElementById("sidebarRight").classList.remove("active");
+            document.getElementById("overlay").classList.remove("active");
         }
 
         function cadastrarAdm() {
@@ -243,6 +245,7 @@
             document.getElementById("senhaAdmEditar").value = "";
 
             document.getElementById("sidebarEditarAdm").classList.add("active");
+            document.getElementById("overlay").classList.add("active");
         }
 
         function salvarAlteracoesAdm() {
@@ -304,6 +307,9 @@
             carregarAdms(1, valorFiltro); // Chama passando o filtro
         }
     </script>
+
+    <div id="overlay"></div>
+
 
 </body>
 
