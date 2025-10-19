@@ -104,7 +104,7 @@
     const mensagensContainer = document.getElementById("mensagensContainer");
 
     function carregarMensagens() {
-      fetch(`http://localhost:8080/mensagem/listar/${cpfMedico}`, {
+      fetch(`/mensagem/listar/${cpfMedico}`, {
         method: "GET",
         headers: {
           "Authorization": "Bearer " + token

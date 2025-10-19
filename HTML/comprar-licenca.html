@@ -49,7 +49,7 @@
             const data = { email, tipo_licenca: tipo };
 
             try {
-                const response = await fetch('http://localhost:8080/licenca/comprar', {
+                const response = await fetch('/licenca/comprar', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)

@@ -95,7 +95,7 @@
         function carregarDetalhesMedico(cpf, pagina = 1) {
             const paginaAtual = pagina;
 
-            fetch(`http://localhost:8080/medico/cpf/${cpf}/${paginaAtual}`, {
+            fetch(`/medico/cpf/${cpf}/${paginaAtual}`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + token
@@ -208,7 +208,7 @@
                 senha: senha
             };
 
-            fetch(`http://localhost:8080/medico/${cpf}`, {
+            fetch(`/medico/${cpf}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

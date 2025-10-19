@@ -43,8 +43,8 @@
             }
 
             const url = tipo === "adm"
-                ? "http://localhost:8080/adm/login"
-                : "http://localhost:8080/medico/login";
+                ? "/adm/login"
+                : "/medico/login";
 
             try {
                 const resposta = await fetch(url, {

@@ -240,7 +240,7 @@
 
     async function carregarPaciente() {
       try {
-        const res = await fetch(`http://localhost:8080/paciente/cpf/${cpf}`, { headers });
+        const res = await fetch(`/paciente/cpf/${cpf}`, { headers });
         const data = await res.json();
         if (data.cod === 200 && data.pacientes && data.pacientes.length > 0) {
           pacienteNome.textContent = `Paciente: ${data.pacientes[0].nome}`;
@@ -254,7 +254,7 @@
     }
 
     function carregarDiagnostico() {
-      fetch(`http://localhost:8080/ia/img/${cpf}`, { headers })
+      fetch(`/ia/img/${cpf}`, { headers })
         .then(res => res.json())
         .then(data => {
           if (data.cod === 200) {
@@ -292,7 +292,7 @@
       document.getElementById("loadingScreen").style.display = "flex";
 
       try {
-        const response = await fetch(`http://localhost:8080/ia`, {
+        const response = await fetch(`/ia`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` },
           body: formData
@@ -317,7 +317,7 @@
       if (!confirm("Tem certeza que deseja excluir este diagnóstico?")) return;
 
       try {
-        await fetch(`http://localhost:8080/ia/${cpf}`, { method: 'DELETE', headers });
+        await fetch(`/ia/${cpf}`, { method: 'DELETE', headers });
         location.reload();
       } catch (err) {
         console.error("Erro ao deletar diagnóstico:", err);

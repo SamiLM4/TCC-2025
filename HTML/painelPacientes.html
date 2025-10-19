@@ -117,9 +117,9 @@
             let url;
             if (filtro != null && filtro != "") {
                 //                console.log(filtro);
-                url = `http://localhost:8080/paciente/cpf/${encodeURIComponent(filtro)}`;
+                url = `/paciente/cpf/${encodeURIComponent(filtro)}`;
             } else {
-                url = `http://localhost:8080/paciente/${pagina}`;
+                url = `/paciente/${pagina}`;
             }
 
             fetch(url, {
@@ -291,7 +291,7 @@
                 telefone_cuidador: document.getElementById("telefoneCuidador").value,
             };
 
-            fetch(`http://localhost:8080/paciente/${cpfSelecionado}`, {
+            fetch(`/paciente/${cpfSelecionado}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -338,7 +338,7 @@
                 telefone_cuidador: document.getElementById("telefoneCuidador").value,
             };
 
-            fetch("http://localhost:8080/paciente", {
+            fetch("/paciente", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -363,7 +363,7 @@
 
         function excluirPaciente(cpf) {
             if (confirm("Tem certeza que deseja excluir este paciente?")) {
-                fetch(`http://localhost:8080/paciente/${cpf}`, {
+                fetch(`/paciente/${cpf}`, {
                     method: "DELETE",
                     headers: {
                         Authorization: "Bearer " + token,

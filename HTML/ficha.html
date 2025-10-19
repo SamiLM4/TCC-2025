@@ -178,7 +178,7 @@
             if (!token) { alert("Token não encontrado. Faça login novamente."); return; }
 
             try {
-                const resposta = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
+                const resposta = await fetch(`/ficha/${cpfPaciente}`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${token}` }
                 });
@@ -216,7 +216,7 @@
         async function buscarCpfMedico(nomeMedico) {
             if (!nomeMedico) return "";
             try {
-                const resposta = await fetch(`http://localhost:8080/medico/nome/${encodeURIComponent(nomeMedico)}`, {
+                const resposta = await fetch(`/medico/nome/${encodeURIComponent(nomeMedico)}`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${token}` }
                 });
@@ -233,7 +233,7 @@
             if (!token) { alert("Token não encontrado."); return; }
 
             let bodyRequest = {};
-            let url = `http://localhost:8080/ficha/${cpfPaciente}`;
+            let url = `/ficha/${cpfPaciente}`;
 
             if (papel === "medico") {
                 bodyRequest = {};
@@ -270,7 +270,7 @@
 
             try {
                 // 1️⃣ Buscar dados atuais
-                const respostaGet = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
+                const respostaGet = await fetch(`/ficha/${cpfPaciente}`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${token}` }
                 });
@@ -299,7 +299,7 @@
                 };
 
                 // 4️⃣ Fazer o PUT
-                const respostaPut = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
+                const respostaPut = await fetch(`/ficha/${cpfPaciente}`, {
                     method: "PUT",
                     headers: {
                         "Authorization": `Bearer ${token}`,

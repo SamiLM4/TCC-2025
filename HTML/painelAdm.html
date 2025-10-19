@@ -110,9 +110,9 @@
             let url;
             if (filtro != null && filtro != "") {
                 console.log(filtro);
-                url = `http://localhost:8080/adm/filtrar/${encodeURIComponent(filtro)}`;
+                url = `/adm/filtrar/${encodeURIComponent(filtro)}`;
             } else {
-                url = `http://localhost:8080/adm/${pagina}`;
+                url = `/adm/${pagina}`;
             }
 
             fetch(url, {
@@ -213,7 +213,7 @@
 
             const novoAdm = { nome, email, senha };
 
-            fetch("http://localhost:8080/adm", {
+            fetch("/adm", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -253,7 +253,7 @@
                 senha: document.getElementById("senhaAdmEditar").value
             };
 
-            fetch("http://localhost:8080/adm", {
+            fetch("/adm", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -278,7 +278,7 @@
 
         function excluirAdm(id) {
             if (confirm("Tem certeza que deseja excluir este administrador?")) {
-                fetch(`http://localhost:8080/adm/${id}`, {
+                fetch(`/adm/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': 'Bearer ' + token

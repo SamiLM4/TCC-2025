@@ -105,9 +105,9 @@
             let url;
             if (filtro != null && filtro != "") {
                 console.log(filtro);
-                url = `http://localhost:8080/medico/filtro/${encodeURIComponent(filtro)}`;
+                url = `/medico/filtro/${encodeURIComponent(filtro)}`;
             } else {
-                url = `http://localhost:8080/medico/${pagina}`;
+                url = `/medico/${pagina}`;
             }
 
             fetch(url, {
@@ -220,7 +220,7 @@
 
         function excluirMedico(cpf) {
             if (confirm("Tem certeza que deseja excluir este médico?")) {
-                fetch(`http://localhost:8080/medico/${cpf}`, {
+                fetch(`/medico/${cpf}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -263,7 +263,7 @@
                 nome: document.getElementById("nomeMedico").value
             };
 
-            fetch("http://localhost:8080/medico", {
+            fetch("/medico", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

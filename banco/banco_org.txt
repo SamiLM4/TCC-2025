@@ -189,6 +189,8 @@ select * from sintomas;
 		foreign key (id_paciente) references paciente(id) ON DELETE CASCADE
 	);  
 	  
+      select * from ia_results;
+      
 	CREATE TABLE relacao_medico_paciente (
     id_table INT PRIMARY KEY AUTO_INCREMENT,
     id_medico INT NULL,
@@ -401,5 +403,15 @@ select * from paciente WHERE cpf = "11111111137";
 SELECT COUNT(*) as total FROM paciente WHERE id_instituicao = 1;
 
 select * from diagnostico;
+
+select * from relacao_medico_paciente;
+
+SELECT p.*
+                FROM paciente p
+                WHERE NOT EXISTS (
+                    SELECT *
+                    FROM ia_results ia
+                    WHERE ia.id_paciente = p.id
+                ) AND p.nome LIKE ? AND p.id_instituicao = ?
 
 #drop database tests_tcc;

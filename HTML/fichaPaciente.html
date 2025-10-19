@@ -301,7 +301,7 @@
       // Busca o nome do paciente
       async function carregarNomePaciente() {
         try {
-          const resposta = await fetch(`http://localhost:8080/paciente/cpf/${cpf}`, {
+          const resposta = await fetch(`/paciente/cpf/${cpf}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
           });
@@ -322,7 +322,7 @@
       // Carrega a ficha do paciente
       async function carregarFicha() {
         try {
-          const resposta = await fetch(`http://localhost:8080/ficha/${cpf}`, {
+          const resposta = await fetch(`/ficha/${cpf}`, {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`
@@ -473,7 +473,7 @@
       function excluirFicha() {
         if (!confirm("Tem certeza que deseja excluir esta ficha?")) return;
 
-        fetch(`http://localhost:8080/ficha/${cpf}`, {
+        fetch(`/ficha/${cpf}`, {
           method: "DELETE",
           headers: { "Authorization": `Bearer ${token}` }
         })
@@ -495,7 +495,7 @@
 
       function gerarPdf() {
         const bodyEnviar = { cpf: cpf };
-        fetch('http://localhost:8080/ficha/pdf', {
+        fetch('/ficha/pdf', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -688,7 +688,7 @@
 
 
         try {
-          const resposta = await fetch(`http://localhost:8080/ficha/${cpfPaciente}`, {
+          const resposta = await fetch(`/ficha/${cpfPaciente}`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

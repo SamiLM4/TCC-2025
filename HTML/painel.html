@@ -159,9 +159,9 @@
             let url;
             if (filtro != null && filtro != "") {
                 //                console.log(filtro);
-                url = `http://localhost:8080/paciente/filtrar/${encodeURIComponent(filtro)}/diagnostico`;
+                url = `/paciente/filtrar/${encodeURIComponent(filtro)}/diagnostico`;
             } else {
-                url = `http://localhost:8080/paciente/${pagina}/diagnostico`;
+                url = `/paciente/${pagina}/diagnostico`;
             }
 
             fetch(url, {
@@ -255,7 +255,7 @@
             const paginaAtualPaciente = pagina;
 
             // Corrigir URL para passar apenas uma vez a página
-            fetch(`http://localhost:8080/medico/gerarpacientes/${paginaAtualPaciente}`, {
+            fetch(`/medico/gerarpacientes/${paginaAtualPaciente}`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + token
@@ -354,7 +354,7 @@
                 return;
             }
 
-            fetch(`http://localhost:8080/paciente/${cpf}`, {
+            fetch(`/paciente/${cpf}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -423,7 +423,7 @@
             cpfSelecionado = cpf;
             localStorage.setItem('cpfSelecionado', cpf); // salva CPF no localStorage
 
-            fetch(`http://localhost:8080/paciente/cpf/${cpf}`, {
+            fetch(`/paciente/cpf/${cpf}`, {
                 method: 'GET',
                 headers: { 'Authorization': 'Bearer ' + token }
             })
@@ -471,7 +471,7 @@
                 telefone_cuidador: document.getElementById("telefoneCuidador").value,
             };
 
-            fetch(`http://localhost:8080/paciente/${cpfSelecionado}`, {
+            fetch(`/paciente/${cpfSelecionado}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
