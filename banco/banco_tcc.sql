@@ -406,7 +406,7 @@ select * from diagnostico;
 
 select * from relacao_medico_paciente;
 
-select * from instituicao;
+	select * from instituicao;
 
 #drop database tests_tcc;
 	
