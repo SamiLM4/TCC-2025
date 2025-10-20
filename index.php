@@ -179,11 +179,11 @@ $roteador->get("/ia/img/(\d+)", function ($cpf) {
     require_once("controle/ia/iaReadImg.php");
 });
 // PDF
-
+/*
 $roteador->get("/ficha/pdf/(\d+)", function ($cpf) {
     require_once("controle/ficha/fichaPDF.php");
 });
-
+*/
 // MENSAGEM
 
 $roteador->post("/mensagem/enviar/(\d+)", function ($cpf_medico) {

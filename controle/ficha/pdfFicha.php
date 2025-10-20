@@ -46,6 +46,13 @@ $instituicao = $payload->instituicao;
 // Busca os dados da ficha
 $dados = buscarDadosFicha($cpfPaciente, $instituicao);
 
+/*
+    echo "<pre>";
+    print_r($dados['diagnostico']);
+    echo "</pre>";
+    die;
+*/
+
 ob_clean();
 ob_start();
 
@@ -118,23 +125,24 @@ campoValor($pdf, 'Problema Emocional', $sintomas['problema_emocional'] ?? 'N/A')
 
 
 
-//Diagnostico
+// Diagnóstico
 $pdf->SetFont('Arial', 'B', 13);
 $pdf->SetFillColor(200, 200, 200);
-$pdf->Cell(0, 10, utf8_decode('Diagnostico'), 1, 1, 'L', true);
+$pdf->Cell(0, 10, utf8_decode('Diagnóstico'), 1, 1, 'L', true);
+
 campoValor($pdf, 'Id do Paciente', $diagnostico['id do paciente'] ?? 'N/A');
 campoValor($pdf, 'CPF', $diagnostico['cpf'] ?? 'N/A');
-$dataOriginal = $diagnostico['data do diagnostico'] ?? null;
-$dataFormatada = 'N/A';
 
+$dataOriginal = $diagnostico['data_diagnostico'] ?? null;
+$dataFormatada = 'N/A';
 if ($dataOriginal) {
     $dataFormatada = DateTime::createFromFormat('Y-m-d', $dataOriginal)?->format('d/m/Y') ?? 'Inválida';
 }
-
 campoValor($pdf, 'Data do diagnóstico', $dataFormatada);
 
-campoValor($pdf, 'Tipo da EM', $diagnostico['tipo da EM'] ?? 'N/A');
+campoValor($pdf, 'Tipo da EM', $diagnostico['tipo_em'] ?? 'N/A');
 campoValor($pdf, 'Surtos', $diagnostico['surtos'] ?? 'N/A');
+
 
 // exame_fisico
 $pdf->SetFont('Arial', 'B', 13);
@@ -202,7 +210,8 @@ campoValor($pdf, 'Outras Avaliacoes', $qualidade_vida_em['outras_avaliacoes'] ??
 
 $pdfData = $pdf->Output('S'); // Retorna como string
 ob_end_clean();
-if (ob_get_length()) ob_end_clean(); // limpa qualquer buffer anterior
+if (ob_get_length())
+    ob_end_clean(); // limpa qualquer buffer anterior
 header('Content-Type: application/pdf');
 header('Content-Disposition: attachment; filename="ficha_paciente.pdf"');
 header('Content-Length: ' . strlen($pdfData));
