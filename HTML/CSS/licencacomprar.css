@@ -1,119 +1,159 @@
-        /* ============================
-   Paleta de Cores
-   ============================ */
-        :root {
-            --cor-fundo-gradiente-inicio: #E0F2FE;
-            --cor-fundo-gradiente-fim: #F8FAFC;
+/* ================================
+   VARIÁVEIS DE CORES (Tema Unificado)
+   ================================ */
+:root {
+    /* Fundo geral */
+    --color-bg-gradient-start: #0d4c8b;
+    --color-bg-gradient-end: #ffffff;
 
-            --cor-container-fundo: #2c3e50;
-            --cor-container-sombra: rgba(12, 74, 110, 0.5);
+    /* Container */
+    --color-container-bg: #0c2239;
+    --color-container-border: #075985;
+    --color-container-shadow: rgba(7, 89, 133, 0.2);
 
-            --cor-texto-principal: #0d91d8;
-            --cor-texto-secundario: #38BDF8;
+    /* Títulos e textos */
+    --color-title: #ffffff;
+    --color-subtitle: #38BDF8;
 
-            --cor-input-fundo: #FFFFFF;
-            --cor-input-texto: #075985;
-            --cor-input-borda: #075985;
-            --cor-input-focus: #0EA5E9;
+    /* Inputs */
+    --color-input-bg: #FFFFFF;
+    --color-input-border: #075985;
+    --color-input-text: #075985;
+    --color-input-focus-bg: #F8FAFC;
+    --color-input-focus-border: #0EA5E9;
 
-            --cor-botao-gradiente-inicio: #075985;
-            --cor-botao-gradiente-fim: #0EA5E9;
-            --cor-botao-gradiente-hover-inicio: #064E6C;
-            --cor-botao-gradiente-hover-fim: #38BDF8;
-            --cor-botao-texto: #FFFFFF;
-        }
+    /* Botões */
+    --color-button-bg: #0077ff;
+    --color-button-hover: #0077ff5e;
+    --color-button-text: #FFFFFF;
 
-        /* ============================
-   Layout Base
-   ============================ */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, var(--cor-fundo-gradiente-inicio), var(--cor-fundo-gradiente-fim));
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            color: var(--cor-texto-principal);
-        }
+    /* Mensagens */
+    --color-message: #38BDF8;
 
-        /* ============================
-   Container Principal
-   ============================ */
-        .container {
-            background-color: var(--cor-container-fundo);
-            padding: 35px 45px;
-            border-radius: 14px;
-            width: 400px;
-            box-shadow: 0 6px 25px var(--cor-container-sombra);
-            color: var(--cor-texto-secundario);
-        }
+    /* Erros */
+    --color-error: #DC2626;
+}
 
-        /* ============================
-   Título
-   ============================ */
-        h1 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: var(--cor-texto-secundario);
-            font-size: 24px;
-        }
+/* ================================
+   ESTILO GERAL
+   ================================ */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--color-bg-gradient-start) 0%, var(--color-bg-gradient-end) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    color: var(--color-title);
+}
 
-        /* ============================
-   Campos de Entrada
-   ============================ */
-        input,
-        select {
-            width: 100%;
-            padding: 10px 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid var(--cor-input-borda);
-            font-size: 15px;
-            color: var(--cor-input-texto);
-            background-color: var(--cor-input-fundo);
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
+/* ================================
+   CONTAINER PRINCIPAL
+   ================================ */
+.container {
+    background-color: var(--color-container-bg);
+    padding: 40px 30px;
+    border-radius: 16px;
+    width: 380px;
+    box-shadow: 0 8px 24px var(--color-container-shadow);
+    border: 1px solid var(--color-container-border);
+    text-align: center;
+}
 
-        input:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--cor-input-focus);
-            box-shadow: 0 0 5px var(--cor-input-focus);
-        }
+/* ================================
+   LOGO
+   ================================ */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
 
-        /* ============================
-   Botão
-   ============================ */
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 18px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(45deg, var(--cor-botao-gradiente-inicio), var(--cor-botao-gradiente-fim));
-            color: var(--cor-botao-texto);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(7, 89, 133, 0.4);
-            letter-spacing: 0.5px;
-        }
+.logo {
+    max-width: 120px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
 
-        button:hover {
-            background: linear-gradient(45deg, var(--cor-botao-gradiente-hover-inicio), var(--cor-botao-gradiente-hover-fim));
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(14, 165, 233, 0.5);
-        }
+/* ================================
+   TÍTULO
+   ================================ */
+h1 {
+    margin-bottom: 25px;
+    color: var(--color-subtitle);
+    font-size: 24px;
+    font-weight: 600;
+}
 
-        /* ============================
-   Mensagem de Retorno
-   ============================ */
-        #message {
-            margin-top: 20px;
-            text-align: center;
-            word-break: break-word;
-            color: var(--cor-texto-secundario);
-            font-weight: 500;
-        }
+/* ================================
+   CAMPOS DE ENTRADA
+   ================================ */
+input,
+select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    border: 1px solid var(--color-input-border);
+    background-color: var(--color-input-bg);
+    color: var(--color-input-text);
+    font-size: 15px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border 0.3s ease, background-color 0.3s ease;
+}
+
+/* Foco nos campos */
+input:focus,
+select:focus {
+    border-color: var(--color-input-focus-border);
+    background-color: var(--color-input-focus-bg);
+}
+
+/* ================================
+   BOTÃO
+   ================================ */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 18px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--color-button-bg);
+    color: var(--color-button-text);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(7, 89, 133, 0.4);
+    letter-spacing: 0.5px;
+}
+
+button:hover {
+    background-color: var(--color-button-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.5);
+}
+
+/* ================================
+   MENSAGEM DE RETORNO
+   ================================ */
+#message {
+    margin-top: 20px;
+    text-align: center;
+    word-break: break-word;
+    color: var(--color-message);
+    font-weight: 500;
+}
+
+/* ================================
+   MENSAGEM DE ERRO
+   ================================ */
+.erro {
+    color: var(--color-error);
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}

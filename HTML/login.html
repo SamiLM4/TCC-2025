@@ -5,12 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="icon" type="image/jpeg" href="../imagens/logo.jpg">
     <link rel="stylesheet" href="../CSS/login.css">
 </head>
 
 <body>
 
     <div class="login-container">
+
+        <div class="logo-container">
+            <img src="../imagens/logo.jpg" alt="Logo do site" class="logo">
+        </div>
+
+
         <h2>Login</h2>
         <form id="loginForm">
             <input type="email" id="email" placeholder="Email" required>
@@ -61,11 +68,11 @@
                 if (resultado.cod === 200) {
                     if (tipo == "adm") {
                         localStorage.setItem("papel", "adm");
-                    } else if (tipo == "medico"){
+                    } else if (tipo == "medico") {
                         localStorage.setItem("papel", "medico");
                     }
                     let nome;
-                    if (tipo ==="adm"){
+                    if (tipo === "adm") {
                         nome = resultado.adm.nome;
                     } else {
                         nome = resultado.Medico.nome;

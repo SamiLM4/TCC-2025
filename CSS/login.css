@@ -3,16 +3,16 @@
    ================================ */
 :root {
   /* Fundo geral (login) */
-  --color-bg-gradient-start: #F8FAFC;
-  --color-bg-gradient-end: #F8FAFC;
+  --color-bg-gradient-start: #0d4c8b;
+  --color-bg-gradient-end: #ffffff;
 
   /* Container */
-  --color-container-bg: #FFFFFF;
+  --color-container-bg: #0c2239;
   --color-container-border: #075985;
   --color-container-shadow: rgba(7, 89, 133, 0.2);
 
   /* Títulos */
-  --color-title: #075985;
+  --color-title: #ffffff;
 
   /* Inputs */
   --color-input-bg: #FFFFFF;
@@ -22,8 +22,8 @@
   --color-input-focus-border: #0EA5E9;
 
   /* Botões */
-  --color-button-bg: #075985;
-  --color-button-hover: #064E6C;
+  --color-button-bg: #0077ff;   
+  --color-button-hover: #0077ff5e;
   --color-button-text: #FFFFFF;
 
   /* Erros */
@@ -130,4 +130,18 @@ body {
 #tipoUsuario:active {
     background-color: var(--color-input-focus-bg);
     border-color: var(--color-input-focus-border);
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.logo {
+    max-width: 120px;      /* limita o tamanho máximo */
+    width: 100%;           /* ocupa até o limite */
+    height: auto;          /* mantém proporção */
+    object-fit: contain;   /* evita deformação */
 }
