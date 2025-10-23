@@ -254,8 +254,6 @@
       <i class="fas fa-arrow-left"></i> Voltar
     </button>
 
-    <button onclick="diagnostico()"><i class="fas fa-notes-medical"></i> Ir para
-      Diagnóstico</button>
   </div>
 
   <div class="main-content">
@@ -280,6 +278,7 @@
       <button id="btnEditar" onclick="editarFicha()" style="display: none;">Editar Ficha</button>
       <button id="btnExcluir" onclick="excluirFicha()" style="display: none;">Excluir Ficha</button>
       <button id="btnGerarPdf" onclick="gerarPdf()" style="display: none;">Gerar PDF</button>
+      <button id="btnDiagnostico" onclick="diagnostico()" style="display: none;"><i class="fas fa-notes-medical"></i> Ir para Diagnóstico</button>
     </div>
 
 
@@ -456,7 +455,7 @@
 
         } catch (err) {
           fichaDiv.innerText = "Ficha não cadastrada";
-          console.log("caiu aqui no erro: " + err.message);
+          console.log("caiu aqui no erro: " + err.message); 
         }
       }
 
@@ -528,12 +527,16 @@
         const btnEditar = document.getElementById("btnEditar");
         const btnExcluir = document.getElementById("btnExcluir");
         const btnGerarPdf = document.getElementById("btnGerarPdf");
+        const btnDiagnostico = document.getElementById("btnDiagnostico");
 
         // Esconde todos os botões exceto Gerar PDF
         if (btnCadastrar) btnCadastrar.style.display = "none";
         if (btnEditar) btnEditar.style.display = "none";
         if (btnExcluir) btnExcluir.style.display = "none";
         if (btnGerarPdf) btnGerarPdf.style.display = "inline-block"; // mantém visível
+        if (btnDiagnostico) btnDiagnostico.style.display = "none";
+
+        console.log("Botões desabilitados.");
       }
 
 
@@ -544,11 +547,15 @@
         const btnEditar = document.getElementById("btnEditar");
         const btnExcluir = document.getElementById("btnExcluir");
         const btnGerarPdf = document.getElementById("btnGerarPdf");
+        const btnDiagnostico = document.getElementById("btnDiagnostico");
+
+        // comentar aqui
 
         // Habilita a exibição dos botões
         if (btnEditar) btnEditar.style.display = "inline-block";
         if (btnExcluir) btnExcluir.style.display = "inline-block";
         if (btnGerarPdf) btnGerarPdf.style.display = "inline-block";
+        if (btnDiagnostico) btnDiagnostico.style.display = "inline-block";
       }
 
 
@@ -577,6 +584,7 @@
         getElementById('btnEditar').style.display = 'none';
         getElementById('btnExcluir').style.display = 'none';
         getElementById('btnGerarPdf').style.display = 'none';
+        getElementById('btnDiagnostico').style.display = 'none';
 
         console.log("Input grupo mostrado e botõs desabilitados.");
 
@@ -713,7 +721,7 @@
 
           if (data.cod === 201) {
             alert("✅ Médico relacionado com sucesso!");
-            window.location.reload();
+            window.location.href = "ficha.html";
           } else {
             alert("❌ Erro ao relacionar médico: " + (data.msg || "Erro desconhecido"));
             window.location.reload();

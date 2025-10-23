@@ -41,7 +41,7 @@
                     <th id="cpf">CPF</th>
                     <th>Email</th>
                     <th>❌ Pacientes sem Diagnóstico❌</th>
-                    <th>Ir para diagnóstico</th>
+                    <th>Ir para ficha</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,13 +52,13 @@
 
         <!-- Tabela 2: Pacientes do médico logado -->
         <br><br>
-        <h2>Seus Pacientes</h2>
+        <h2 id="seuspacientes">Seus Pacientes</h2>
         <table id="tabelaPacientesMedico">
             <thead>
                 <tr>
                     <th>CPF</th>
                     <th>Nome</th>
-                    <th id='selecionarPaciente'>Selecionar Paciente</th>
+                    <th id='selecionarPaciente'>Ir para ficha</th>
                     <th id='atualizarPaciente'>Atualizar Paciente</th>
                     <th id='excluirPaciente'>Excluir Paciente</th>
                 </tr>
@@ -130,6 +130,9 @@
 
             if (papel === "adm") {
                 document.getElementById("menuAdministradores").style.display = "block";
+                document.getElementById("seuspacientes").style.display = "none";
+                document.getElementById("tabelaPacientesMedico").style.display = "none";
+
             } else {
                 const cpfHeader = document.getElementById("cpf");
                 if (cpfHeader) cpfHeader.style.display = "none";
@@ -194,7 +197,7 @@
                             <td class="texto-tabela" data-label="Nome">${paciente.nome}</td>
                             <td class="texto-tabela" data-label="Email">${paciente.email}</td>
                             <td clas= "texto-tabela" data-label="Sem Diagnóstico">❌Sem Diagnóstico❌</td>
-                            <td class="texto-tabela" data-label="Ir para diagnóstico"><button class="btn-diagnostico" onclick='irparadiagnostico("${paciente.cpf}")'>Ir para diagnóstico</button></td>
+                            <td class="texto-tabela" data-label="Ir para ficha"><button class="btn-diagnostico" onclick='irparadiagnostico("${paciente.cpf}")'>Ir para ficha</button></td>
                             `;
                         } else {
 
@@ -203,7 +206,7 @@
                             <td class="texto-tabela" data-label="CPF">${paciente.cpf}</td>
                             <td class="texto-tabela" data-label="Email">${paciente.email}</td>
                             <td clas= "texto-tabela" data-label="Sem Diagnóstico">❌Sem Diagnóstico❌</td>
-                            <td class="texto-tabela" data-label="Ir para diagnóstico"><button class="btn-diagnostico" onclick='irparadiagnostico("${paciente.cpf}")'>Ir para diagnóstico</button></td>
+                            <td class="texto-tabela" data-label="Ir para ficha"><button class="btn-diagnostico" onclick='irparadiagnostico("${paciente.cpf}")'>Ir para ficha</button></td>
                             `;
                         }
 
@@ -388,7 +391,7 @@
 
         function irparadiagnostico(cpf) {
             localStorage.setItem('cpfSelecionado', cpf);
-            window.location.href = "diagnostico.html";
+            window.location.href = "fichaPaciente.html";
         }
 
         function irparaficha(cpf) {
