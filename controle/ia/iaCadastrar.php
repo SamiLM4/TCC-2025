@@ -50,7 +50,7 @@ if ($meutoken->validarToken($autorization)) {
     }
 
 
-    $api_key = "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"; // sua chave válida
+    $api_key = ""; // sua chave válida
 
     $content = [["type" => "text", "text" => ""]];
     foreach ($imagensTmp as $tmp) {
