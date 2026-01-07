@@ -1,3 +1,5 @@
+* PROJETO EM DESENVOLVIMENTO *
+
 🧠 Pré-Diagnóstico de Esclerose Múltipla com IA Generativa
 
 
@@ -97,3 +99,4 @@ Demonstrar como a tecnologia pode atuar como ferramenta de apoio na área da sa�
 Murilo Gonçalves de Lima
 Estudante de Técnico em Informática – UNIVAP
 📌 Trabalho de Conclusão de Curso – 2025
+
