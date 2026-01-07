@@ -41,7 +41,7 @@
                     <th>Nome</th>
                     <th id="cpf">CPF</th>
                     <th>Email</th>
-                    <th>❌ Pacientes sem Diagnóstico❌</th>
+                    <th>Pacientes sem Diagnóstico</th>
                     <th>Ir para ficha</th>
                 </tr>
             </thead>
@@ -197,7 +197,7 @@
                             row.innerHTML = `
                             <td class="texto-tabela" data-label="Nome">${paciente.nome}</td>
                             <td class="texto-tabela" data-label="Email">${paciente.email}</td>
-                            <td clas= "texto-tabela" data-label="Sem Diagnóstico">❌Sem Diagnóstico❌</td>
+                            <td class="texto-tabela laranja" data-label="Sem Diagnóstico">‼️Sem Diagnóstico‼️</td>
                             <td class="texto-tabela" data-label="Ir para ficha"><button class="btn-diagnostico" onclick='irparadiagnostico("${paciente.cpf}")'>Ir para ficha</button></td>
                             `;
                         } else {
@@ -206,7 +206,7 @@
                             <td class="texto-tabela" data-label="Nome">${paciente.nome}</td>
                             <td class="texto-tabela" data-label="CPF">${paciente.cpf}</td>
                             <td class="texto-tabela" data-label="Email">${paciente.email}</td>
-                            <td clas= "texto-tabela" data-label="Sem Diagnóstico">❌Sem Diagnóstico❌</td>
+                            <td class="texto-tabela laranja" data-label="Sem Diagnóstico">‼️Sem Diagnóstico‼️</td>
                             <td class="texto-tabela" data-label="Ir para ficha"><button class="btn-diagnostico" onclick='irparadiagnostico("${paciente.cpf}")'>Ir para ficha</button></td>
                             `;
                         }

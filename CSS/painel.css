@@ -471,3 +471,7 @@ table tbody tr:hover {
 .btn-flutuante:hover {
     background-color: #0056b3;
 }
+
+.texto-tabela.laranja {
+  color: rgb(182, 118, 0);
+}
