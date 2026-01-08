@@ -4,7 +4,7 @@ class Banco {
     private $host = "127.0.0.1";
     private $usuario = "root";
     private $senha = "";
-    private $banco = "tests_tcc";
+    private $banco = "TCC25";
     private $porta = "3306";
     private $con = null;
 
